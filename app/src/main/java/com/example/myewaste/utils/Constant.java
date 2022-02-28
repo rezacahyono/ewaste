@@ -63,8 +63,12 @@ public class Constant {
     public static final String EXTRAS_SALDO_TRANSACTION = "extras_saldo_transaction";
     public static final String EXTRAS_ITEM_TRANSACTION = "extras_item_transaction";
     public static final String EXTRAS_SALDO = "extras_saldo";
+    public static final String EXTRAS_FROM = "extras_from";
 
 
+
+    public static final String FROM_DETAIL = "from_detail";
+    public static final String FROM_INPUT = "from_input";
     public static final String MODE_ADD = "mode_add";
     public static final String MODE_UPDATE = "mode_update";
     public static final String FROM_LOGIN = "from_login";

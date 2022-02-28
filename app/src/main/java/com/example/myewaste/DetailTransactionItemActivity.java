@@ -1,9 +1,13 @@
 package com.example.myewaste;
 
+import static com.example.myewaste.utils.Constant.EXTRAS_ACTION_MODE;
+import static com.example.myewaste.utils.Constant.EXTRAS_FROM;
 import static com.example.myewaste.utils.Constant.EXTRAS_ITEM_TRANSACTION;
+import static com.example.myewaste.utils.Constant.FROM_DETAIL;
 import static com.example.myewaste.utils.Constant.ITEM_MASTER;
 import static com.example.myewaste.utils.Constant.ITEM_TRANSACTION;
 import static com.example.myewaste.utils.Constant.ITEM_TYPE;
+import static com.example.myewaste.utils.Constant.MODE_UPDATE;
 import static com.example.myewaste.utils.Constant.NASABAH;
 import static com.example.myewaste.utils.Constant.NO_ITEM_MASTER;
 import static com.example.myewaste.utils.Constant.NO_ITEM_TYPE;
@@ -54,18 +58,6 @@ import java.util.Objects;
 
 public class DetailTransactionItemActivity extends AppCompatActivity {
 
-    //    private LinearLayout layout;
-//    private TextView tvIdTransaksi, tvNamaBarang, tvNamaJenisBarang, tvNamaUser, tvNamaTeller, tvHargaBarang, tvJumlah, tvSatuan, tvTotalHarga, tvTanggalTransaksi;
-//    private Button btnEditTransaksi;
-//
-//    private ItemTransaction itemTransaction;
-//    private ItemMaster itemMaster;
-//    private UnitItem unitItem;
-//    private ItemType jenisBarang;
-//    private UserData dataTeller;
-//    private UserData dataUser;
-//    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-    private SessionManagement sessionManagement;
     private ProgressDialog loading;
     private ItemTransaction itemTransaction = new ItemTransaction();
     private final ArrayList<ListItem> listItemsForAdapter = new ArrayList<>();
@@ -90,7 +82,7 @@ public class DetailTransactionItemActivity extends AppCompatActivity {
         bindingToolbar.btnBack.setOnClickListener(view -> onBackPressed());
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
-        sessionManagement = new SessionManagement(this);
+        SessionManagement sessionManagement = new SessionManagement(this);
 
         adapter = new ListItemDetailTransactionAdapter();
         binding.rvItem.setHasFixedSize(true);
@@ -111,48 +103,18 @@ public class DetailTransactionItemActivity extends AppCompatActivity {
             binding.btnUpdateTransaction.setVisibility(View.GONE);
         }
 
-        bindingToolbar.btnTrash.setOnClickListener(v -> {
-            alertDelete(itemTransaction);
-        });
+        bindingToolbar.btnTrash.setOnClickListener(v -> alertDelete(itemTransaction));
 
         binding.btnUpdateTransaction.setOnClickListener(v -> {
             Intent intent = new Intent(this, AddUpdateTransactionItemActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            intent.putExtra(EXTRAS_FROM, FROM_DETAIL);
             intent.putExtra(EXTRAS_ITEM_TRANSACTION, itemTransaction);
             startActivity(intent);
         });
 
         setRecyclerViewItemListDetail();
 
-//        layout = findViewById(R.id.layout_detail_transaksi_barang);
-//        tvIdTransaksi = findViewById(R.id.tv_id_transaksi_dtb);
-//        tvNamaBarang = findViewById(R.id.tv_nama_barang_dtb);
-//        tvNamaJenisBarang = findViewById(R.id.tv_nama_jenis_barang_dtb);
-//        tvNamaUser = findViewById(R.id.tv_nama_user_dtb);
-//        tvNamaTeller = findViewById(R.id.tv_nama_teller_dtb);
-//        tvHargaBarang = findViewById(R.id.tv_harga_dtb);
-//        tvJumlah = findViewById(R.id.tv_jumlah_dtb);
-//        tvSatuan = findViewById(R.id.tv_satuan_dtb);
-//        tvTotalHarga = findViewById(R.id.tv_total_harga_dtb);
-//        tvTanggalTransaksi = findViewById(R.id.tv_tanggal_transaksi_dtb);
-//        btnEditTransaksi = findViewById(R.id.btn_edit_dtb);
-//        itemTransaction = getIntent().getParcelableExtra("EXTRA_TRANSAKSI_BARANG");
-//        sessionManagement = new SessionManagement(getApplicationContext());
-////        prepareLayout();
-//
-//        if(getRegisterCode(sessionManagement.getUserSession()).toLowerCase().equals("n")){
-//            btnEditTransaksi.setVisibility(View.GONE);
-//        }
-//
-//        btnEditTransaksi.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(DetailTransactionItemActivity.this, AddUpdateTransactionItemActivity.class);
-//                intent.putExtra("EXTRA_TRANSAKSI_BARANG", itemTransaction);
-//                startActivity(intent);
-//                finish();
-//            }
-//        });
     }
 
     private void setRecyclerViewItemListDetail() {
@@ -314,107 +276,4 @@ public class DetailTransactionItemActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-
-//    private void prepareLayout(){
-//        tvIdTransaksi.setText(itemTransaction.getNo_transaksi_barang());
-//        tvJumlah.setText(String.valueOf(itemTransaction.getJumlah()));
-//        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
-//        Date date = new Date(itemTransaction.getTanggal_transaksi());
-//        String tanggalTransaksi = sdf.format(date);
-//        tvTanggalTransaksi.setText(tanggalTransaksi);
-//        tvTotalHarga.setText(convertToRupiah(itemTransaction.getTotal_harga()));
-//        loadUserData(0, itemTransaction.getNo_nasabah());//mode 0 for user
-//        loadUserData(1, itemTransaction.getNo_teller());//mode 1 for teller
-//        loadJenisBarangById(itemTransaction.getNomor_jenis_barang());
-//    }
-//
-//    private void loadUserData(int mode, String idUser){
-//        //todo mode 0 for user , 1 for teller
-//        Query userQuery = databaseReference.child("userdata").orderByChild("noregis").equalTo(idUser);
-//        userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                for(DataSnapshot data : snapshot.getChildren()){
-//                    if(mode == 0){
-//                        dataUser = data.getValue(UserData.class);
-//                    }else{
-//                        dataTeller = data.getValue(UserData.class);
-//                    }
-//                }
-//                if(mode == 0){
-//                    tvNamaUser.setText(dataUser.getName());
-//                }else{
-//                    tvNamaTeller.setText(dataTeller.getName());
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-//    }
-//
-//    private void loadJenisBarangById(String idJenisBarang){
-//        Query jenisBarangQuery = databaseReference.child("jenis_barang").orderByChild("no_master_jenis_barang").equalTo(idJenisBarang);
-//        jenisBarangQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                for(DataSnapshot data : snapshot.getChildren()){
-//                    jenisBarang = data.getValue(ItemType.class);
-//                }
-//                tvNamaJenisBarang.setText(jenisBarang.getNama_master_jenis_barang());
-//                tvHargaBarang.setText(convertToRupiah(jenisBarang.getHarga()));
-//                loadSatuanById(jenisBarang.getNo_satuan_barang());
-//                loadBarangById(jenisBarang.getNo_master_barang());
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-//    }
-//
-//    private void loadSatuanById(String idSatuan){
-//        Query satuanQuery = databaseReference.child("satuan_barang").orderByChild("noSatuan").equalTo(idSatuan);
-//        satuanQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                for(DataSnapshot data : snapshot.getChildren()){
-//                    unitItem = data.getValue(UnitItem.class);
-//                }
-//                tvSatuan.setText(unitItem.getNamaSatuan());
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-//    }
-//
-//    private void loadBarangById(String idBarang){
-//        Query barangQuery = databaseReference.child("barang").orderByChild("no_master_barang").equalTo(idBarang);
-//        barangQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                for(DataSnapshot data : snapshot.getChildren()){
-//                    itemMaster = data.getValue(ItemMaster.class);
-//                }
-//                tvNamaBarang.setText(itemMaster.getNama_master_barang());
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-//    }
-//
-//    @Override
-//    public boolean onSupportNavigateUp() {
-//        onBackPressed();
-//        return true;
-//    }
 }

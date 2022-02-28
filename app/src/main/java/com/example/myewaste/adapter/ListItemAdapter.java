@@ -44,7 +44,11 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ListIt
     @Override
     public void onBindViewHolder(@NonNull ListItemViewHolder holder, int position) {
         holder.bind(listItems.get(position));
-        holder.itemView.setOnClickListener(v -> onItemClickCallback.onClicked(holder.getAdapterPosition()));
+        holder.itemView.setOnLongClickListener(v -> {
+            onItemClickCallback.onClickedRemove(holder.getAdapterPosition());
+            return false;
+        });
+        holder.itemView.setOnClickListener(v -> onItemClickCallback.onClickedListItem(listItems.get(holder.getAdapterPosition()),holder.getAdapterPosition()));
 
     }
 
@@ -71,6 +75,8 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemAdapter.ListIt
 
 
     public interface OnItemClickCallbackListItem {
-        void onClicked(int position);
+        void onClickedRemove(int position);
+
+        void onClickedListItem(ListItem listItem, int postion);
     }
 }

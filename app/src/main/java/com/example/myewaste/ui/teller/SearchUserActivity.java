@@ -1,14 +1,20 @@
 package com.example.myewaste.ui.teller;
 
+import static com.example.myewaste.utils.Constant.AKTIF;
+import static com.example.myewaste.utils.Constant.EXTRAS_ACTION_MODE;
+import static com.example.myewaste.utils.Constant.EXTRAS_FROM;
 import static com.example.myewaste.utils.Constant.EXTRAS_USER_DATA;
+import static com.example.myewaste.utils.Constant.FROM_INPUT;
+import static com.example.myewaste.utils.Constant.MODE_ADD;
 import static com.example.myewaste.utils.Constant.NAME;
 import static com.example.myewaste.utils.Constant.NASABAH;
+import static com.example.myewaste.utils.Constant.STATUS;
+import static com.example.myewaste.utils.Constant.USER;
 import static com.example.myewaste.utils.Constant.USER_DATA;
 import static com.example.myewaste.utils.Util.getRegisterCode;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -20,6 +26,7 @@ import com.example.myewaste.R;
 import com.example.myewaste.adapter.ListUserAdapater;
 import com.example.myewaste.databinding.ActivitySearchUserBinding;
 import com.example.myewaste.databinding.MainToolbarBinding;
+import com.example.myewaste.model.user.User;
 import com.example.myewaste.model.user.UserData;
 import com.example.myewaste.ui.admin.task.AddUpdateTransactionItemActivity;
 import com.google.firebase.database.DataSnapshot;
@@ -70,6 +77,8 @@ public class SearchUserActivity extends AppCompatActivity {
 
         adapter.setOnItemClickCallback(userData -> {
             Intent intent = new Intent(this, AddUpdateTransactionItemActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            intent.putExtra(EXTRAS_FROM, FROM_INPUT);
             intent.putExtra(EXTRAS_USER_DATA, userData);
             startActivity(intent);
         });
@@ -132,7 +141,6 @@ public class SearchUserActivity extends AppCompatActivity {
                 }
                 adapter.setAdapter(listUser);
                 showPlaceholderOrRecyclerView(listUser.size() > 0);
-                Log.d("TAG", "onDataChange: " + listUser.size());
                 listUser.clear();
             }
 

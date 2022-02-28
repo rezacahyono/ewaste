@@ -115,6 +115,7 @@
     <string name="message_success_delete_transaction">Berhasil menghapus transaksi</string>
     <string name="message_failure_delete_transaction">Gagal menghapus transaksi</string>
     <string name="placeholder_unit">%s %s</string>
+    <string name="placeholder_price_per_unit">%s/%s</string>
     <string name="message_avatar">Apakah anda yakin untuk %s avatar profil</string>
     <string name="message_delete_unit_item">Apakah anda yakin untuk menghapus satuan %s!</string>
     <string name="action_delete_item_message">Barang %s %s dihapus</string>
