@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.admin.AdminActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <FrameLayout
+            android:id="@+id/fl_bg_avatar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="-35dp"
+            android:layout_marginEnd="-40dp"
+            android:background="@drawable/ic_bg_avatar">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/iv_avatar"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center"
+                android:scaleType="centerCrop"
+                android:src="@color/green" />
+        </FrameLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/nunito_sans_semibold"
+                android:text="@string/greet"
+                android:textColor="@color/dark_grey"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <TextView
+                android:id="@+id/tv_no_regis"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:fontFamily="@font/nunito"
+                android:text="n-001"
+                android:textColor="@color/dark_grey"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_name" />
+
+            <TextView
+                android:id="@+id/tv_welcome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/nunito_sans_bold"
+                android:text="@string/welcome_greet"
+                android:textColor="@color/dark_grey"
+                android:textSize="20sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_no_regis" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_task"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_welcome"
+                tools:listitem="@layout/item_list_task" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </RelativeLayout>
+    <!--    <LinearLayout-->
+    <!--        android:orientation="vertical"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent">-->
+
+    <!--        <androidx.constraintlayout.widget.ConstraintLayout-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginLeft="10dp"-->
+    <!--            android:layout_marginTop="10dp">-->
+
+    <!--            <de.hdodenhof.circleimageview.CircleImageView-->
+    <!--                android:id="@+id/iv_profil"-->
+    <!--                android:layout_width="80dp"-->
+    <!--                android:layout_height="80dp"-->
+    <!--                android:layout_marginStart="16dp"-->
+    <!--                android:layout_marginBottom="16dp"-->
+    <!--                android:src="@drawable/profile"-->
+    <!--                app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--                app:layout_constraintStart_toStartOf="parent"-->
+    <!--                app:layout_constraintTop_toTopOf="parent"-->
+    <!--                app:layout_constraintVertical_bias="1.0" />-->
+
+    <!--            <TextView-->
+    <!--                android:id="@+id/textView"-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:fontFamily="sans-serif"-->
+    <!--                android:text="Nama : "-->
+    <!--                android:textSize="18sp"-->
+    <!--                android:textStyle="bold"-->
+    <!--                app:layout_constraintBottom_toBottomOf="@+id/iv_profil"-->
+    <!--                app:layout_constraintStart_toEndOf="@+id/iv_profil"-->
+    <!--                app:layout_constraintTop_toTopOf="parent"-->
+    <!--                app:layout_constraintVertical_bias="0.285" />-->
+
+    <!--            <TextView-->
+    <!--                android:id="@+id/et_nama"-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:fontFamily="sans-serif"-->
+    <!--                android:text="Nama User Login"-->
+    <!--                android:textSize="18sp"-->
+    <!--                android:textStyle="bold"-->
+    <!--                app:layout_constraintBottom_toBottomOf="@+id/textView"-->
+    <!--                app:layout_constraintStart_toEndOf="@+id/textView"-->
+    <!--                app:layout_constraintTop_toTopOf="@+id/textView" />-->
+
+    <!--            <TextView-->
+    <!--                android:textStyle="bold"-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:text="ID            : "-->
+    <!--                android:textSize="14sp"-->
+    <!--                app:layout_constraintStart_toEndOf="@+id/iv_profil"-->
+    <!--                app:layout_constraintTop_toBottomOf="@+id/textView" />-->
+
+    <!--            <TextView-->
+    <!--                android:textStyle="bold"-->
+    <!--                android:id="@+id/et_noregis"-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:text="No Regis"-->
+    <!--                android:textSize="14sp"-->
+    <!--                app:layout_constraintStart_toStartOf="@+id/et_nama"-->
+    <!--                app:layout_constraintTop_toBottomOf="@+id/et_nama" />-->
+    <!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+    <!--        <GridLayout-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:alignmentMode="alignMargins"-->
+    <!--            android:columnCount="2"-->
+    <!--            android:columnOrderPreserved="false"-->
+    <!--            android:rowCount="3">-->
+
+    <!--            <androidx.cardview.widget.CardView-->
+    <!--                android:id="@+id/cv_master_barang"-->
+    <!--                android:layout_width="55dp"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_rowWeight="1"-->
+    <!--                android:layout_columnWeight="1"-->
+    <!--                android:layout_margin="12dp"-->
+    <!--                app:cardCornerRadius="12dp"-->
+    <!--                app:cardElevation="6dp">-->
+    <!--                <LinearLayout-->
+    <!--                    android:layout_width="match_parent"-->
+    <!--                    android:layout_height="155dp"-->
+    <!--                    android:gravity="center"-->
+    <!--                    android:orientation="vertical"-->
+    <!--                    android:padding="16dp">-->
+    <!--                    <ImageView-->
+    <!--                        android:layout_width="80dp"-->
+    <!--                        android:layout_height="80dp"-->
+    <!--                        android:src="@drawable/barang" />-->
+    <!--                    <TextView-->
+    <!--                        android:layout_width="wrap_content"-->
+    <!--                        android:layout_height="wrap_content"-->
+    <!--                        android:layout_marginTop="12dp"-->
+    <!--                        android:text="Master Barang"-->
+    <!--                        android:textColor="#6f6f6f"-->
+    <!--                        android:textSize="18sp" />-->
+    <!--                </LinearLayout>-->
+    <!--            </androidx.cardview.widget.CardView>-->
+
+    <!--            <androidx.cardview.widget.CardView-->
+    <!--                android:id="@+id/cv_master_jenis_barang"-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_rowWeight="1"-->
+    <!--                android:layout_columnWeight="1"-->
+    <!--                android:layout_margin="12dp"-->
+    <!--                app:cardCornerRadius="12dp"-->
+    <!--                app:cardElevation="6dp">-->
+    <!--                <LinearLayout-->
+    <!--                    android:layout_width="match_parent"-->
+    <!--                    android:layout_height="wrap_content"-->
+    <!--                    android:gravity="center"-->
+    <!--                    android:orientation="vertical"-->
+    <!--                    android:padding="16dp">-->
+    <!--                    <ImageView-->
+    <!--                        android:layout_width="80dp"-->
+    <!--                        android:layout_height="80dp"-->
+    <!--                        android:src="@drawable/jenisbarang" />-->
+    <!--                    <TextView-->
+    <!--                        android:textAlignment="center"-->
+    <!--                        android:layout_width="match_parent"-->
+    <!--                        android:layout_height="wrap_content"-->
+    <!--                        android:layout_marginTop="12dp"-->
+    <!--                        android:text="Master Jenis Barang"-->
+    <!--                        android:textColor="#6f6f6f"-->
+    <!--                        android:textSize="18sp" />-->
+    <!--                </LinearLayout>-->
+    <!--            </androidx.cardview.widget.CardView>-->
+
+    <!--            <androidx.cardview.widget.CardView-->
+    <!--                android:id="@+id/cv_master_satuan"-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_rowWeight="1"-->
+    <!--                android:layout_columnWeight="1"-->
+    <!--                android:layout_margin="12dp"-->
+    <!--                app:cardCornerRadius="12dp"-->
+    <!--                app:cardElevation="6dp">-->
+    <!--                <LinearLayout-->
+    <!--                    android:layout_width="match_parent"-->
+    <!--                    android:layout_height="wrap_content"-->
+    <!--                    android:gravity="center"-->
+    <!--                    android:orientation="vertical"-->
+    <!--                    android:padding="16dp">-->
+    <!--                    <ImageView-->
+    <!--                        android:layout_width="80dp"-->
+    <!--                        android:layout_height="80dp"-->
+    <!--                        android:src="@drawable/satuan" />-->
+    <!--                    <TextView-->
+    <!--                        android:textAlignment="center"-->
+    <!--                        android:layout_width="match_parent"-->
+    <!--                        android:layout_height="wrap_content"-->
+    <!--                        android:layout_marginTop="12dp"-->
+    <!--                        android:text="Master Satuan"-->
+    <!--                        android:textColor="#6f6f6f"-->
+    <!--                        android:textSize="18sp" />-->
+    <!--                </LinearLayout>-->
+    <!--            </androidx.cardview.widget.CardView>-->
+
+    <!--            <androidx.cardview.widget.CardView-->
+    <!--                android:id="@+id/cv_laporan_transaksi"-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_rowWeight="1"-->
+    <!--                android:layout_columnWeight="1"-->
+    <!--                android:layout_margin="12dp"-->
+    <!--                app:cardCornerRadius="12dp"-->
+    <!--                app:cardElevation="6dp">-->
+    <!--                <LinearLayout-->
+    <!--                    android:layout_width="match_parent"-->
+    <!--                    android:layout_height="wrap_content"-->
+    <!--                    android:gravity="center"-->
+    <!--                    android:orientation="vertical"-->
+    <!--                    android:padding="16dp">-->
+    <!--                    <ImageView-->
+    <!--                        android:layout_width="80dp"-->
+    <!--                        android:layout_height="80dp"-->
+    <!--                        android:src="@drawable/laporan" />-->
+    <!--                    <TextView-->
+    <!--                        android:textAlignment="center"-->
+    <!--                        android:layout_width="match_parent"-->
+    <!--                        android:layout_height="wrap_content"-->
+    <!--                        android:layout_marginTop="12dp"-->
+    <!--                        android:text="Data Transaksi Penimbangan"-->
+    <!--                        android:textColor="#6f6f6f"-->
+    <!--                        android:textSize="18sp" />-->
+    <!--                </LinearLayout>-->
+    <!--            </androidx.cardview.widget.CardView>-->
+
+    <!--            <androidx.cardview.widget.CardView-->
+    <!--                android:id="@+id/cv_laporan_saldo"-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_rowWeight="1"-->
+    <!--                android:layout_columnWeight="1"-->
+    <!--                android:layout_margin="12dp"-->
+    <!--                app:cardCornerRadius="12dp"-->
+    <!--                app:cardElevation="6dp">-->
+    <!--                <LinearLayout-->
+    <!--                    android:layout_width="match_parent"-->
+    <!--                    android:layout_height="wrap_content"-->
+    <!--                    android:gravity="center"-->
+    <!--                    android:orientation="vertical"-->
+    <!--                    android:padding="16dp">-->
+    <!--                    <ImageView-->
+    <!--                        android:layout_width="80dp"-->
+    <!--                        android:layout_height="80dp"-->
+    <!--                        android:src="@drawable/saldo" />-->
+    <!--                    <TextView-->
+    <!--                        android:textAlignment="center"-->
+    <!--                        android:layout_width="match_parent"-->
+    <!--                        android:layout_height="wrap_content"-->
+    <!--                        android:layout_marginTop="12dp"-->
+    <!--                        android:text="Laporan Penarikan Nasabah"-->
+    <!--                        android:textColor="#6f6f6f"-->
+    <!--                        android:textSize="18sp" />-->
+    <!--                </LinearLayout>-->
+    <!--            </androidx.cardview.widget.CardView>-->
+
+    <!--            <androidx.cardview.widget.CardView-->
+    <!--                android:id="@+id/cv_data_nasabah"-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_rowWeight="1"-->
+    <!--                android:layout_columnWeight="1"-->
+    <!--                android:layout_margin="12dp"-->
+    <!--                app:cardCornerRadius="12dp"-->
+    <!--                app:cardElevation="6dp">-->
+    <!--                <LinearLayout-->
+    <!--                    android:layout_width="match_parent"-->
+    <!--                    android:layout_height="wrap_content"-->
+    <!--                    android:layout_row="0"-->
+    <!--                    android:layout_column="7"-->
+    <!--                    android:gravity="center"-->
+    <!--                    android:orientation="vertical"-->
+    <!--                    android:padding="16dp">-->
+    <!--                    <ImageView-->
+    <!--                        android:layout_width="80dp"-->
+    <!--                        android:layout_height="80dp"-->
+    <!--                        android:src="@drawable/adduser" />-->
+    <!--                    <TextView-->
+    <!--                        android:textAlignment="center"-->
+    <!--                        android:layout_width="match_parent"-->
+    <!--                        android:layout_height="wrap_content"-->
+    <!--                        android:layout_marginTop="12dp"-->
+    <!--                        android:text="Data Nasabah"-->
+    <!--                        android:textColor="#6f6f6f"-->
+    <!--                        android:textSize="18sp" />-->
+    <!--                </LinearLayout>-->
+    <!--            </androidx.cardview.widget.CardView>-->
+
+    <!--            <androidx.cardview.widget.CardView-->
+    <!--                android:id="@+id/cv_data_teller"-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_rowWeight="1"-->
+    <!--                android:layout_columnWeight="1"-->
+    <!--                android:layout_margin="12dp"-->
+    <!--                app:cardCornerRadius="12dp"-->
+    <!--                app:cardElevation="6dp">-->
+    <!--                <LinearLayout-->
+    <!--                    android:layout_width="match_parent"-->
+    <!--                    android:layout_height="wrap_content"-->
+    <!--                    android:gravity="center"-->
+    <!--                    android:orientation="vertical"-->
+    <!--                    android:padding="16dp">-->
+    <!--                    <ImageView-->
+    <!--                        android:layout_width="80dp"-->
+    <!--                        android:layout_height="80dp"-->
+    <!--                        android:src="@drawable/addteller" />-->
+    <!--                    <TextView-->
+    <!--                        android:textAlignment="center"-->
+    <!--                        android:layout_width="match_parent"-->
+    <!--                        android:layout_height="wrap_content"-->
+    <!--                        android:layout_marginTop="12dp"-->
+    <!--                        android:text="Data Teller"-->
+    <!--                        android:textColor="#6f6f6f"-->
+    <!--                        android:textSize="18sp" />-->
+    <!--                </LinearLayout>-->
+    <!--            </androidx.cardview.widget.CardView>-->
+
+    <!--            <androidx.cardview.widget.CardView-->
+    <!--                android:id="@+id/cv_data_super_admin"-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_rowWeight="1"-->
+    <!--                android:layout_columnWeight="1"-->
+    <!--                android:layout_margin="12dp"-->
+    <!--                app:cardCornerRadius="12dp"-->
+    <!--                app:cardElevation="6dp">-->
+    <!--                <LinearLayout-->
+    <!--                    android:layout_width="match_parent"-->
+    <!--                    android:layout_height="wrap_content"-->
+    <!--                    android:gravity="center"-->
+    <!--                    android:orientation="vertical"-->
+    <!--                    android:padding="16dp">-->
+    <!--                    <ImageView-->
+    <!--                        android:layout_width="80dp"-->
+    <!--                        android:layout_height="80dp"-->
+    <!--                        android:src="@drawable/addadmin" />-->
+    <!--                    <TextView-->
+    <!--                        android:textAlignment="center"-->
+    <!--                        android:layout_width="match_parent"-->
+    <!--                        android:layout_height="wrap_content"-->
+    <!--                        android:layout_marginTop="12dp"-->
+    <!--                        android:text="Data Super Admin"-->
+    <!--                        android:textColor="#6f6f6f"-->
+    <!--                        android:textSize="18sp" />-->
+    <!--                </LinearLayout>-->
+    <!--            </androidx.cardview.widget.CardView>-->
+
+    <!--            <androidx.cardview.widget.CardView-->
+    <!--                android:id="@+id/cv_data_saldo_nasabah"-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_rowWeight="1"-->
+    <!--                android:layout_columnWeight="1"-->
+    <!--                android:layout_margin="12dp"-->
+    <!--                app:cardCornerRadius="12dp"-->
+    <!--                app:cardElevation="6dp">-->
+    <!--                <LinearLayout-->
+    <!--                    android:layout_width="match_parent"-->
+    <!--                    android:layout_height="wrap_content"-->
+    <!--                    android:gravity="center"-->
+    <!--                    android:orientation="vertical"-->
+    <!--                    android:padding="16dp">-->
+    <!--                    <ImageView-->
+    <!--                        android:layout_width="80dp"-->
+    <!--                        android:layout_height="80dp"-->
+    <!--                        android:src="@drawable/loan" />-->
+    <!--                    <TextView-->
+    <!--                        android:textAlignment="center"-->
+    <!--                        android:layout_width="match_parent"-->
+    <!--                        android:layout_height="wrap_content"-->
+    <!--                        android:layout_marginTop="12dp"-->
+    <!--                        android:text="Data Saldo Nasabah"-->
+    <!--                        android:textColor="#6f6f6f"-->
+    <!--                        android:textSize="18sp" />-->
+    <!--                </LinearLayout>-->
+    <!--            </androidx.cardview.widget.CardView>-->
+
+    <!--            <androidx.cardview.widget.CardView-->
+    <!--                android:id="@+id/cv_pendapatan"-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_rowWeight="1"-->
+    <!--                android:layout_columnWeight="1"-->
+    <!--                android:layout_margin="12dp"-->
+    <!--                app:cardCornerRadius="12dp"-->
+    <!--                app:cardElevation="6dp">-->
+    <!--                <LinearLayout-->
+    <!--                    android:layout_width="match_parent"-->
+    <!--                    android:layout_height="wrap_content"-->
+    <!--                    android:gravity="center"-->
+    <!--                    android:orientation="vertical"-->
+    <!--                    android:padding="16dp">-->
+    <!--                    <ImageView-->
+    <!--                        android:layout_width="80dp"-->
+    <!--                        android:layout_height="80dp"-->
+    <!--                        android:src="@drawable/profits" />-->
+    <!--                    <TextView-->
+    <!--                        android:textAlignment="center"-->
+    <!--                        android:layout_width="match_parent"-->
+    <!--                        android:layout_height="wrap_content"-->
+    <!--                        android:layout_marginTop="12dp"-->
+    <!--                        android:text="Data biaya operasional"-->
+    <!--                        android:textColor="#6f6f6f"-->
+    <!--                        android:textSize="18sp" />-->
+    <!--                </LinearLayout>-->
+    <!--            </androidx.cardview.widget.CardView>-->
+
+    <!--        </GridLayout>-->
+    <!--        <LinearLayout-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content">-->
+    <!--            <Button-->
+    <!--                android:id="@+id/btnlogoutsa"-->
+    <!--                android:layout_width="match_parent"-->
+    <!--                android:layout_height="match_parent"-->
+    <!--                android:text="Logout">-->
+    <!--            </Button>-->
+    <!--        </LinearLayout>-->
+    <!--    </LinearLayout>-->
+
+</ScrollView>

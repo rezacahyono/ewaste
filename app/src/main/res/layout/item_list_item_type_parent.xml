@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_list_parent_barang"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="16dp"
+    android:background="@drawable/bg_button_bordered">
+
+
+    <FrameLayout
+        android:id="@+id/fl_name_item_master"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/bg_fl_filter_green"
+        android:maxWidth="200dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tv_name_item_master"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/nunito_sans_bold"
+            android:paddingHorizontal="24dp"
+            android:paddingVertical="4dp"
+            android:text="Elektronik"
+            android:textColor="@color/dark_grey"
+            android:textSize="16sp" />
+    </FrameLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_item_master"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/fl_name_item_master"
+        tools:listitem="@layout/item_list_item_type_child" />
+
+    <!--    <RelativeLayout-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content">-->
+
+    <!--        <TextView-->
+    <!--            android:id="@+id/tv_nama_parent_barang"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_margin="5dp"-->
+    <!--            android:text="Parent Master Barang"-->
+    <!--            android:textSize="23sp"-->
+    <!--            android:textStyle="bold" />-->
+
+    <!--        <ImageButton-->
+    <!--            android:id="@+id/btnShow"-->
+    <!--            android:layout_width="40dp"-->
+    <!--            android:layout_height="40dp"-->
+    <!--            android:layout_alignParentEnd="true"-->
+    <!--            android:layout_gravity="center"-->
+    <!--            android:layout_marginHorizontal="10dp"-->
+    <!--            android:background="@drawable/ic_baseline_add_circle_24" />-->
+
+    <!--        <ImageButton-->
+    <!--            android:id="@+id/btnHide"-->
+    <!--            android:layout_width="40dp"-->
+    <!--            android:layout_height="40dp"-->
+    <!--            android:layout_alignParentEnd="true"-->
+    <!--            android:layout_gravity="center"-->
+    <!--            android:layout_marginHorizontal="10dp"-->
+    <!--            android:background="@drawable/ic_baseline_remove_circle_24"-->
+    <!--            android:visibility="gone" />-->
+    <!--    </RelativeLayout>-->
+
+    <!--    <androidx.recyclerview.widget.RecyclerView-->
+    <!--        android:id="@+id/rv_nama_parent_barang"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        tools:listitem="@layout/item_list_item_type_child" />-->
+
+</androidx.constraintlayout.widget.ConstraintLayout>
