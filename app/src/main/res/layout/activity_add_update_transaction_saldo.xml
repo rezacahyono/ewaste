@@ -69,7 +69,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:fontFamily="@font/nunito_sans_semibold"
-                android:text="@string/saldo_saya"
+                android:text="@string/my_saldo"
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toTopOf="@id/tv_saldo"

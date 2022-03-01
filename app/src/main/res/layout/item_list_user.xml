@@ -8,7 +8,6 @@
         android:id="@+id/iv_avatar"
         android:layout_width="72dp"
         android:layout_height="72dp"
-        android:layout_marginHorizontal="16dp"
         android:layout_marginTop="16dp"
         android:scaleType="centerCrop"
         android:src="@color/green"
@@ -49,8 +48,7 @@
         android:id="@+id/ib_active"
         android:layout_width="34dp"
         android:layout_height="34dp"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/bg_button_see_all"
+        android:background="@drawable/bg_accepted"
         android:contentDescription="@string/btn_send_upload"
         android:padding="4dp"
         android:visibility="gone"
@@ -63,14 +61,14 @@
         android:id="@+id/ib_deactive"
         android:layout_width="34dp"
         android:layout_height="34dp"
-        android:background="@drawable/bg_button_see_all"
+        android:background="@drawable/bg_rejected"
         android:contentDescription="@string/btn_send_upload"
         android:padding="4dp"
-        android:layout_marginEnd="16dp"
         android:visibility="gone"
         android:src="@drawable/ic_deactive"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/ib_active"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/red" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

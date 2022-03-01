@@ -40,8 +40,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import static com.example.myewaste.utils.Util.convertToRupiah;
-import static com.example.myewaste.utils.Util.showMessage;
+import static com.example.myewaste.utils.Utils.convertToRupiah;
+import static com.example.myewaste.utils.Utils.showMessage;
 
 public class DataPotonganActivity extends AppCompatActivity {
 
@@ -76,33 +76,33 @@ public class DataPotonganActivity extends AppCompatActivity {
         btnDownload = findViewById(R.id.btnDownloadExclTotalPotongan);
         reference = FirebaseDatabase.getInstance().getReference();
 
-        etTanggalMulai.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showDialogCalendar(etTanggalMulai, "Tanggal Mulai");
-            }
-        });
-
-        layoutTanggalMulai.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showDialogCalendar(etTanggalMulai, "Tanggal Mulai");
-            }
-        });
-
-        etTanggalAkhir.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showDialogCalendar(etTanggalAkhir, "Tanggal Akhir");
-            }
-        });
-
-        layoutTanggalAkhir.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showDialogCalendar(etTanggalAkhir, "Tanggal Akhir");
-            }
-        });
+//        etTanggalMulai.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                showDialogCalendar(etTanggalMulai, "Tanggal Mulai");
+//            }
+//        });
+//
+//        layoutTanggalMulai.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                showDialogCalendar(etTanggalMulai, "Tanggal Mulai");
+//            }
+//        });
+//
+//        etTanggalAkhir.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                showDialogCalendar(etTanggalAkhir, "Tanggal Akhir");
+//            }
+//        });
+//
+//        layoutTanggalAkhir.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                showDialogCalendar(etTanggalAkhir, "Tanggal Akhir");
+//            }
+//        });
 
         btnSearchFilter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -277,42 +277,42 @@ public class DataPotonganActivity extends AppCompatActivity {
         });
     }
 
-    private void showDialogCalendar(View AttachTo, String title) {
-        final BottomSheetDialog dialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setCancelable(true);
-        dialog.setContentView(R.layout.custom_dialog_edit_user);
-
-        TextView titleDialog = dialog.findViewById(R.id.tvTitleDialog);
-        Button btnBatal = dialog.findViewById(R.id.btnDialogBatal);
-        Button btnSimpan = dialog.findViewById(R.id.btnDialogSimpan);
-        btnSimpan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-        btnBatal.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-        LinearLayout target = dialog.findViewById(R.id.frameEditData);
-        titleDialog.setText(title);
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View child = inflater.inflate(R.layout.frame_calendar, null);
-        CalendarView calendar = child.findViewById(R.id.calendarView);
-        target.addView(child);
-        calendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-            @Override
-            public void onSelectedDayChange(@NonNull CalendarView calendarView, int year, int month, int day) {
-                ((TextView) AttachTo).setText(day + "-" + (month + 1) + "-" + year);
-            }
-        });
-
-        dialog.show();
-    }
+//    private void showDialogCalendar(View AttachTo, String title) {
+//        final BottomSheetDialog dialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
+//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        dialog.setCancelable(true);
+//        dialog.setContentView(R.layout.custom_dialog_edit_user);
+//
+//        TextView titleDialog = dialog.findViewById(R.id.tvTitleDialog);
+//        Button btnBatal = dialog.findViewById(R.id.btnDialogBatal);
+//        Button btnSimpan = dialog.findViewById(R.id.btnDialogSimpan);
+//        btnSimpan.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                dialog.dismiss();
+//            }
+//        });
+//        btnBatal.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                dialog.dismiss();
+//            }
+//        });
+//        LinearLayout target = dialog.findViewById(R.id.frameEditData);
+//        titleDialog.setText(title);
+//        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//        View child = inflater.inflate(R.layout.frame_calendar, null);
+//        CalendarView calendar = child.findViewById(R.id.calendarView);
+//        target.addView(child);
+//        calendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+//            @Override
+//            public void onSelectedDayChange(@NonNull CalendarView calendarView, int year, int month, int day) {
+//                ((TextView) AttachTo).setText(day + "-" + (month + 1) + "-" + year);
+//            }
+//        });
+//
+//        dialog.show();
+//    }
 
     private long changeFormat(String oldDateString){
         final String OLD_FORMAT = "dd-MM-yyyy HH:mm:ss";

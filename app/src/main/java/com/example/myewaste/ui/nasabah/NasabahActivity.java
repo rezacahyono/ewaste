@@ -1,8 +1,10 @@
 package com.example.myewaste.ui.nasabah;
 
 import static com.example.myewaste.utils.Constant.ACCEPTED;
+import static com.example.myewaste.utils.Constant.DATE;
 import static com.example.myewaste.utils.Constant.EXTRAS_ITEM_TRANSACTION;
 import static com.example.myewaste.utils.Constant.EXTRAS_SALDO;
+import static com.example.myewaste.utils.Constant.EXTRAS_SALDO_TRANSACTION;
 import static com.example.myewaste.utils.Constant.EXTRAS_USER_DATA;
 import static com.example.myewaste.utils.Constant.ITEM_TRANSACTION;
 import static com.example.myewaste.utils.Constant.NO_NASABAH;
@@ -13,20 +15,20 @@ import static com.example.myewaste.utils.Constant.SALDO_NASABAH;
 import static com.example.myewaste.utils.Constant.SALDO_TRANSACTION;
 import static com.example.myewaste.utils.Constant.USER_DATA;
 import static com.example.myewaste.utils.Constant.WITHDRAW;
-import static com.example.myewaste.utils.Util.convertToRupiah;
+import static com.example.myewaste.utils.Utils.convertToRupiah;
 
 import android.content.Intent;
+import android.icu.util.Calendar;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
-import com.example.myewaste.AddUpdateTransactionSaldoActivity;
-import com.example.myewaste.DetailTransactionItemActivity;
 import com.example.myewaste.R;
 import com.example.myewaste.adapter.ListItemTransactionAdapter;
 import com.example.myewaste.adapter.ListSaldoTransactionAdapter;
@@ -35,8 +37,12 @@ import com.example.myewaste.model.item.ItemTransaction;
 import com.example.myewaste.model.saldo.Saldo;
 import com.example.myewaste.model.saldo.SaldoTransaction;
 import com.example.myewaste.model.user.UserData;
-import com.example.myewaste.ui.ProfileUserActivity;
-import com.example.myewaste.ui.admin.task.TransactionItemActivity;
+import com.example.myewaste.ui.component.task.AddUpdateTransactionSaldoActivity;
+import com.example.myewaste.ui.component.task.DetailTransactionItemActivity;
+import com.example.myewaste.ui.component.task.DetailTransactionSaldoActivity;
+import com.example.myewaste.ui.component.task.TransactionItemActivity;
+import com.example.myewaste.ui.component.task.TransactionSaldoActivity;
+import com.example.myewaste.ui.profile.ProfileUserActivity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -45,6 +51,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Objects;
 
 public class NasabahActivity extends AppCompatActivity {
@@ -54,11 +61,13 @@ public class NasabahActivity extends AppCompatActivity {
     private ListItemTransactionAdapter adapterItem;
     private ListSaldoTransactionAdapter adapterSaldo;
     private DatabaseReference databaseReference;
-    private ArrayList<ItemTransaction> listItemTransaction = new ArrayList<>();
-    private ArrayList<SaldoTransaction> listSaldoTransaction = new ArrayList<>();
+    private ArrayList<ItemTransaction> listItemTransaction;
+    private ArrayList<SaldoTransaction> listSaldoTransaction;
 
     private ActivityNasabahBinding binding;
+    private long time = 0L;
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +76,9 @@ public class NasabahActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).hide();
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
+
+        listItemTransaction = new ArrayList<>();
+        listSaldoTransaction = new ArrayList<>();
         saldo = new Saldo();
 
         if (getIntent().getParcelableExtra(EXTRAS_USER_DATA) != null) {
@@ -106,61 +118,18 @@ public class NasabahActivity extends AppCompatActivity {
         });
 
         binding.ibSeeAllWithdraw.setOnClickListener(v -> {
-            Toast.makeText(this, "withdraw", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, TransactionSaldoActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            intent.putExtra(EXTRAS_USER_DATA, userData.getNo_regis());
+            startActivity(intent);
         });
-
-
-//        Log.d("TAG", "onCreate: "+userData.getNo_regis());
-
-//
-//        intentLaunch = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-//                result -> {
-//                    userData = result.getData().getParcelableExtra(ProfileUserActivity.DEFAULT_EXTRAS_NAME);
-//                    loadData();
-//                });
-//
-//        ivFotoProfil.setOnClickListener(view -> {
-//            Intent intent = new Intent(NasabahActivity.this, ProfileUserActivity.class);
-//            intent.putExtra(DEFAULT_EXTRAS_NAME, userData);
-//            intentLaunch.launch(intent);
-//        });
-//
-//        cv_history_transaksi.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                startActivity(new Intent(NasabahActivity.this, TransactionItemActivity.class));
-//            }
-//        });
-//
-//        cv_laporan_saldo_nasabah.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                startActivity(new Intent(NasabahActivity.this, TransactionSaldoActivity.class));
-//            }
-//        });
-//
-//        logout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                sessionManagement.removeUserSession();
-//                Intent keluar = new Intent(NasabahActivity.this, LoginActivitiy.class);
-//                keluar.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                startActivity(keluar);
-//                finish();
-//            }
-//        });
-//
-//        btnPenarikan.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                startActivity(new Intent(NasabahActivity.this, AddUpdateTransactionSaldoActivity.class));
-//            }
-//        });
 
         fetchDataTotalItemTransaction();
         fetchDataTotalWitdhrawAccepted();
         fetchDataSaldoTransactionAndItemTransaction();
         setRecyclerView();
+
+
     }
 
     @Override
@@ -184,7 +153,10 @@ public class NasabahActivity extends AppCompatActivity {
         });
 
         adapterSaldo.setOnItemClickCallback(saldoTransaction -> {
-
+            Intent intent = new Intent(this, DetailTransactionSaldoActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            intent.putExtra(EXTRAS_SALDO_TRANSACTION, saldoTransaction);
+            startActivity(intent);
         });
     }
 
@@ -260,20 +232,53 @@ public class NasabahActivity extends AppCompatActivity {
         }
     }
 
-
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void fetchDataSaldoTransactionAndItemTransaction() {
         if (userData.getNo_regis() != null) {
-            databaseReference.child(SALDO_TRANSACTION).orderByChild(NO_NASABAH).equalTo(userData.getNo_regis()).limitToLast(5).addValueEventListener(new ValueEventListener() {
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.MILLISECOND, 0);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            time = calendar.getTime().getTime();
+
+            databaseReference.child(SALDO_TRANSACTION).orderByChild(DATE).startAt(time).limitToLast(5).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    listSaldoTransaction = new ArrayList<>();
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         SaldoTransaction saldoTransactionResult = dataSnapshot.getValue(SaldoTransaction.class);
-                        if (saldoTransactionResult != null && saldoTransactionResult.getType_transaction().equalsIgnoreCase(WITHDRAW)) {
-                            listSaldoTransaction.add(saldoTransactionResult);
+                        if (saldoTransactionResult != null) {
+                            if (saldoTransactionResult.getNo_nasabah().equalsIgnoreCase(userData.getNo_regis()) && saldoTransactionResult.getType_transaction().equalsIgnoreCase(WITHDRAW)) {
+                                listSaldoTransaction.add(saldoTransactionResult);
+                            }
                         }
                     }
+                    Collections.reverse(listSaldoTransaction);
                     adapterSaldo.setAdapter(listSaldoTransaction);
                     showPlaceholderOrRecyclerViewSaldo(listSaldoTransaction.size() > 0);
+                    if (listSaldoTransaction.size() == 0) {
+                        databaseReference.child(SALDO_TRANSACTION).orderByChild(NO_NASABAH).equalTo(userData.getNo_regis()).limitToLast(5).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                    SaldoTransaction saldoTransactionResult = dataSnapshot.getValue(SaldoTransaction.class);
+                                    if (saldoTransactionResult != null && saldoTransactionResult.getType_transaction().equalsIgnoreCase(WITHDRAW)) {
+                                        listSaldoTransaction.add(saldoTransactionResult);
+                                    }
+                                }
+                                Collections.reverse(listSaldoTransaction);
+                                adapterSaldo.setAdapter(listSaldoTransaction);
+                                showPlaceholderOrRecyclerViewSaldo(listSaldoTransaction.size() > 0);
+                                listSaldoTransaction.clear();
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
                     listSaldoTransaction.clear();
                 }
 
@@ -283,17 +288,42 @@ public class NasabahActivity extends AppCompatActivity {
                 }
             });
 
-            databaseReference.child(ITEM_TRANSACTION).orderByChild(NO_NASABAH).equalTo(userData.getNo_regis()).limitToLast(5).addValueEventListener(new ValueEventListener() {
+            databaseReference.child(ITEM_TRANSACTION).orderByChild(DATE).startAt(time).limitToLast(3).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         ItemTransaction itemTransactionResult = dataSnapshot.getValue(ItemTransaction.class);
                         if (itemTransactionResult != null) {
-                            listItemTransaction.add(itemTransactionResult);
+                            if (itemTransactionResult.getNo_nasabah().equalsIgnoreCase(userData.getNo_regis())) {
+                                listItemTransaction.add(itemTransactionResult);
+                            }
                         }
                     }
+                    Collections.reverse(listItemTransaction);
                     adapterItem.setAdapter(listItemTransaction);
                     showPlaceholderOrRecyclerViewItem(listItemTransaction.size() > 0);
+                    if (listItemTransaction.size() == 0){
+                        databaseReference.child(ITEM_TRANSACTION).orderByChild(NO_NASABAH).equalTo(userData.getNo_regis()).limitToLast(3).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                    ItemTransaction itemTransactionResult = dataSnapshot.getValue(ItemTransaction.class);
+                                    if (itemTransactionResult != null) {
+                                        listItemTransaction.add(itemTransactionResult);
+                                    }
+                                }
+                                Collections.reverse(listItemTransaction);
+                                adapterItem.setAdapter(listItemTransaction);
+                                showPlaceholderOrRecyclerViewItem(listItemTransaction.size() > 0);
+                                listItemTransaction.clear();
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
                     listItemTransaction.clear();
                 }
 
@@ -344,7 +374,7 @@ public class NasabahActivity extends AppCompatActivity {
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         SaldoTransaction saldoTransactionResult = dataSnapshot.getValue(SaldoTransaction.class);
                         if (saldoTransactionResult != null && saldoTransactionResult.getType_transaction().equalsIgnoreCase(WITHDRAW)) {
-                            listAccepted.add(saldoTransactionResult);
+                            listAll.add(saldoTransactionResult);
                             if (saldoTransactionResult.getStatus().equalsIgnoreCase(ACCEPTED)) {
                                 listAccepted.add(saldoTransactionResult);
                             }

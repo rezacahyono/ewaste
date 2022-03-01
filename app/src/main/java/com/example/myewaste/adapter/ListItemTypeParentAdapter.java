@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myewaste.databinding.ItemListItemTypeParentBinding;
-import com.example.myewaste.model.ListItemType;
+import com.example.myewaste.model.utils.ListItemType;
 
 import java.util.ArrayList;
 import java.util.List;

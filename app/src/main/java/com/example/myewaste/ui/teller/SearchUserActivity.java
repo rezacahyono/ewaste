@@ -1,17 +1,12 @@
 package com.example.myewaste.ui.teller;
 
-import static com.example.myewaste.utils.Constant.AKTIF;
-import static com.example.myewaste.utils.Constant.EXTRAS_ACTION_MODE;
 import static com.example.myewaste.utils.Constant.EXTRAS_FROM;
 import static com.example.myewaste.utils.Constant.EXTRAS_USER_DATA;
 import static com.example.myewaste.utils.Constant.FROM_INPUT;
-import static com.example.myewaste.utils.Constant.MODE_ADD;
 import static com.example.myewaste.utils.Constant.NAME;
 import static com.example.myewaste.utils.Constant.NASABAH;
-import static com.example.myewaste.utils.Constant.STATUS;
-import static com.example.myewaste.utils.Constant.USER;
 import static com.example.myewaste.utils.Constant.USER_DATA;
-import static com.example.myewaste.utils.Util.getRegisterCode;
+import static com.example.myewaste.utils.Utils.getRegisterCode;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,9 +21,8 @@ import com.example.myewaste.R;
 import com.example.myewaste.adapter.ListUserAdapater;
 import com.example.myewaste.databinding.ActivitySearchUserBinding;
 import com.example.myewaste.databinding.MainToolbarBinding;
-import com.example.myewaste.model.user.User;
 import com.example.myewaste.model.user.UserData;
-import com.example.myewaste.ui.admin.task.AddUpdateTransactionItemActivity;
+import com.example.myewaste.ui.component.task.AddUpdateTransactionItemActivity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;

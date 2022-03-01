@@ -1,6 +1,6 @@
 package com.example.myewaste.adapter;
 
-import static com.example.myewaste.utils.Util.convertToRupiah;
+import static com.example.myewaste.utils.Utils.convertToRupiah;
 
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myewaste.databinding.ItemListDetailItemTransactionBinding;
-import com.example.myewaste.model.ListItem;
+import com.example.myewaste.model.utils.ListItem;
 
 import java.util.ArrayList;
 import java.util.List;

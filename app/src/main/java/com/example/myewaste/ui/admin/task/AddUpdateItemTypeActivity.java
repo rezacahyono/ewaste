@@ -11,7 +11,7 @@ import static com.example.myewaste.utils.Constant.NAME;
 import static com.example.myewaste.utils.Constant.NO_ITEM_MASTER;
 import static com.example.myewaste.utils.Constant.NO_UNI_ITEM;
 import static com.example.myewaste.utils.Constant.UNIT_ITEM;
-import static com.example.myewaste.utils.Util.increseNumber;
+import static com.example.myewaste.utils.Utils.increseNumber;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -144,7 +144,7 @@ public class AddUpdateItemTypeActivity extends AppCompatActivity {
     private void alertDelete(ItemType itemType) {
         AlertDialog.Builder builder = new AlertDialog.Builder(AddUpdateItemTypeActivity.this);
         builder.setTitle(getResources().getString(R.string.delete));
-        builder.setMessage(getResources().getString(R.string.message_delete_item, itemType.getName()));
+        builder.setMessage(getResources().getString(R.string.message_delete_item_master, itemType.getName()));
         builder.setCancelable(false);
         builder.setPositiveButton(getResources().getString(R.string.yes), (dialogInterface, i) -> actionDelete(itemType));
         builder.setNegativeButton(getResources().getString(R.string.no), (dialogInterface, i) -> dialogInterface.cancel());

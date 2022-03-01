@@ -8,7 +8,7 @@ import static com.example.myewaste.utils.Constant.ITEM_FOLDER;
 import static com.example.myewaste.utils.Constant.ITEM_MASTER;
 import static com.example.myewaste.utils.Constant.MODE_ADD;
 import static com.example.myewaste.utils.Constant.MODE_UPDATE;
-import static com.example.myewaste.utils.Util.increseNumber;
+import static com.example.myewaste.utils.Utils.increseNumber;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;

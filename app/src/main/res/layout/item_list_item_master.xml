@@ -21,7 +21,6 @@
             android:layout_height="128dp"
             android:contentDescription="@string/item"
             android:scaleType="centerCrop"
-            android:src="@drawable/tes"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

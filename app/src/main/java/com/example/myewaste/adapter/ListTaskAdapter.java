@@ -6,8 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.myewaste.databinding.ItemListTaskBinding;
-import com.example.myewaste.model.Task;
-import com.squareup.okhttp.internal.http.RequestException;
+import com.example.myewaste.model.utils.Task;
 
 import java.util.ArrayList;
 import java.util.List;

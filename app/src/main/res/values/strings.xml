@@ -66,6 +66,7 @@
     <string name="data_nasabah">Data Nasabah</string>
     <string name="data_teller">Data Teller</string>
     <string name="data_admin">Data Admin</string>
+    <string name="data_saldo_nasabah">Data Saldo Nasabah</string>
     <string name="master">Master</string>
     <string name="customer_withdraw">Penarikan Nasabah</string>
     <string name="customer_ballance">Penimbangan Nasabah</string>
@@ -110,7 +111,8 @@
     <string name="update_success">%s berhasil diubah</string>
     <string name="update_failure">%s gagal diubah</string>
     <string name="register_failure">Register gagal</string>
-    <string name="message_delete_item">Apakah anda yakin untuk menghapus barang %s!</string>
+    <string name="message_delete_item_master">Apakah anda yakin untuk menghapus barang %s!</string>
+    <string name="message_delete_item">Apakah anda yakin untuk menghapus item?</string>
     <string name="message_delete_transaction">Apakah anda yakin untuk menghapus transaksi</string>
     <string name="message_success_delete_transaction">Berhasil menghapus transaksi</string>
     <string name="message_failure_delete_transaction">Gagal menghapus transaksi</string>
@@ -145,7 +147,6 @@
     <string name="cuts_transaction">Potongan</string>
     <string name="message">Jadilah penyelamat bumi\n Dengan memisahkan sampah anda!</string>
     <string name="chip">chip</string>
-    <string name="saldo_saya">Saldo saya</string>
     <string name="pch">PCH</string>
     <string name="bank_trash">Bank Sampah</string>
     <string name="currency">Rp.0</string>

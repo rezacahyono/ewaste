@@ -6,8 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Environment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -38,24 +36,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.util.CellRangeAddress;
-
-import java.io.File;
-import java.io.FileOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-import static com.example.myewaste.utils.Util.convertToRupiah;
-import static com.example.myewaste.utils.Util.getRegisterCode;
-import static com.example.myewaste.utils.Util.showMessage;
+import static com.example.myewaste.utils.Utils.getRegisterCode;
 
 public class SettingDownloadExcel extends AppCompatActivity {
     private LinearLayout layoutStart, layoutEnd;
@@ -97,36 +84,36 @@ public class SettingDownloadExcel extends AppCompatActivity {
         }else{
             getSupportActionBar().setTitle("Export Laporan Biaya Operasional");
         }
-
-        layoutStart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //todo show dialog calendar
-                showDialogCalendar(etStart, "Pilih Tanggal Awal");
-            }
-        });
-
-        layoutEnd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //todo show dialog calendar
-                showDialogCalendar(etEnd, "Pilih Tanggal Akhir");
-            }
-        });
-
-        etStart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showDialogCalendar(etStart, "Pilih Tanggal Awal");
-            }
-        });
-
-        etEnd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showDialogCalendar(etEnd, "Pilih Tanggal Akhir");
-            }
-        });
+//
+//        layoutStart.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                //todo show dialog calendar
+//                showDialogCalendar(etStart, "Pilih Tanggal Awal");
+//            }
+//        });
+//
+//        layoutEnd.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                //todo show dialog calendar
+//                showDialogCalendar(etEnd, "Pilih Tanggal Akhir");
+//            }
+//        });
+//
+//        etStart.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                showDialogCalendar(etStart, "Pilih Tanggal Awal");
+//            }
+//        });
+//
+//        etEnd.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                showDialogCalendar(etEnd, "Pilih Tanggal Akhir");
+//            }
+//        });
 
         download.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -373,42 +360,42 @@ public class SettingDownloadExcel extends AppCompatActivity {
         return millisecond;
     }
 
-    private void showDialogCalendar(View AttachTo, String title){
-        final BottomSheetDialog dialog = new BottomSheetDialog(this,R.style.BottomSheetDialogTheme);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setCancelable(true);
-        dialog.setContentView(R.layout.custom_dialog_edit_user);
-
-        TextView titleDialog = dialog.findViewById(R.id.tvTitleDialog);
-        Button btnBatal = dialog.findViewById(R.id.btnDialogBatal);
-        Button btnSimpan = dialog.findViewById(R.id.btnDialogSimpan);
-        btnSimpan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-        btnBatal.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-        LinearLayout target = dialog.findViewById(R.id.frameEditData);
-        titleDialog.setText(title);
-        LayoutInflater inflater = (LayoutInflater) getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-        View child = inflater.inflate(R.layout.frame_calendar, null);
-        CalendarView calendar = child.findViewById(R.id.calendarView);
-        target.addView(child);
-        calendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-            @Override
-            public void onSelectedDayChange(@NonNull CalendarView calendarView, int year, int month, int day) {
-                ((TextView) AttachTo).setText(day + "-" + (month+1) + "-" + year);
-            }
-        });
-
-        dialog.show();
-    }
+//    private void showDialogCalendar(View AttachTo, String title){
+//        final BottomSheetDialog dialog = new BottomSheetDialog(this,R.style.BottomSheetDialogTheme);
+//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        dialog.setCancelable(true);
+//        dialog.setContentView(R.layout.custom_dialog_edit_user);
+//
+//        TextView titleDialog = dialog.findViewById(R.id.tvTitleDialog);
+//        Button btnBatal = dialog.findViewById(R.id.btnDialogBatal);
+//        Button btnSimpan = dialog.findViewById(R.id.btnDialogSimpan);
+//        btnSimpan.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                dialog.dismiss();
+//            }
+//        });
+//        btnBatal.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                dialog.dismiss();
+//            }
+//        });
+//        LinearLayout target = dialog.findViewById(R.id.frameEditData);
+//        titleDialog.setText(title);
+//        LayoutInflater inflater = (LayoutInflater) getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+//        View child = inflater.inflate(R.layout.frame_calendar, null);
+//        CalendarView calendar = child.findViewById(R.id.calendarView);
+//        target.addView(child);
+//        calendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+//            @Override
+//            public void onSelectedDayChange(@NonNull CalendarView calendarView, int year, int month, int day) {
+//                ((TextView) AttachTo).setText(day + "-" + (month+1) + "-" + year);
+//            }
+//        });
+//
+//        dialog.show();
+//    }
 
 //    private void createExcelFileReportPotongan(){
 //        File filePath = new File( Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + File.separator + "MyEwaste");

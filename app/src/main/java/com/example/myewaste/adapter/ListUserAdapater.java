@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ListUserAdapater extends RecyclerView.Adapter<ListUserAdapater.ListUserViewHolder> {
-    private ArrayList<UserData> listUser = new ArrayList<>();
+    private final ArrayList<UserData> listUser = new ArrayList<>();
 
     @SuppressLint("NotifyDataSetChanged")
     public void setAdapter(List<UserData> list) {

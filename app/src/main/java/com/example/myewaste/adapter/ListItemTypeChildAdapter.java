@@ -3,7 +3,7 @@ package com.example.myewaste.adapter;
 import static com.example.myewaste.utils.Constant.EXTRAS_ACTION_MODE;
 import static com.example.myewaste.utils.Constant.EXTRAS_ITEM_TYPE;
 import static com.example.myewaste.utils.Constant.MODE_UPDATE;
-import static com.example.myewaste.utils.Util.convertToRupiah;
+import static com.example.myewaste.utils.Utils.convertToRupiah;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;

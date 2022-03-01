@@ -12,9 +12,9 @@ import static com.example.myewaste.utils.Constant.TELLER;
 import static com.example.myewaste.utils.Constant.USER;
 import static com.example.myewaste.utils.Constant.USER_DATA;
 import static com.example.myewaste.utils.Mode.MODE_NASABAH;
-import static com.example.myewaste.utils.Util.convertMd5;
-import static com.example.myewaste.utils.Util.getRegisterCode;
-import static com.example.myewaste.utils.Util.showMessage;
+import static com.example.myewaste.utils.Utils.convertMd5;
+import static com.example.myewaste.utils.Utils.getRegisterCode;
+import static com.example.myewaste.utils.Utils.showMessage;
 
 import android.Manifest;
 import android.content.Intent;
@@ -24,9 +24,10 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.myewaste.ui.component.task.AddUserActivity;
 import com.example.myewaste.ui.nasabah.NasabahActivity;
 import com.example.myewaste.R;
-import com.example.myewaste.SessionManagement;
+import com.example.myewaste.pref.SessionManagement;
 import com.example.myewaste.databinding.ActivityLoginBinding;
 import com.example.myewaste.model.user.User;
 import com.example.myewaste.model.user.UserData;

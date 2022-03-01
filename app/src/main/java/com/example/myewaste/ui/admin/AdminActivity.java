@@ -2,7 +2,6 @@ package com.example.myewaste.ui.admin;
 
 import static com.example.myewaste.utils.Constant.EXTRAS_USER_DATA;
 import static com.example.myewaste.utils.Constant.MODE;
-import static com.example.myewaste.utils.Constant.MODE_USER;
 import static com.example.myewaste.utils.Constant.NO_REGIS;
 import static com.example.myewaste.utils.Constant.USER_DATA;
 import static com.example.myewaste.utils.Mode.MODE_NASABAH;
@@ -17,17 +16,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.bumptech.glide.Glide;
-import com.example.myewaste.DataUserActivity;
+import com.example.myewaste.ui.nasabah.DataSaldoNasabahActivity;
+import com.example.myewaste.ui.component.task.DataUserActivity;
 import com.example.myewaste.R;
 import com.example.myewaste.adapter.ListTaskAdapter;
 import com.example.myewaste.databinding.ActivityAdminBinding;
-import com.example.myewaste.model.Task;
+import com.example.myewaste.model.utils.Task;
 import com.example.myewaste.model.user.UserData;
-import com.example.myewaste.ui.ProfileUserActivity;
+import com.example.myewaste.ui.component.task.TransactionSaldoActivity;
+import com.example.myewaste.ui.profile.ProfileUserActivity;
 import com.example.myewaste.ui.admin.task.ItemMasterActivity;
 import com.example.myewaste.ui.admin.task.ItemMasterTypeActivity;
 import com.example.myewaste.ui.admin.task.ItemUnitActivity;
-import com.example.myewaste.ui.admin.task.TransactionItemActivity;
+import com.example.myewaste.ui.component.task.TransactionItemActivity;
 import com.example.myewaste.utils.TaskData;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
@@ -127,7 +128,9 @@ public class AdminActivity extends AppCompatActivity {
                 startActivity(intent);
                 break;
             case 4:
-                Toast.makeText(this, "laporang penarikan nasabah", Toast.LENGTH_SHORT).show();
+                intent = new Intent(this, TransactionSaldoActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
                 break;
             case 5:
                 intent = new Intent(this, DataUserActivity.class);
@@ -148,7 +151,9 @@ public class AdminActivity extends AppCompatActivity {
                 startActivity(intent);
                 break;
             case 8:
-                Toast.makeText(this, "data saldo nasabah", Toast.LENGTH_SHORT).show();
+                intent = new Intent(this, DataSaldoNasabahActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
                 break;
             case 9:
                 Toast.makeText(this, "data biaya operational", Toast.LENGTH_SHORT).show();

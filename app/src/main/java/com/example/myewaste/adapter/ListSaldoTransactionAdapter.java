@@ -2,8 +2,8 @@ package com.example.myewaste.adapter;
 
 import static com.example.myewaste.utils.Constant.PENDING;
 import static com.example.myewaste.utils.Constant.REJECTED;
-import static com.example.myewaste.utils.Util.convertDate;
-import static com.example.myewaste.utils.Util.convertToRupiah;
+import static com.example.myewaste.utils.Utils.convertDate;
+import static com.example.myewaste.utils.Utils.convertToRupiah;
 
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;

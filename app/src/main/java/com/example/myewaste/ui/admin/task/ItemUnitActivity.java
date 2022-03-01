@@ -4,7 +4,7 @@ import static com.example.myewaste.utils.Constant.DEFAULT_NO_UNIT_ITEM;
 import static com.example.myewaste.utils.Constant.MODE_ADD;
 import static com.example.myewaste.utils.Constant.MODE_UPDATE;
 import static com.example.myewaste.utils.Constant.UNIT_ITEM;
-import static com.example.myewaste.utils.Util.increseNumber;
+import static com.example.myewaste.utils.Utils.increseNumber;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -27,7 +27,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 import java.util.Objects;

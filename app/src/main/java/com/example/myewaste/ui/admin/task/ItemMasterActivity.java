@@ -98,7 +98,7 @@ public class ItemMasterActivity extends AppCompatActivity {
     private void alertDelete(ItemMaster itemMaster) {
         AlertDialog.Builder builder = new AlertDialog.Builder(ItemMasterActivity.this);
         builder.setTitle(getResources().getString(R.string.delete));
-        builder.setMessage(getResources().getString(R.string.message_delete_item, itemMaster.getName()));
+        builder.setMessage(getResources().getString(R.string.message_delete_item_master, itemMaster.getName()));
         builder.setCancelable(false);
         builder.setPositiveButton(getResources().getString(R.string.yes), (dialogInterface, i) -> {
             actionDelete(itemMaster);

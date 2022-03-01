@@ -16,8 +16,7 @@
         <ImageView
             android:layout_margin="5dp"
             android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/calendar"/>
+            android:layout_height="40dp"/>
         <EditText
             android:id="@+id/et_tanggalStart"
             android:layout_width="match_parent"
@@ -49,8 +48,7 @@
         <ImageView
             android:layout_margin="5dp"
             android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/calendar"/>
+            android:layout_height="40dp"/>
         <EditText
             android:id="@+id/et_tanggalEnd"
             android:layout_width="match_parent"

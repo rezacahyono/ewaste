@@ -1,7 +1,7 @@
 package com.example.myewaste.ui;
 
 import static com.example.myewaste.utils.Constant.EXTRAS_USER_DATA;
-import static com.example.myewaste.utils.Util.getRegisterCode;
+import static com.example.myewaste.utils.Utils.getRegisterCode;
 import static com.example.myewaste.utils.Constant.NASABAH;
 import static com.example.myewaste.utils.Constant.NONE;
 import static com.example.myewaste.utils.Constant.SUPER_ADMIN;
@@ -13,7 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.myewaste.ui.nasabah.NasabahActivity;
-import com.example.myewaste.SessionManagement;
+import com.example.myewaste.pref.SessionManagement;
 import com.example.myewaste.databinding.ActivitySplashScreenBinding;
 import com.example.myewaste.model.user.UserData;
 import com.example.myewaste.ui.admin.AdminActivity;

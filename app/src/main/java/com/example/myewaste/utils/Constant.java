@@ -43,7 +43,7 @@ public class Constant {
     public static final String DEFAULT_NO_UNIT_ITEM = "S-001";
     public static final String DEFAULT_NO_ITEM_TYPE = "J-001";
     public static final String DEFAULT_NO_TRANSACTION_ITEM = "TRB-001";
-    public static final String DEFAULT_NO_TRANSACTION_SALOD = "TRS-001";
+    public static final String DEFAULT_NO_TRANSACTION_SALDO = "TRS-001";
 
     public static final String USERNAME = "username";
     public static final String NONE = "none";
@@ -72,7 +72,10 @@ public class Constant {
     public static final String MODE_ADD = "mode_add";
     public static final String MODE_UPDATE = "mode_update";
     public static final String FROM_LOGIN = "from_login";
-    public static final String MODE_USER = "mode_user";
 
     public static final String FORMATE_DATE = "dd-MM-yyyy";
+
+
+    public static final String PREF_NAME = "shared_pref";
+    public static final String PREF_USER_KEY = "user_shared_pref";
 }

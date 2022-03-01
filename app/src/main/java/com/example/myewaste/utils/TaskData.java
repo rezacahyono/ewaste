@@ -1,7 +1,7 @@
 package com.example.myewaste.utils;
 
 import com.example.myewaste.R;
-import com.example.myewaste.model.Task;
+import com.example.myewaste.model.utils.Task;
 
 import java.util.ArrayList;
 

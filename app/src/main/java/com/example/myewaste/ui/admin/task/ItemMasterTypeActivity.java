@@ -17,7 +17,7 @@ import com.example.myewaste.R;
 import com.example.myewaste.adapter.ListItemTypeParentAdapter;
 import com.example.myewaste.databinding.ActivityItemMasterBinding;
 import com.example.myewaste.databinding.MainToolbarBinding;
-import com.example.myewaste.model.ListItemType;
+import com.example.myewaste.model.utils.ListItemType;
 import com.example.myewaste.model.item.ItemMaster;
 import com.example.myewaste.model.item.ItemType;
 import com.google.firebase.database.DataSnapshot;

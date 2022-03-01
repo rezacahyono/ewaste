@@ -1,6 +1,6 @@
 package com.example.myewaste.ui.login;
 
-import static com.example.myewaste.utils.Util.convertMd5;
+import static com.example.myewaste.utils.Utils.convertMd5;
 import static com.example.myewaste.utils.Constant.USER;
 
 import android.os.Bundle;

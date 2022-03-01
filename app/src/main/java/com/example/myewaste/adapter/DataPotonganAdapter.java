@@ -12,10 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myewaste.R;
 import com.example.myewaste.model.saldo.SaldoTransaction;
-import com.example.myewaste.utils.Util;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 public class DataPotonganAdapter extends RecyclerView.Adapter<DataPotonganAdapter.ViewHolder> {
@@ -42,7 +40,7 @@ public class DataPotonganAdapter extends RecyclerView.Adapter<DataPotonganAdapte
 //        Date date = new Date(list.get(position).getTanggal_transaksi());
 //        String tanggalTransaksi = sdf.format(date);
 //        holder.tglTransaksi.setText("Tanggal Transaksi : "+ tanggalTransaksi);
-//        holder.jmlPotongan.setText("Jumlah Potongan    : "+ Util.convertToRupiah(list.get(position).getPotongan()));
+//        holder.jmlPotongan.setText("Jumlah Potongan    : "+ Utils.convertToRupiah(list.get(position).getPotongan()));
     }
 
     @Override
