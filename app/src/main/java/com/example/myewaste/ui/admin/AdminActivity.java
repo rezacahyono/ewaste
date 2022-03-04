@@ -10,7 +10,6 @@ import static com.example.myewaste.utils.Mode.MODE_TELLER;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -156,7 +155,9 @@ public class AdminActivity extends AppCompatActivity {
                 startActivity(intent);
                 break;
             case 9:
-                Toast.makeText(this, "data biaya operational", Toast.LENGTH_SHORT).show();
+                intent = new Intent(this, CostOperationalActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
                 break;
 
         }

@@ -7,6 +7,8 @@ import static com.example.myewaste.utils.Constant.EXTRAS_SALDO;
 import static com.example.myewaste.utils.Constant.EXTRAS_SALDO_TRANSACTION;
 import static com.example.myewaste.utils.Constant.EXTRAS_USER_DATA;
 import static com.example.myewaste.utils.Constant.ITEM_TRANSACTION;
+import static com.example.myewaste.utils.Constant.MODE;
+import static com.example.myewaste.utils.Constant.MODE_ADD;
 import static com.example.myewaste.utils.Constant.NO_NASABAH;
 import static com.example.myewaste.utils.Constant.NO_REGIS;
 import static com.example.myewaste.utils.Constant.PENDING;
@@ -95,6 +97,7 @@ public class NasabahActivity extends AppCompatActivity {
         binding.ibWithdraw.setOnClickListener(v -> {
             Intent intent = new Intent(this, AddUpdateTransactionSaldoActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            intent.putExtra(MODE, MODE_ADD);;
             intent.putExtra(EXTRAS_USER_DATA, userData);
             intent.putExtra(EXTRAS_SALDO, saldo);
             startActivity(intent);

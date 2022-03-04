@@ -12,6 +12,7 @@ import static com.example.myewaste.utils.Constant.TELLER;
 import static com.example.myewaste.utils.Constant.USER;
 import static com.example.myewaste.utils.Constant.USER_DATA;
 import static com.example.myewaste.utils.Mode.MODE_NASABAH;
+import static com.example.myewaste.utils.Mode.MODE_SUPER_ADMIN;
 import static com.example.myewaste.utils.Utils.convertMd5;
 import static com.example.myewaste.utils.Utils.getRegisterCode;
 import static com.example.myewaste.utils.Utils.showMessage;

@@ -3,11 +3,13 @@ package com.example.myewaste.ui.admin.task;
 import static com.example.myewaste.utils.Constant.DEFAULT_NO_UNIT_ITEM;
 import static com.example.myewaste.utils.Constant.MODE_ADD;
 import static com.example.myewaste.utils.Constant.MODE_UPDATE;
+import static com.example.myewaste.utils.Constant.NO_UNI_ITEM;
 import static com.example.myewaste.utils.Constant.UNIT_ITEM;
 import static com.example.myewaste.utils.Utils.increseNumber;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -119,7 +121,7 @@ public class ItemUnitActivity extends AppCompatActivity {
                     unitItems.setNo_unit_item(newNoUnitItem);
                 }
                 unitItems.setName(nameItem);
-                submitUnitItem(unitItems);
+                checkNameSimiliar(unitItems);
             }
             dialog.dismiss();
         });
@@ -173,11 +175,9 @@ public class ItemUnitActivity extends AppCompatActivity {
                 UnitItem unitItem;
                 if (result != null) {
                     for (DataSnapshot dataSnapshot : result.getChildren()) {
-                        noUnit = dataSnapshot.getKey();
                         unitItem = dataSnapshot.getValue(UnitItem.class);
-                        assert unitItem != null;
-                        if (noUnit != null) {
-                            noUnit = increseNumber(noUnit);
+                        if (unitItem != null) {
+                            noUnit = increseNumber(unitItem.getNo_unit_item());
                             listUnit.add(unitItem);
                         }
                     }
@@ -210,6 +210,31 @@ public class ItemUnitActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 loading.dismiss();
+            }
+        });
+    }
+
+    private void checkNameSimiliar(UnitItem unitItem){
+        databaseReference.child(UNIT_ITEM).addListenerForSingleValueEvent(new ValueEventListener() {
+            boolean similiar = false;
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot: snapshot.getChildren()){
+                    UnitItem unitItemResult = dataSnapshot.getValue(UnitItem.class);
+                    if (unitItemResult != null && unitItemResult.getName().equalsIgnoreCase(unitItem.getName())){
+                        similiar = true;
+                    }
+                }
+                if (!similiar){
+                    submitUnitItem(unitItem);
+                }else {
+                    Toast.makeText(ItemUnitActivity.this, getResources().getString(R.string.hasSimiliar,"satuan"), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
     }

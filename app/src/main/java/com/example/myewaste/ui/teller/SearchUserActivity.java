@@ -144,6 +144,4 @@ public class SearchUserActivity extends AppCompatActivity {
             }
         });
     }
-
-
 }

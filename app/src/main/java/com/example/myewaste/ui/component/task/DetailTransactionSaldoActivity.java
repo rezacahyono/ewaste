@@ -4,10 +4,13 @@ import static com.example.myewaste.utils.Constant.ACCEPTED;
 import static com.example.myewaste.utils.Constant.EXTRAS_SALDO;
 import static com.example.myewaste.utils.Constant.EXTRAS_SALDO_TRANSACTION;
 import static com.example.myewaste.utils.Constant.EXTRAS_USER_DATA;
+import static com.example.myewaste.utils.Constant.MODE;
+import static com.example.myewaste.utils.Constant.MODE_UPDATE;
 import static com.example.myewaste.utils.Constant.NASABAH;
 import static com.example.myewaste.utils.Constant.NO_REGIS;
 import static com.example.myewaste.utils.Constant.NO_SALDO_TRANSACTION;
 import static com.example.myewaste.utils.Constant.PENDING;
+import static com.example.myewaste.utils.Constant.REJECTED;
 import static com.example.myewaste.utils.Constant.SALDO_NASABAH;
 import static com.example.myewaste.utils.Constant.SALDO_TRANSACTION;
 import static com.example.myewaste.utils.Constant.USER_DATA;
@@ -17,8 +20,8 @@ import static com.example.myewaste.utils.Utils.getRegisterCode;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,9 +33,9 @@ import com.example.myewaste.databinding.ActivityDetailTransactionSaldoBinding;
 import com.example.myewaste.databinding.MainToolbarBinding;
 import com.example.myewaste.model.saldo.Saldo;
 import com.example.myewaste.model.saldo.SaldoTransaction;
-import com.example.myewaste.model.user.User;
 import com.example.myewaste.model.user.UserData;
 import com.example.myewaste.pref.SessionManagement;
+import com.example.myewaste.ui.nasabah.NasabahActivity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -89,102 +92,29 @@ public class DetailTransactionSaldoActivity extends AppCompatActivity {
 
         user = sessionManagement.getUserSession();
 
-
-//        getSupportActionBar().setTitle("Detail Transaksi Penarikan");
-//        getSupportActionBar().setDisplayShowHomeEnabled(true);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//
-//        layout = findViewById(R.id.layout_detail_transaksi_saldo);
-//        tvIdTransaksi = findViewById(R.id.tv_id_transaksi_dts);
-//        tvNamaNasabah = findViewById(R.id.tv_nama_nasabah_dts);
-//        tvNamaTeller = findViewById(R.id.tv_nama_teller_dts);
-//        tvJumlahPenarikan = findViewById(R.id.tv_jumlah_penarikan_dts);
-//        tvPotongan = findViewById(R.id.tv_jumlah_potongan_dts);
-//        tvTotal = findViewById(R.id.tv_total_dts);
-//        tvStatus = findViewById(R.id.tv_status_dts);
-//        tvTanggal = findViewById(R.id.tv_tanggal_transaksi_dts);
-//        editTransaksi = findViewById(R.id.btn_edit_dts);
-//        cancelTransaksi = findViewById(R.id.btn_cancel_dts);
-//        approveTransaksi = findViewById(R.id.btn_approve_dts);
-//        rejectTransaksi = findViewById(R.id.btn_reject_dts);
-//
-//        saldoTransaction = getIntent().getParcelableExtra("EXTRA_TRANSAKSI_SALDO");
-//        sessionManagement = new SessionManagement(getApplicationContext());
-//
-//        if(!saldoTransaction.getStatus().equals("PENDING") || getRegisterCode(sessionManagement.getUserSession()).toLowerCase().equals("sa")){
-//            approveTransaksi.setVisibility(View.GONE);
-//            rejectTransaksi.setVisibility(View.GONE);
-//            editTransaksi.setVisibility(View.GONE);
-//            cancelTransaksi.setVisibility(View.GONE);
-//        }else{
-//            if(getRegisterCode(sessionManagement.getUserSession()).toLowerCase().equals("n")){
-//                approveTransaksi.setVisibility(View.GONE);
-//                rejectTransaksi.setVisibility(View.GONE);
-//            }else if(getRegisterCode(sessionManagement.getUserSession()).toLowerCase().equals("t")){
-//                editTransaksi.setVisibility(View.GONE);
-//                cancelTransaksi.setVisibility(View.GONE);
-//            }
-//        }
-//
-//        editTransaksi.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent  = new Intent(DetailTransactionSaldoActivity.this, AddUpdateTransactionSaldoActivity.class);
-//                intent.putExtra("EXTRA_TRANSAKSI_SALDO", saldoTransaction);
-//                startActivity(intent);
-//            }
-//        });
-//
-//        cancelTransaksi.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                cancelTransaction();
-//            }
-//        });
-//
-//        approveTransaksi.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                approveTransaction();
-//            }
-//        });
-//
-//        rejectTransaksi.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                rejectTransaction();
-//            }
-//        });
-//
-//        prepareLayout();
-
-
         binding.btnAccepted.setOnClickListener(v -> {
-            if (getRegisterCode(user).equalsIgnoreCase(NASABAH)){
+            if (getRegisterCode(user).equalsIgnoreCase(NASABAH)) {
                 Intent intent = new Intent(this, AddUpdateTransactionSaldoActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                intent.putExtra(MODE, MODE_UPDATE);
+                intent.putExtra(EXTRAS_SALDO_TRANSACTION, saldoTransaction);
                 intent.putExtra(EXTRAS_USER_DATA, userData);
                 intent.putExtra(EXTRAS_SALDO, saldo);
                 startActivity(intent);
-            }else {
-                Log.d("TAG", "onCreate: "+saldoTransaction.getNo_saldo_transaction());
-                Log.d("TAG", "onCreate: "+saldoTransaction.getNo_nasabah());
-                Log.d("TAG", "onCreate: "+saldoTransaction.getStatus());
-                Log.d("TAG", "onCreate: "+saldo.getSaldo());
-                Log.d("TAG", "onCreate: "+saldo.getNo_regis());
+            } else {
+                saldoTransaction.setStatus(ACCEPTED);
+                saldoTransaction.setNo_teller(sessionManagement.getUserSession());
+                setAcceptedTranscation(saldoTransaction);
             }
         });
 
         binding.btnRejected.setOnClickListener(v -> {
-            if (getRegisterCode(user).equalsIgnoreCase(NASABAH)){
-
-            }else {
-                Log.d("TAG", "onCreate: "+saldoTransaction.getNo_saldo_transaction());
-                Log.d("TAG", "onCreate: "+saldoTransaction.getNo_nasabah());
-                Log.d("TAG", "onCreate: "+saldoTransaction.getStatus());
-                Log.d("TAG", "onCreate: "+saldoTransaction.getTotal_income());
-                Log.d("TAG", "onCreate: "+saldo.getSaldo());
-                Log.d("TAG", "onCreate: "+saldo.getNo_regis());
+            if (getRegisterCode(user).equalsIgnoreCase(NASABAH)) {
+                setCancelTransaction(saldoTransaction, saldo);
+            } else {
+                saldoTransaction.setStatus(REJECTED);
+                saldoTransaction.setNo_teller(sessionManagement.getUserSession());
+                setRejectedTransaction(saldoTransaction, saldo);
             }
         });
 
@@ -222,7 +152,7 @@ public class DetailTransactionSaldoActivity extends AppCompatActivity {
         });
     }
 
-    private void setButtonAction(SaldoTransaction saldoTransaction){
+    private void setButtonAction(SaldoTransaction saldoTransaction) {
         modePending = saldoTransaction.getStatus().equalsIgnoreCase(PENDING);
         if (!modePending) {
             binding.btnAccepted.setVisibility(View.GONE);
@@ -264,20 +194,72 @@ public class DetailTransactionSaldoActivity extends AppCompatActivity {
     private void setAcceptedTranscation(SaldoTransaction saldoTransaction) {
         databaseReference.child(SALDO_TRANSACTION).child(saldoTransaction.getNo_saldo_transaction()).setValue(saldoTransaction)
                 .addOnSuccessListener(unused -> {
+                    Toast.makeText(this, "Success accepted", Toast.LENGTH_SHORT).show();
+                    fetchUserData(saldoTransaction.getNo_nasabah(), saldoTransaction.getNo_teller());
                 })
-                .addOnFailureListener(e -> {
-
-                });
+                .addOnFailureListener(e -> Toast.makeText(this, "Failure accepted", Toast.LENGTH_SHORT).show());
     }
 
 
-    private void fetchSaldoNasabah(String noRegis){
+    private void setCancelTransaction(SaldoTransaction saldoTransaction, Saldo saldo) {
+        DatabaseReference databaseReferenceSaldoNasabah = databaseReference.child(SALDO_NASABAH).child(saldo.getNo_regis());
+        databaseReferenceSaldoNasabah.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Saldo saldoResult = snapshot.getValue(Saldo.class);
+                if (saldoResult != null) {
+                    saldoResult.setSaldo((int) (saldoResult.getSaldo() + saldoTransaction.getTotal_income()));
+                    databaseReferenceSaldoNasabah.setValue(saldoResult);
+                }
+                databaseReference.child(SALDO_TRANSACTION).child(saldoTransaction.getNo_saldo_transaction()).removeValue()
+                        .addOnSuccessListener(unused -> {
+                            Toast.makeText(DetailTransactionSaldoActivity.this, "Berhasil cancel", Toast.LENGTH_SHORT).show();
+                            navigateToHome();
+                        })
+                        .addOnFailureListener(e -> Toast.makeText(DetailTransactionSaldoActivity.this, "failuder", Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
+    private void setRejectedTransaction(SaldoTransaction saldoTransaction, Saldo saldo) {
+        DatabaseReference databaseReferenceSaldoNasabah = databaseReference.child(SALDO_NASABAH).child(saldo.getNo_regis());
+        databaseReferenceSaldoNasabah.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Saldo saldoResult = snapshot.getValue(Saldo.class);
+                if (saldoResult != null) {
+                    saldoResult.setSaldo((int) (saldoResult.getSaldo() + saldoTransaction.getTotal_income()));
+                    databaseReferenceSaldoNasabah.setValue(saldoResult);
+                }
+                databaseReference.child(SALDO_TRANSACTION).child(saldoTransaction.getNo_saldo_transaction()).setValue(saldoTransaction)
+                        .addOnSuccessListener(unused -> {
+                            Toast.makeText(DetailTransactionSaldoActivity.this, "Berhasil rejected", Toast.LENGTH_SHORT).show();
+                            fetchUserData(saldoTransaction.getNo_nasabah(), saldoTransaction.getNo_teller());
+                        })
+                        .addOnFailureListener(e -> Toast.makeText(DetailTransactionSaldoActivity.this, "failure rejected", Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+
+    private void fetchSaldoNasabah(String noRegis) {
         databaseReference.child(SALDO_NASABAH).orderByChild(NO_REGIS).equalTo(noRegis).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot: snapshot.getChildren()){
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Saldo saldoResult = dataSnapshot.getValue(Saldo.class);
-                    if (saldoResult != null){
+                    if (saldoResult != null) {
                         saldo = saldoResult;
                     }
                 }
@@ -291,13 +273,13 @@ public class DetailTransactionSaldoActivity extends AppCompatActivity {
     }
 
 
-    private void fetchDataSaldoTransaction(String noSaldoTransaction){
+    private void fetchDataSaldoTransaction(String noSaldoTransaction) {
         databaseReference.child(SALDO_TRANSACTION).orderByChild(NO_SALDO_TRANSACTION).equalTo(noSaldoTransaction).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot: snapshot.getChildren()){
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     SaldoTransaction saldoTransactionResult = dataSnapshot.getValue(SaldoTransaction.class);
-                    if (saldoTransactionResult != null){
+                    if (saldoTransactionResult != null) {
                         saldoTransaction = saldoTransactionResult;
                     }
                 }
@@ -314,13 +296,13 @@ public class DetailTransactionSaldoActivity extends AppCompatActivity {
     }
 
 
-    private void fetchDataUserData(String noRegis){
+    private void fetchDataUserData(String noRegis) {
         databaseReference.child(USER_DATA).orderByChild(NO_REGIS).equalTo(noRegis).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot: snapshot.getChildren()){
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     UserData userDataResult = dataSnapshot.getValue(UserData.class);
-                    if (userDataResult != null){
+                    if (userDataResult != null) {
                         userData = userDataResult;
                     }
                 }
@@ -331,6 +313,13 @@ public class DetailTransactionSaldoActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+
+    private void navigateToHome() {
+        Intent intent = new Intent(this, NasabahActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
 

@@ -54,6 +54,7 @@ public class DataSaldoNasabahActivity extends AppCompatActivity {
         bindingToolbar = binding.mainToolbar;
         bindingToolbar.tvTitleBar.setText(R.string.data_saldo_nasabah);
         bindingToolbar.btnBack.setOnClickListener(view -> onBackPressed());
+        bindingToolbar.btnTrash.setImageResource(R.drawable.ic_download);
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
 

@@ -272,280 +272,6 @@ public class AddUserActivity extends AppCompatActivity {
             binding.tvClickChooseImage.setVisibility(View.GONE);
         }
     }
-//
-//
-//    private void selectImage() {
-//        Intent intent = new Intent();
-//        intent.setType("image/*");
-//        intent.setAction(Intent.ACTION_GET_CONTENT);
-//        startActivityForResult(
-//                Intent.createChooser(
-//                        intent,
-//                        "Select Image from here..."),
-//                PICK_IMAGE_REQUEST);
-//    }
-//
-//    private void uploadImage() {
-//        if (filePath != null) {
-//            loading = ProgressDialog.show(AddUserActivity.this,
-//                    null,
-//                    "please wait...",
-//                    true,
-//                    false);
-//            if (!getRegisterAs(getRegisterCode(newNoRegis)).equals("-")) {
-//                storageReference.child(IMAGE_FOLDER + KTP_FOLDER + Objects.requireNonNull(binding.edtNik.getText()).toString()).putFile(filePath)
-//                        .addOnSuccessListener(l -> {
-//                            Toast.makeText(AddUserActivity.this, "Image Uploaded!!", Toast.LENGTH_SHORT).show();
-//                            loading.dismiss();
-//                            isUploadImage = true;
-//                        })
-//                        .addOnFailureListener(l -> Toast.makeText(AddUserActivity.this, "Fail upload!!", Toast.LENGTH_SHORT).show())
-//                        .addOnCompleteListener(l -> {
-//                        });
-//            } else {
-//                Toast.makeText(AddUserActivity.this, "Invalid register code!!", Toast.LENGTH_SHORT).show();
-//            }
-//        } else {
-//            Toast.makeText(AddUserActivity.this, "Enter the file first!!", Toast.LENGTH_SHORT).show();
-//        }
-//    }
-
-//    private void uploadImge(Uri uri, UserData userData, User user) {
-//        if (uri != null) {
-//            StorageReference storageImageNik = storageReference.child(IMAGE_FOLDER + KTP_FOLDER + userData.getNik());
-//            storageImageNik.putFile(uri)
-//                    .continueWithTask(task -> {
-//                        if (!task.isSuccessful()) {
-//                            Log.d("TAG", "uploadImge: gagal");
-//                        }
-//                        return storageImageNik.getDownloadUrl();
-//                    })
-//                    .addOnCompleteListener(task -> {
-//                        if (task.isSuccessful()) {
-//                            Uri downloadUri = task.getResult();
-//                            if (downloadUri != null) {
-//                                userData.setPhoto_nik(downloadUri.toString());
-//                                checkhasSimiliar(userData, user);
-//                            }
-//                        }
-//                    });
-//        } else {
-//
-//        }
-//    }
-
-//    private void submitUser(User user, UserData userData) {
-//        String registerCode = getRegisterCode(newNoRegis);
-//        String child = getRegisterAs(registerCode);
-//        if (!child.equals("-")) {
-//            DatabaseReference childNoRegis = databaseReference.child(USER_DATA).child(newNoRegis);
-//            DatabaseReference childSaldoNasabah = databaseReference.child(SALDO_NASABAH).child(newNoRegis);
-//            Query query = databaseReference.child(USER_DATA).orderByChild(NIK).equalTo(Objects.requireNonNull(binding.edtNik.getText()).toString());
-//            query.addListenerForSingleValueEvent(new ValueEventListener() {
-//                @SuppressLint("RestrictedApi")
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                    if (snapshot.exists()) {
-//                        this.onCancelled(DatabaseError.fromStatus("401", getResources().getString(R.string.nik_is_registerd), "error"));
-//                        loading.dismiss();
-//                        Toast.makeText(AddUserActivity.this, getResources().getString(R.string.nik_is_registerd), Toast.LENGTH_SHORT).show();
-//                    } else {
-//                        childNoRegis.addListenerForSingleValueEvent(new ValueEventListener() {
-//                            @SuppressLint("RestrictedApi")
-//                            @Override
-//                            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-//                                DatabaseReference childUsername = databaseReference.child(USER).child(Objects.requireNonNull(binding.edtUsername.getText()).toString());
-//                                childUsername.addListenerForSingleValueEvent(new ValueEventListener() {
-//                                    @SuppressLint("RestrictedApi")
-//                                    @Override
-//                                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-//                                        childUsername.setValue(user)
-//                                                .addOnSuccessListener(AddUserActivity.this, onSuccess -> {
-//                                                    generateNoRegis();
-//                                                    binding.edtNik.setText("");
-//                                                    binding.edtUsername.setText("");
-//                                                    binding.edtName.setText("");
-//                                                    binding.edtPassword.setText("");
-//                                                    binding.rbMale.setChecked(true);
-//                                                    binding.edtPhone.setText("");
-//                                                    binding.edtAddress.setText("");
-//                                                    binding.edtAddress.clearFocus();
-//                                                    loading.dismiss();
-//                                                    switch (mode) {
-//                                                        case MODE_SUPER_ADMIN:
-//                                                            Toast.makeText(AddUserActivity.this, getResources().getString(R.string.register_successfully, "Admin"), Toast.LENGTH_SHORT).show();
-//                                                            break;
-//                                                        case MODE_NASABAH:
-//                                                            Toast.makeText(AddUserActivity.this, getResources().getString(R.string.register_successfully, "Nasabah"), Toast.LENGTH_SHORT).show();
-//                                                            break;
-//                                                        case MODE_TELLER:
-//                                                            Toast.makeText(AddUserActivity.this, getResources().getString(R.string.register_successfully, "Teller"), Toast.LENGTH_SHORT).show();
-//                                                            break;
-//                                                        default:
-//                                                            break;
-//                                                    }
-//                                                })
-//                                                .addOnFailureListener(AddUserActivity.this, exception -> {
-//                                                    loading.dismiss();
-//                                                    Toast.makeText(AddUserActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
-//                                                });
-//                                        childNoRegis.setValue(userData);
-//                                        if (getRegisterCode(registerCode.toLowerCase()).equals(NASABAH)) {
-//                                            Saldo saldo = new Saldo(userData.getNo_regis(), 0);
-//                                            childSaldoNasabah.setValue(saldo);
-//                                        }
-//                                    }
-//
-//                                    @Override
-//                                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
-//                                        Log.d("error cancel user", error.getMessage());
-//                                    }
-//                                });
-//                            }
-//
-//                            @Override
-//                            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-//                                Log.d("error", error.getMessage());
-//                            }
-//                        });
-//                    }
-//                }
-//
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError error) {
-//
-//                }
-//            });
-//        } else {
-//            loading.dismiss();
-//            Toast.makeText(AddUserActivity.this, getResources().getString(R.string.register_failure), Toast.LENGTH_SHORT).show();
-//        }
-//    }
-
-//    private void checkhasSimiliar(UserData userData, User user) {
-//        databaseReference.child(USER_DATA).get().addOnCompleteListener(taskUserData -> {
-//            String noRegis = null;
-//            if (mode.equals(MODE_NASABAH)) {
-//                noRegis = DEFAULT_NO_REGIST_NASABAH;
-//            } else if (mode.equals(MODE_TELLER)) {
-//                noRegis = DEFAULT_NO_REGIST_TELLER;
-//            } else if (mode.equals(MODE_SUPER_ADMIN)) {
-//                noRegis = DEFAULT_NO_REGIST_SUPER_ADMIN;
-//            }
-//
-//            if (taskUserData.isSuccessful()) {
-//                DataSnapshot resultUserData = taskUserData.getResult();
-//                if (resultUserData != null) {
-//                    for (DataSnapshot dataSnapshot : resultUserData.getChildren()) {
-//                        UserData userDataResult = dataSnapshot.getValue(UserData.class);
-//                        if (userDataResult != null) {
-//                            noRegis = increseNumber(userDataResult.getNo_regis());
-//                            if (userDataResult.getNik().equalsIgnoreCase(userData.getNik())
-//                                    && !userDataResult.getNo_regis().equalsIgnoreCase(userData.getNo_regis())) {
-//                                hasSimiliar = true;
-//                            }
-//                        }
-//                    }
-//                    databaseReference.child(USER).orderByChild(USERNAME).equalTo(user.getUsername()).get().addOnCompleteListener(taskUser -> {
-//                        if (taskUser.isSuccessful()) {
-//                            DataSnapshot resultUser = taskUser.getResult();
-//                            if (resultUser != null) {
-//                                for (DataSnapshot dataSnapshot : resultUser.getChildren()) {
-//                                    User userResult = dataSnapshot.getValue(User.class);
-//                                    if (userResult != null) {
-//                                        if (userResult.getUsername().equalsIgnoreCase(user.getUsername())
-//                                                && !userResult.getNo_regis().equalsIgnoreCase(user.getNo_regis())) {
-//                                            hasSimiliar = true;
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    });
-//                    if (modeAdd) {
-//                        if (noRegis != null) {
-////                            user.setNo_regis(noRegis);
-////                            userData.setNo_regis(noRegis);
-//                            Log.d("TAG", "checkhasSimiliar: register");
-//                        }
-//
-//                    }
-//                    if (!hasSimiliar) {
-//                        Log.d("TAG", "checkhasSmiliar: ubah and add");
-//                    } else {
-////                        Toast.makeText(this, getResources().getString(R.string.nik_is_registerd), Toast.LENGTH_SHORT).show();
-//                        Log.d("TAG", "checkhasSimiliar: nik dan username sama");
-//                    }
-//                }
-//            }
-//        });
-//    }
-
-//    private void onSubmitUser(UserData userData, User user) {
-//        if (userData != null && user != null) {
-//            DatabaseReference userReferencee = databaseReference.child(USER).child(user.getUsername());
-//            DatabaseReference userDataReference = databaseReference.child(USER_DATA).child(userData.getNo_regis());
-//            DatabaseReference saldoUserReference = databaseReference.child(SALDO_NASABAH).child(userData.getNo_regis());
-//            userDataReference.setValue(userData).addOnCompleteListener(task -> {
-//                if (modeRegister) {
-//                    Toast.makeText(this, "tambah", Toast.LENGTH_SHORT).show();
-//                } else {
-//                    Toast.makeText(this, "update", Toast.LENGTH_SHORT).show();
-//                }
-//            });
-//            userReferencee.setValue(user).addOnCompleteListener(task -> {
-//                if (modeRegister) {
-//                    Toast.makeText(this, "tambah", Toast.LENGTH_SHORT).show();
-//                } else {
-//                    Toast.makeText(this, "update", Toast.LENGTH_SHORT).show();
-//                }
-//            });
-//            if (getRegisterCode(user.getNo_regis()).equalsIgnoreCase(NASABAH)
-//                    && modeRegister) {
-//                Saldo saldo = new Saldo(user.getNo_regis(), 0);
-//                saldoUserReference.setValue(saldo).addOnCompleteListener(task -> {
-//                    Toast.makeText(this, "tambah", Toast.LENGTH_SHORT).show();
-//                });
-//            }
-//
-//        }
-//    }
-
-//    public void generateNoRegis() {
-//        databaseReference.child(USER_DATA).get()
-//                .addOnCompleteListener(task -> {
-//                    String noRegis;
-//                    if (modeUser.equals(Mode.MODE_SUPER_ADMIN)) {
-//                        noRegis = DEFAULT_NO_REGIST_SUPER_ADMIN;
-//                    } else if (modeUser.equals(Mode.MODE_TELLER)) {
-//                        noRegis = DEFAULT_NO_REGIST_TELLER;
-//                    } else {
-//                        noRegis = DEFAULT_NO_REGIST_NASABAH;
-//                    }
-//
-//                    if (task.isSuccessful()) {
-//                        DataSnapshot result = task.getResult();
-//                        if (result != null) {
-//                            for (DataSnapshot dataSnapshot : result.getChildren()) {
-//                                boolean isValid = false;
-//                                String dataRegis = dataSnapshot.getKey();
-//                                if (dataRegis != null) {
-//                                    String extractRegisterCode = getRegisterCode(dataRegis.toLowerCase());
-//                                    if ((extractRegisterCode.equals(NASABAH) && (modeUser.equals(MODE_NASABAH)))
-//                                            || (extractRegisterCode.equals(TELLER) && modeUser.equals(Mode.MODE_TELLER))
-//                                            || (extractRegisterCode.equals(SUPER_ADMIN) && modeUser.equals(Mode.MODE_SUPER_ADMIN))) {
-//                                        isValid = true;
-//                                    }
-//                                }
-//                                if (isValid) {
-//                                    noRegis = increseNumber(dataRegis);
-//                                }
-//                            }
-//                        }
-//                    }
-//                    Log.d("TAG", "generateNoRegis: "+noRegis);
-//                });
-//    }
 
     private void selectImage() {
         Intent intent = new Intent();
@@ -568,27 +294,27 @@ public class AddUserActivity extends AppCompatActivity {
             databaseReference.child(USER_DATA).child(userData.getNo_regis()).setValue(userData)
                     .addOnSuccessListener(unused -> {
                         if (mode.equals(MODE_ADD)) {
-                            Toast.makeText(this, "berhasil tambah", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, getResources().getString(R.string.submit_success, userData.getName()), Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(this, "berhasil ubah", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, getResources().getString(R.string.update_success, userData.getName()), Toast.LENGTH_SHORT).show();
                         }
                         loading.dismiss();
                     })
                     .addOnFailureListener(e -> {
-                        Toast.makeText(this, "gagal", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getResources().getString(R.string.failure), Toast.LENGTH_SHORT).show();
                         loading.dismiss();
                     });
             databaseReference.child(USER).child(user.getUsername()).setValue(user)
                     .addOnSuccessListener(unused -> {
                         if (mode.equals(MODE_ADD)) {
-                            Toast.makeText(this, "berhasil tambah", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, getResources().getString(R.string.submit_success, userData.getName()), Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(this, "berhasil ubah", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, getResources().getString(R.string.update_success, userData.getName()), Toast.LENGTH_SHORT).show();
                         }
                         loading.dismiss();
                     })
                     .addOnFailureListener(e -> {
-                        Toast.makeText(this, "gagal", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getResources().getString(R.string.failure), Toast.LENGTH_SHORT).show();
                         loading.dismiss();
                     });
             if (mode.equals(MODE_ADD) && getRegisterCode(userData.getNo_regis()).equalsIgnoreCase(NASABAH)) {
@@ -596,13 +322,13 @@ public class AddUserActivity extends AppCompatActivity {
                 databaseReference.child(SALDO_NASABAH).child(userData.getNo_regis()).setValue(saldo)
                         .addOnSuccessListener(unused -> {
                             if (mode.equals(MODE_ADD)) {
-                                Toast.makeText(this, "berhasil tambah", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, getResources().getString(R.string.submit_success, userData.getName()), Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(this, "berhasil ubah", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, getResources().getString(R.string.update_success, userData.getName()), Toast.LENGTH_SHORT).show();
                             }
                             loading.dismiss();
                         }).addOnFailureListener(e -> {
-                    Toast.makeText(this, "gagal", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getResources().getString(R.string.failure), Toast.LENGTH_SHORT).show();
                     loading.dismiss();
                 });
             }

@@ -36,7 +36,6 @@ import com.example.myewaste.R;
 import com.example.myewaste.adapter.ListItemDetailTransactionAdapter;
 import com.example.myewaste.databinding.ActivityDetailTransactionItemBinding;
 import com.example.myewaste.databinding.MainToolbarBinding;
-import com.example.myewaste.model.utils.ListItem;
 import com.example.myewaste.model.item.Item;
 import com.example.myewaste.model.item.ItemMaster;
 import com.example.myewaste.model.item.ItemTransaction;
@@ -44,6 +43,7 @@ import com.example.myewaste.model.item.ItemType;
 import com.example.myewaste.model.item.UnitItem;
 import com.example.myewaste.model.saldo.SaldoTransaction;
 import com.example.myewaste.model.user.UserData;
+import com.example.myewaste.model.utils.ListItem;
 import com.example.myewaste.pref.SessionManagement;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -88,7 +88,6 @@ public class DetailTransactionItemActivity extends AppCompatActivity {
         itemTransaction = getIntent().getParcelableExtra(EXTRAS_ITEM_TRANSACTION);
         if (itemTransaction != null) {
             fetchUserData(itemTransaction.getNo_nasabah(), itemTransaction.getNo_teller());
-            setDataItemTransaction(itemTransaction);
             fetchDataSaldoTransaction(itemTransaction.getNo_saldo_transaction());
             fetchDataTypeItem(itemTransaction.getItem_list());
         }
@@ -111,6 +110,9 @@ public class DetailTransactionItemActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        fetchDataItemTransaction(itemTransaction.getNo_item_transaction());
+
+        setDataItemTransaction(itemTransaction);
         setRecyclerViewItemListDetail();
 
     }
@@ -153,7 +155,7 @@ public class DetailTransactionItemActivity extends AppCompatActivity {
 
 
     private void fetchDataSaldoTransaction(String noSaldoTransaction) {
-        databaseReference.child(SALDO_TRANSACTION).orderByChild(NO_SALDO_TRANSACTION).equalTo(noSaldoTransaction).addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.child(SALDO_TRANSACTION).orderByChild(NO_SALDO_TRANSACTION).equalTo(noSaldoTransaction).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
@@ -172,9 +174,26 @@ public class DetailTransactionItemActivity extends AppCompatActivity {
         });
     }
 
+    private void fetchDataItemTransaction(String noItemTransaction) {
+        databaseReference.child(ITEM_TRANSACTION).child(noItemTransaction).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                ItemTransaction itemTransactionResult = snapshot.getValue(ItemTransaction.class);
+                if (itemTransactionResult != null) {
+                    itemTransaction = itemTransactionResult;
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
 
     private void fetchUserData(String noNasabah, String noTeller) {
-        databaseReference.child(USER_DATA).orderByChild(NO_REGIS).equalTo(noNasabah).addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.child(USER_DATA).orderByChild(NO_REGIS).equalTo(noNasabah).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
@@ -188,7 +207,7 @@ public class DetailTransactionItemActivity extends AppCompatActivity {
 
             }
         });
-        databaseReference.child(USER_DATA).orderByChild(NO_REGIS).equalTo(noTeller).addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.child(USER_DATA).orderByChild(NO_REGIS).equalTo(noTeller).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
@@ -211,7 +230,7 @@ public class DetailTransactionItemActivity extends AppCompatActivity {
                 true,
                 false);
         for (Item item : items) {
-            databaseReference.child(ITEM_TYPE).orderByChild(NO_ITEM_TYPE).equalTo(item.getNo_type_item()).addListenerForSingleValueEvent(new ValueEventListener() {
+            databaseReference.child(ITEM_TYPE).orderByChild(NO_ITEM_TYPE).equalTo(item.getNo_type_item()).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     for (DataSnapshot dataSnapshotItemType : snapshot.getChildren()) {
@@ -270,8 +289,7 @@ public class DetailTransactionItemActivity extends AppCompatActivity {
 
     private void navigateToTransactionItem() {
         Intent intent = new Intent(this, TransactionItemActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
     }
-
 }

@@ -8,7 +8,13 @@ import static com.example.myewaste.utils.Constant.ITEM_TRANSACTION;
 import static com.example.myewaste.utils.Constant.NASABAH;
 import static com.example.myewaste.utils.Constant.NO_ITEM_TRANSACTION;
 import static com.example.myewaste.utils.Constant.NO_NASABAH;
+import static com.example.myewaste.utils.Utils.convertDate;
 import static com.example.myewaste.utils.Utils.getRegisterCode;
+
+import static java.util.Calendar.HOUR_OF_DAY;
+import static java.util.Calendar.MILLISECOND;
+import static java.util.Calendar.MINUTE;
+import static java.util.Calendar.SECOND;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -75,6 +81,14 @@ public class TransactionItemActivity extends AppCompatActivity {
             user = getIntent().getStringExtra(EXTRAS_USER_DATA);
         }
 
+
+        if (!getRegisterCode(user).equalsIgnoreCase(NASABAH)){
+            bindingToolbar.btnTrash.setVisibility(View.VISIBLE);
+            bindingToolbar.btnTrash.setImageResource(R.drawable.ic_download);
+        }else {
+            bindingToolbar.btnTrash.setVisibility(View.GONE);
+        }
+
         binding.ibFilterChoose.setOnClickListener(v -> {
             if (flShow) {
                 binding.pickStartDate.setText(R.string.start_date);
@@ -82,7 +96,6 @@ public class TransactionItemActivity extends AppCompatActivity {
                 binding.flFilter.setVisibility(View.VISIBLE);
                 flShow = false;
             } else {
-                Log.d("TAG", "onCreate: not");
                 binding.flFilter.setVisibility(View.GONE);
                 flShow = true;
             }
@@ -182,8 +195,16 @@ public class TransactionItemActivity extends AppCompatActivity {
         datePicker = dateBuilder.build();
         datePicker.show(getSupportFragmentManager(), "DATE_PICKER");
         datePicker.addOnPositiveButtonClickListener(selection -> {
+            Date date = new Date();
+            date.setTime(selection);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            calendar.set(SECOND, 0);
+            calendar.set(MINUTE, 0);
+            calendar.set(HOUR_OF_DAY, 0);
+            date = calendar.getTime();
             binding.pickStartDate.setText(datePicker.getHeaderText());
-            startDate = selection;
+            startDate = date.getTime();
         });
     }
 

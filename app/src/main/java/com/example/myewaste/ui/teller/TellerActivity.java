@@ -6,6 +6,7 @@ import static com.example.myewaste.utils.Constant.USER_DATA;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -65,6 +66,7 @@ public class TellerActivity extends AppCompatActivity {
 
         binding.ibWithdraw.setOnClickListener(view -> {
             Intent intent = new Intent(this, SearchUserActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
         });
 
@@ -140,28 +142,5 @@ public class TellerActivity extends AppCompatActivity {
                     });
         }
     }
-//    @Override
-//    public void onClick(View view) {
-//        switch (view.getId()){
-//            case R.id.cv_input_transaksi_nasabah:
-//                Intent cv_input_transaksi_nasabah = new Intent(this, AddUpdateTransactionItemActivity.class);
-//                startActivity(cv_input_transaksi_nasabah);
-//                break;
-//            case R.id.cv_history_transaksi:
-//                Intent cv_history_transaksi = new Intent(this, TransactionItemActivity.class);
-//                startActivity(cv_history_transaksi);
-//                break;
-//            case R.id.cv_laporan_saldo_teller :
-//                Intent cv_laporan_saldo_teller = new Intent(this, TransactionSaldoActivity.class);
-//                startActivity(cv_laporan_saldo_teller);
-//                break;
-//            case R.id.btnlogoutteller:
-//                sessionManagement.removeUserSession();
-//                Intent keluar = new Intent(this, LoginActivitiy.class);
-//                keluar.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                startActivity(keluar);
-//                break;
-//
-//        }
-//    }
+
 }

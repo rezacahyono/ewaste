@@ -4,6 +4,8 @@ import static com.example.myewaste.utils.Constant.DEFAULT_NO_TRANSACTION_SALDO;
 import static com.example.myewaste.utils.Constant.EXTRAS_SALDO;
 import static com.example.myewaste.utils.Constant.EXTRAS_SALDO_TRANSACTION;
 import static com.example.myewaste.utils.Constant.EXTRAS_USER_DATA;
+import static com.example.myewaste.utils.Constant.MODE;
+import static com.example.myewaste.utils.Constant.MODE_UPDATE;
 import static com.example.myewaste.utils.Constant.NO_REGIS;
 import static com.example.myewaste.utils.Constant.PENDING;
 import static com.example.myewaste.utils.Constant.SALDO_NASABAH;
@@ -16,7 +18,6 @@ import static com.example.myewaste.utils.Utils.parseCurrencyValue;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -30,6 +31,7 @@ import com.example.myewaste.databinding.MainToolbarBinding;
 import com.example.myewaste.model.saldo.Saldo;
 import com.example.myewaste.model.saldo.SaldoTransaction;
 import com.example.myewaste.model.user.UserData;
+import com.example.myewaste.pref.SessionManagement;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -40,6 +42,7 @@ import java.lang.ref.WeakReference;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -47,9 +50,11 @@ public class AddUpdateTransactionSaldoActivity extends AppCompatActivity {
 
 
     private DatabaseReference databaseReference;
+    private String mode;
     private Saldo saldo;
     private UserData userData;
     private SaldoTransaction saldoTransaction;
+    private int lastTransaction = 0;
     private int income = 0;
     private int cuts = 0;
 
@@ -67,100 +72,37 @@ public class AddUpdateTransactionSaldoActivity extends AppCompatActivity {
 
         bindingToolbar.btnBack.setOnClickListener(v -> onBackPressed());
 
-
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
         saldo = new Saldo();
         userData = new UserData();
         saldoTransaction = new SaldoTransaction();
 
-        if (getIntent().getParcelableExtra(EXTRAS_SALDO) != null){
+        mode = getIntent().getStringExtra(MODE);
+
+        if (getIntent().getParcelableExtra(EXTRAS_SALDO) != null) {
             saldo = getIntent().getParcelableExtra(EXTRAS_SALDO);
         }
 
-        if (getIntent().getParcelableExtra(EXTRAS_USER_DATA) != null){
+        if (getIntent().getParcelableExtra(EXTRAS_USER_DATA) != null) {
             userData = getIntent().getParcelableExtra(EXTRAS_USER_DATA);
         }
         if (saldo.getNo_regis() != null && userData.getNo_regis() != null) {
             setDataSaldo(saldo, userData);
         }
 
-        if (getIntent().getParcelableExtra(EXTRAS_SALDO_TRANSACTION)!= null){
+        if (getIntent().getParcelableExtra(EXTRAS_SALDO_TRANSACTION) != null) {
             saldoTransaction = getIntent().getParcelableExtra(EXTRAS_SALDO_TRANSACTION);
-        }else {
+            lastTransaction = (int) saldoTransaction.getTotal_income();
+            binding.tvCutsTransaction.setText(convertToRupiah((int) saldoTransaction.getCuts_transaction()));
+            int income = (int) (saldoTransaction.getTotal_income() - saldoTransaction.getCuts_transaction());
+            binding.tvTotalIncome.setText(convertToRupiah(income));
+            binding.edtWithdraw.setText(convertToRupiah((int) saldoTransaction.getTotal_income()));
+        } else {
             fetchDataTransactionSaldo();
         }
 
         fetchDataSaldo(userData.getNo_regis());
-
-
-//        tvSaldo = findViewById(R.id.tv_saldo);
-//        tvPotongan = findViewById(R.id.tv_potongan);
-//        tvtotal = findViewById(R.id.tv_total_diterima);
-//        jumlahPenarikan = findViewById(R.id.txt_jumlah_penarikan);
-//        btnDoPenarikan = findViewById(R.id.btnLakukanPenarikan);
-//        databaseReference = FirebaseDatabase.getInstance().getReference();
-//        sessionManagement = new SessionManagement(getApplicationContext());
-//
-//        getSupportActionBar().setTitle("Tarik Saldo Saya");
-//        getSupportActionBar().setDisplayShowHomeEnabled(true);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//
-//        if(getIntent().hasExtra("EXTRA_TRANSAKSI_SALDO")){
-//            getSupportActionBar().setTitle("Edit Penarikan Nasabah");
-//            mode = 1;
-//            saldoTransaction = getIntent().getParcelableExtra("EXTRA_TRANSAKSI_SALDO");
-////            jumlahPenarikan.setText(String.valueOf(saldoTransaction.getJumlah_transaksi()));
-////            setPotonganAndTotal(saldoTransaction.getJumlah_transaksi());
-//        }else{
-////            saldoTransaction = new SaldoTransaction(no_saldo_transaction, no_nasabah, type_transaction, no_teller, status, total_income, cuts_transaction, date);
-//        }
-//        getSaldoNasabah();
-//
-//        btnDoPenarikan.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if(jumlahPenarikan.getText().toString().isEmpty()){
-//                    showMessage(AddUpdateTransactionSaldoActivity.this, "Jumlah Tidak boleh Kosong");
-//                }else if(Integer.valueOf(jumlahPenarikan.getText().toString()) > saldoNasabah || Integer.valueOf(jumlahPenarikan.getText().toString()) <= 0){
-//                    showMessage(AddUpdateTransactionSaldoActivity.this, "Maaf Saldo Anda Tidak Cukup untuk melakukan penarikan tersebut");
-//                }else{
-//                    if(mode == 0){
-//                        fetchDataTransaksiSaldo(Integer.valueOf(jumlahPenarikan.getText().toString()));
-//                    }else{
-////                        createTransaksiSaldo(Integer.valueOf(jumlahPenarikan.getText().toString()), saldoTransaction.getId_transaksi_saldo(), saldoTransaction.getJumlah_transaksi());
-//                    }
-//                    finish();
-//                }
-//            }
-//        });
-//
-//        jumlahPenarikan.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//                if(!charSequence.equals("")){
-//                    if(!jumlahPenarikan.getText().toString().isEmpty()){
-//                        setPotonganAndTotal(Integer.valueOf(jumlahPenarikan.getText().toString()));
-//                    }else{
-//                        tvPotongan.setText(convertToRupiah(0));
-//                        tvtotal.setText(convertToRupiah(0));
-//                    }
-//                }else{
-//                    tvPotongan.setText(convertToRupiah(0));
-//                    tvtotal.setText(convertToRupiah(0));
-//                }
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable editable) {
-//
-//            }
-//        });
 
         binding.edtWithdraw.addTextChangedListener(new TextWatcher() {
             public final NumberFormat numberFormat = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
@@ -180,8 +122,8 @@ public class AddUpdateTransactionSaldoActivity extends AppCompatActivity {
                 String c = String.valueOf(parseCurrencyValue(charSequence.toString()));
                 cuts = (int) (Double.parseDouble(c) * 10) / 100;
                 income = (int) Double.parseDouble(c) - cuts;
-                binding.tvTotalIncome.setText(convertToRupiah((int) income));
-                binding.tvCutsTransaction.setText(convertToRupiah((int) cuts));
+                binding.tvTotalIncome.setText(convertToRupiah(income));
+                binding.tvCutsTransaction.setText(convertToRupiah(cuts));
 
             }
 
@@ -205,12 +147,23 @@ public class AddUpdateTransactionSaldoActivity extends AppCompatActivity {
 
         binding.btnSlideWithdraw.setOnSlideCompleteListener(slideToActView -> {
             int withdraw = parseCurrencyValue(Objects.requireNonNull(binding.edtWithdraw.getText()).toString()).intValue();
-            if (withdraw > saldo.getSaldo()) {
+            if (withdraw > (saldo.getSaldo()+lastTransaction)) {
                 Toast.makeText(this, getResources().getString(R.string.not_enough_balance), Toast.LENGTH_SHORT).show();
             } else if (withdraw <= 0) {
                 Toast.makeText(this, getResources().getString(R.string.input_can_not_be_empty, "input"), Toast.LENGTH_SHORT).show();
             } else {
-                Log.d("TAG", "onCreate: "+saldoTransaction.getNo_saldo_transaction());
+                if (!mode.equals(MODE_UPDATE)) {
+                    Date date = new Date();
+                    saldoTransaction.setType_transaction(WITHDRAW);
+                    saldoTransaction.setStatus(PENDING);
+                    saldoTransaction.setNo_nasabah(userData.getNo_regis());
+                    saldoTransaction.setDate(date.getTime());
+                }
+
+                saldoTransaction.setTotal_income(withdraw);
+                saldoTransaction.setCuts_transaction(cuts);
+                saldoTransaction.setNo_teller("-");
+                submitSaldoTransaction(saldoTransaction);
             }
             binding.btnSlideWithdraw.resetSlider();
             binding.edtWithdraw.setText("");
@@ -276,11 +229,12 @@ public class AddUpdateTransactionSaldoActivity extends AppCompatActivity {
     private void fetchDataTransactionSaldo() {
         databaseReference.child(SALDO_TRANSACTION).orderByKey().limitToLast(1).addValueEventListener(new ValueEventListener() {
             String noTransactionSaldo = DEFAULT_NO_TRANSACTION_SALDO;
+
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot: snapshot.getChildren()){
-                    if (dataSnapshot.getKey() != null){
-                        noTransactionSaldo = dataSnapshot.getKey();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    if (dataSnapshot.getKey() != null) {
+                        noTransactionSaldo = increseNumber(dataSnapshot.getKey());
                     }
                 }
                 saldoTransaction.setNo_saldo_transaction(noTransactionSaldo);
@@ -291,6 +245,27 @@ public class AddUpdateTransactionSaldoActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void submitSaldoTransaction(SaldoTransaction saldoTransaction) {
+        DatabaseReference databaseReferenceSaldoNasabah = databaseReference.child(SALDO_NASABAH).child(userData.getNo_regis());
+        DatabaseReference databaseReferenceTransactionSaldo = databaseReference.child(SALDO_TRANSACTION).child(saldoTransaction.getNo_saldo_transaction());
+        databaseReferenceTransactionSaldo.setValue(saldoTransaction).addOnSuccessListener(unused -> databaseReferenceSaldoNasabah.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Saldo saldoResult = snapshot.getValue(Saldo.class);
+                if (saldoResult != null) {
+                    saldoResult.setSaldo(saldoResult.getSaldo() + lastTransaction);
+                    saldoResult.setSaldo((int) (saldoResult.getSaldo() - saldoTransaction.getTotal_income()));
+                    databaseReferenceSaldoNasabah.setValue(saldoResult);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        }));
     }
 
 //    private void createTransaksiSaldo(int withdraw, int cuts, String noTransactionSaldo, int lastTransaction) {

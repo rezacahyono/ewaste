@@ -140,9 +140,10 @@ public class ItemMasterActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    ItemMaster itemMaster = dataSnapshot.getValue(ItemMaster.class);
-                    assert itemMaster != null;
-                    listItemMaster.add(itemMaster);
+                    ItemMaster itemMasterResult = dataSnapshot.getValue(ItemMaster.class);
+                    if (itemMasterResult != null) {
+                        listItemMaster.add(itemMasterResult);
+                    }
                 }
 
                 adapter.setAdapter(listItemMaster);

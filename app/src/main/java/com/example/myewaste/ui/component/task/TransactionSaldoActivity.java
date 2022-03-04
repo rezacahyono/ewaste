@@ -3,13 +3,17 @@ package com.example.myewaste.ui.component.task;
 import static com.example.myewaste.utils.Constant.DATE;
 import static com.example.myewaste.utils.Constant.EXTRAS_SALDO_TRANSACTION;
 import static com.example.myewaste.utils.Constant.EXTRAS_USER_DATA;
-import static com.example.myewaste.utils.Constant.ITEM_MASTER;
 import static com.example.myewaste.utils.Constant.NASABAH;
 import static com.example.myewaste.utils.Constant.NO_NASABAH;
+import static com.example.myewaste.utils.Constant.SALDO;
 import static com.example.myewaste.utils.Constant.SALDO_TRANSACTION;
 import static com.example.myewaste.utils.Constant.TYPE_TRANSACTION;
 import static com.example.myewaste.utils.Constant.WITHDRAW;
 import static com.example.myewaste.utils.Utils.getRegisterCode;
+
+import static java.util.Calendar.HOUR_OF_DAY;
+import static java.util.Calendar.MINUTE;
+import static java.util.Calendar.SECOND;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -67,6 +71,7 @@ public class TransactionSaldoActivity extends AppCompatActivity {
         bindingToolbar.tvTitleBar.setText(R.string.report_transaction_saldo);
         bindingToolbar.btnBack.setOnClickListener(view -> onBackPressed());
 
+
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
 
@@ -76,6 +81,13 @@ public class TransactionSaldoActivity extends AppCompatActivity {
 
         if (getIntent().getStringExtra(EXTRAS_USER_DATA) != null) {
             user = getIntent().getStringExtra(EXTRAS_USER_DATA);
+        }
+
+        if (!getRegisterCode(user).equalsIgnoreCase(NASABAH)) {
+            bindingToolbar.btnTrash.setVisibility(View.VISIBLE);
+            bindingToolbar.btnTrash.setImageResource(R.drawable.ic_download);
+        } else {
+            bindingToolbar.btnTrash.setVisibility(View.GONE);
         }
 
         binding.ibFilterChoose.setOnClickListener(v -> {
@@ -99,7 +111,7 @@ public class TransactionSaldoActivity extends AppCompatActivity {
                 fetchDataSaldoTransactionByDate(startDate, endDate);
                 flShow = true;
             } else {
-                Toast.makeText(this, "Tanggal tidak boleh kosong", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getResources().getString(R.string.input_can_not_be_empty, "Tanggal"), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -144,7 +156,7 @@ public class TransactionSaldoActivity extends AppCompatActivity {
             binding.rvTransaction.setVisibility(View.INVISIBLE);
             binding.ivPlaceholderEmpty.setVisibility(View.VISIBLE);
             binding.tvTitle.setVisibility(View.VISIBLE);
-            binding.tvTitle.setText(getResources().getString(R.string.title_data_transaction_empty, ITEM_MASTER));
+            binding.tvTitle.setText(getResources().getString(R.string.title_data_transaction_empty, SALDO));
         }
     }
 
@@ -183,8 +195,16 @@ public class TransactionSaldoActivity extends AppCompatActivity {
         datePicker = dateBuilder.build();
         datePicker.show(getSupportFragmentManager(), "DATE_PICKER");
         datePicker.addOnPositiveButtonClickListener(selection -> {
+            Date date = new Date();
+            date.setTime(selection);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            calendar.set(SECOND, 0);
+            calendar.set(MINUTE, 0);
+            calendar.set(HOUR_OF_DAY, 0);
+            date = calendar.getTime();
             binding.pickStartDate.setText(datePicker.getHeaderText());
-            startDate = selection;
+            startDate = date.getTime();
         });
     }
 

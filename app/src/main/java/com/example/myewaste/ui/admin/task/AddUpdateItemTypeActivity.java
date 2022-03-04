@@ -339,7 +339,7 @@ public class AddUpdateItemTypeActivity extends AppCompatActivity {
                         } else {
                             Toast.makeText(AddUpdateItemTypeActivity.this, getResources().getString(R.string.update_success, getResources().getString(R.string.item_type)), Toast.LENGTH_SHORT).show();
                         }
-
+                        loading.dismiss();
                         navigateToItemType();
                     })
                     .addOnFailureListener(e -> {
@@ -348,8 +348,8 @@ public class AddUpdateItemTypeActivity extends AppCompatActivity {
                         } else {
                             Toast.makeText(AddUpdateItemTypeActivity.this, getResources().getString(R.string.update_failure, getResources().getString(R.string.item_type)), Toast.LENGTH_SHORT).show();
                         }
+                        loading.dismiss();
                     });
-            loading.dismiss();
         }
 
     }

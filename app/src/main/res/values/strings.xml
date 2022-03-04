@@ -105,7 +105,6 @@
     <string name="profile">Profil</string>
     <string name="nik_is_registerd">Nik sudah terdaftar</string>
     <string name="username_is_registerd">Username sudah terdaftar</string>
-    <string name="register_successfully">%s berhasil ditambah</string>
     <string name="submit_success">%s berhasil ditambah</string>
     <string name="submit_failure">%s gagal ditambah</string>
     <string name="update_success">%s berhasil diubah</string>
@@ -137,6 +136,8 @@
     <string name="none">none</string>
     <string name="active_or_deactive_failure">Gagal %s</string>
     <string name="active_or_deactive_success">Berhasil %s</string>
+    <string name="success">Berhasil</string>
+    <string name="failure">Gagal</string>
     <string name="total_income">Total pendapatan</string>
     <string name="status">status</string>
     <string name="date">Tanggal</string>

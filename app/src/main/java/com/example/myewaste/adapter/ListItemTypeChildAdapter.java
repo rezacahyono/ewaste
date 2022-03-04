@@ -22,7 +22,7 @@ import java.util.List;
 
 public class ListItemTypeChildAdapter extends RecyclerView.Adapter<ListItemTypeChildAdapter.ListItemTypeChildViewHolder> {
 
-    private ArrayList<ItemType> listItemType = new ArrayList<>();
+    private final ArrayList<ItemType> listItemType = new ArrayList<>();
 
     @SuppressLint("NotifyDataSetChanged")
     public void setAdapter(List<ItemType> list) {

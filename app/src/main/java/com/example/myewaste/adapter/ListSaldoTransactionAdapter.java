@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ListSaldoTransactionAdapter extends RecyclerView.Adapter<ListSaldoTransactionAdapter.ListSaldoTransactionViewHolder> {
-    private ArrayList<SaldoTransaction> listSaldoTransaction = new ArrayList<>();
+    private final ArrayList<SaldoTransaction> listSaldoTransaction = new ArrayList<>();
 
     @SuppressLint("NotifyDataSetChanged")
     public void setAdapter(List<SaldoTransaction> list) {

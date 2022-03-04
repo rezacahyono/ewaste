@@ -1,7 +1,9 @@
 package com.example.myewaste.ui.component.task;
 
+import static com.example.myewaste.utils.Constant.ACCEPTED;
 import static com.example.myewaste.utils.Constant.DEFAULT_NO_TRANSACTION_ITEM;
 import static com.example.myewaste.utils.Constant.DEFAULT_NO_TRANSACTION_SALDO;
+import static com.example.myewaste.utils.Constant.DEPOSIT;
 import static com.example.myewaste.utils.Constant.EXTRAS_FROM;
 import static com.example.myewaste.utils.Constant.EXTRAS_ITEM_TRANSACTION;
 import static com.example.myewaste.utils.Constant.EXTRAS_USER_DATA;
@@ -25,10 +27,10 @@ import static com.example.myewaste.utils.Constant.USER_DATA;
 import static com.example.myewaste.utils.Utils.convertToRupiah;
 import static com.example.myewaste.utils.Utils.increseNumber;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
@@ -42,7 +44,6 @@ import com.example.myewaste.adapter.ListItemAdapter;
 import com.example.myewaste.databinding.ActivityAddInputTransactionScalesBinding;
 import com.example.myewaste.databinding.BottomSheetInputItemScaleBinding;
 import com.example.myewaste.databinding.MainToolbarBinding;
-import com.example.myewaste.model.utils.ListItem;
 import com.example.myewaste.model.item.Item;
 import com.example.myewaste.model.item.ItemMaster;
 import com.example.myewaste.model.item.ItemTransaction;
@@ -51,13 +52,18 @@ import com.example.myewaste.model.item.UnitItem;
 import com.example.myewaste.model.saldo.Saldo;
 import com.example.myewaste.model.saldo.SaldoTransaction;
 import com.example.myewaste.model.user.UserData;
+import com.example.myewaste.model.utils.ListItem;
+import com.example.myewaste.pref.SessionManagement;
+import com.example.myewaste.ui.nasabah.NasabahActivity;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Objects;
 
 public class AddUpdateTransactionItemActivity extends AppCompatActivity {
@@ -75,7 +81,7 @@ public class AddUpdateTransactionItemActivity extends AppCompatActivity {
     private ListItem listItemSheet = new ListItem();
     private ArrayList<Item> listItem = new ArrayList<>();
     private ArrayList<ListItem> listItemsForAdapter = new ArrayList<>();
-    private ArrayList<ItemType> listItemType = new ArrayList<>();
+    private final ArrayList<ItemType> listItemType = new ArrayList<>();
 
     private int lastPriceTransactionItem = 0;
     private int pricePerItem;
@@ -84,6 +90,7 @@ public class AddUpdateTransactionItemActivity extends AppCompatActivity {
     private int indexOfChangeList;
 
     private DatabaseReference databaseReference;
+    private SessionManagement sessionManagement;
 
     private ListItemAdapter adapter;
     private BottomSheetDialog bottomSheetDialog;
@@ -102,6 +109,7 @@ public class AddUpdateTransactionItemActivity extends AppCompatActivity {
         bindingToolbar.btnBack.setOnClickListener(view -> onBackPressed());
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
+        sessionManagement = new SessionManagement(this);
 
         adapter = new ListItemAdapter();
         binding.rvItem.setHasFixedSize(true);
@@ -120,6 +128,7 @@ public class AddUpdateTransactionItemActivity extends AppCompatActivity {
             fetchDataTransactionSaldoByNoTransactionSaldo(itemTransaction.getNo_saldo_transaction());
             loadDataItemTransaction(itemTransaction);
         } else {
+            lastPriceTransactionItem = 0;
             generateNoTransactionItemAndNoTransactionSaldo();
         }
 
@@ -131,7 +140,6 @@ public class AddUpdateTransactionItemActivity extends AppCompatActivity {
 
         if (getIntent().getStringExtra(EXTRAS_FROM) != null) {
             from = getIntent().getStringExtra(EXTRAS_FROM);
-
         }
 
         if (from.equals(FROM_DETAIL)) {
@@ -145,17 +153,28 @@ public class AddUpdateTransactionItemActivity extends AppCompatActivity {
 
 
         binding.btnSave.setOnClickListener(v -> {
-            Log.d("TAG", "onCreate: " + itemTransaction.getNo_item_transaction());
-            Log.d("TAG", "onCreate: " + saldoTransaction.getNo_saldo_transaction());
-            Log.d("TAG", "no Regis :"+saldo.getNo_regis());
-            Log.d("TAG", "saldo : "+saldo.getSaldo()+"- last "+lastPriceTransactionItem);
-            Log.d("TAG", "saldo calculate: "+(saldo.getSaldo()-lastPriceTransactionItem));
+            itemTransaction.setNo_nasabah(userData.getNo_regis());
+            itemTransaction.setNo_teller(sessionManagement.getUserSession());
+            itemTransaction.setNo_saldo_transaction(saldoTransaction.getNo_saldo_transaction());
+            itemTransaction.setItem_list(listItem);
+            itemTransaction.setTotal_price(priceTotal);
+            saldoTransaction.setNo_nasabah(userData.getNo_regis());
+            saldoTransaction.setType_transaction(DEPOSIT);
+            saldoTransaction.setNo_teller(sessionManagement.getUserSession());
+            saldoTransaction.setStatus(ACCEPTED);
+            saldoTransaction.setTotal_income(priceTotal);
+            saldoTransaction.setCuts_transaction(0.0);
+            if (!from.equals(FROM_DETAIL)){
+                Date date = new Date();
+                itemTransaction.setDate(date.getTime());
+                saldoTransaction.setDate(date.getTime());
+            }
             saldo.setSaldo(saldo.getSaldo()-lastPriceTransactionItem);
-            Log.d("TAG", "saldo : "+saldo.getSaldo()+"+ priceTotal : "+priceTotal);
-            saldo.setSaldo(saldo.getSaldo()+priceTotal);
-            Log.d("TAG", "saldo calculate: "+saldo.getSaldo());
+            saldo.setSaldo(priceTotal+saldo.getSaldo());
+            onSumbitTransactionItem(itemTransaction, saldoTransaction, saldo);
+            lastPriceTransactionItem = (int) itemTransaction.getTotal_price();
+            binding.btnSave.setVisibility(View.GONE);
         });
-
 
         setRecyclerView();
 
@@ -201,19 +220,17 @@ public class AddUpdateTransactionItemActivity extends AppCompatActivity {
     }
 
 
-    private void actionDelete(int position){
-        lastPriceTransactionItem = priceTotal;
-        if (listItemsForAdapter.size() > 0){
+    private void actionDelete(int position) {
+        if (listItemsForAdapter.size() > 0) {
             priceTotal -= listItemsForAdapter.get(position).getPrice();
             listItem.remove(position);
             listItemsForAdapter.remove(position);
             binding.btnSave.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             priceTotal = 0;
             listItem = new ArrayList<>();
             listItemsForAdapter = new ArrayList<>();
         }
-
         binding.tvTotal.setText(String.valueOf(listItem.size()));
         binding.tvIncome.setText(convertToRupiah(priceTotal));
         adapter.setAdapter(listItemsForAdapter);
@@ -313,8 +330,6 @@ public class AddUpdateTransactionItemActivity extends AppCompatActivity {
         itemType = new ItemType();
         pricePerItem = 0;
         totalItem = 0.0;
-        lastPriceTransactionItem = priceTotal;
-
         if (mode.equals(MODE_UPDATE)) {
             bindingBottomSheet.tvDdTypeItem.setText(listItemSheet.getNameItemType());
             bindingBottomSheet.tvItemMaster.setText(listItemSheet.getNameItem());
@@ -635,7 +650,6 @@ public class AddUpdateTransactionItemActivity extends AppCompatActivity {
                 }
             });
         }
-
     }
 
     private void loadDataUser(UserData userData) {
@@ -648,5 +662,24 @@ public class AddUpdateTransactionItemActivity extends AppCompatActivity {
         binding.tvNoRegis.setText(userData.getNo_regis());
     }
 
+    private void onSumbitTransactionItem(ItemTransaction itemTransaction, SaldoTransaction saldoTrasaction, Saldo saldo) {
+        DatabaseReference databaseReferenceTransactinItem = databaseReference.child(ITEM_TRANSACTION).child(itemTransaction.getNo_item_transaction());
+        DatabaseReference databaseReferenceTransactionSaldo = databaseReference.child(SALDO_TRANSACTION).child(saldoTrasaction.getNo_saldo_transaction());
+        DatabaseReference databaseReferenceSaldoNasabah = databaseReference.child(SALDO_NASABAH).child(saldo.getNo_regis());
+        databaseReferenceTransactinItem.setValue(itemTransaction).addOnSuccessListener(unused -> {
+            databaseReferenceTransactionSaldo.setValue(saldoTrasaction).addOnSuccessListener(unused1 -> {
+                databaseReferenceSaldoNasabah.setValue(saldo).addOnSuccessListener(unused2 -> {
+                    Toast.makeText(this, getResources().getString(R.string.success), Toast.LENGTH_SHORT).show();
+                    navigateToDetail();
+                }).addOnFailureListener(e -> Toast.makeText(this, getResources().getString(R.string.failure), Toast.LENGTH_SHORT).show());
+            }).addOnFailureListener(e -> Toast.makeText(this, getResources().getString(R.string.failure), Toast.LENGTH_SHORT).show());
+        }).addOnFailureListener(e -> Toast.makeText(this, getResources().getString(R.string.failure), Toast.LENGTH_SHORT).show());
+    }
+
+    private void navigateToDetail() {
+        Intent intent = new Intent(this, DetailTransactionItemActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
 
 }

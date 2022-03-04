@@ -17,7 +17,7 @@ import java.util.List;
 
 public class ListItemMasterAdapter extends RecyclerView.Adapter<ListItemMasterAdapter.ListItemViewHolder> {
 
-    private ArrayList<ItemMaster> listItem = new ArrayList<>();
+    private final ArrayList<ItemMaster> listItem = new ArrayList<>();
 
     @SuppressLint("NotifyDataSetChanged")
     public void setAdapter(List<ItemMaster> list) {
@@ -48,9 +48,7 @@ public class ListItemMasterAdapter extends RecyclerView.Adapter<ListItemMasterAd
             return false;
         });
 
-        holder.itemView.setOnClickListener(v -> {
-            onItemClickCallback.onClickedShort(listItem.get(holder.getAdapterPosition()));
-        });
+        holder.itemView.setOnClickListener(v -> onItemClickCallback.onClickedShort(listItem.get(holder.getAdapterPosition())));
     }
 
     @Override
