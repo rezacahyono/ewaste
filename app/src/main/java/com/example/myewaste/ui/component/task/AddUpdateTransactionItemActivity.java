@@ -27,7 +27,6 @@ import static com.example.myewaste.utils.Constant.USER_DATA;
 import static com.example.myewaste.utils.Utils.convertToRupiah;
 import static com.example.myewaste.utils.Utils.increseNumber;
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -54,7 +53,6 @@ import com.example.myewaste.model.saldo.SaldoTransaction;
 import com.example.myewaste.model.user.UserData;
 import com.example.myewaste.model.utils.ListItem;
 import com.example.myewaste.pref.SessionManagement;
-import com.example.myewaste.ui.nasabah.NasabahActivity;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -369,7 +367,7 @@ public class AddUpdateTransactionItemActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (charSequence.length() > 0) {
                     totalItem = Double.parseDouble(charSequence.toString());
-                    pricePerItem = (int) (itemType.getPrice() * Double.parseDouble(charSequence.toString()));
+                    pricePerItem = (int) (Math.round((itemType.getPrice()*totalItem)*100)/100);
                 } else {
                     pricePerItem = 0;
                 }
@@ -670,16 +668,9 @@ public class AddUpdateTransactionItemActivity extends AppCompatActivity {
             databaseReferenceTransactionSaldo.setValue(saldoTrasaction).addOnSuccessListener(unused1 -> {
                 databaseReferenceSaldoNasabah.setValue(saldo).addOnSuccessListener(unused2 -> {
                     Toast.makeText(this, getResources().getString(R.string.success), Toast.LENGTH_SHORT).show();
-                    navigateToDetail();
                 }).addOnFailureListener(e -> Toast.makeText(this, getResources().getString(R.string.failure), Toast.LENGTH_SHORT).show());
             }).addOnFailureListener(e -> Toast.makeText(this, getResources().getString(R.string.failure), Toast.LENGTH_SHORT).show());
         }).addOnFailureListener(e -> Toast.makeText(this, getResources().getString(R.string.failure), Toast.LENGTH_SHORT).show());
-    }
-
-    private void navigateToDetail() {
-        Intent intent = new Intent(this, DetailTransactionItemActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
     }
 
 }

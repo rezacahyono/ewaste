@@ -2,8 +2,10 @@ package com.example.myewaste.ui.component.task;
 
 import static com.example.myewaste.utils.Constant.AKTIF;
 import static com.example.myewaste.utils.Constant.DEACTIVE;
+import static com.example.myewaste.utils.Constant.EWASTE;
 import static com.example.myewaste.utils.Constant.EXTRAS_ACTION_MODE;
 import static com.example.myewaste.utils.Constant.EXTRAS_USER_DATA;
+import static com.example.myewaste.utils.Constant.FORMATE_EXCEL;
 import static com.example.myewaste.utils.Constant.MODE;
 import static com.example.myewaste.utils.Constant.MODE_ADD;
 import static com.example.myewaste.utils.Constant.MODE_UPDATE;
@@ -15,8 +17,8 @@ import static com.example.myewaste.utils.Constant.SUPER_ADMIN;
 import static com.example.myewaste.utils.Constant.TELLER;
 import static com.example.myewaste.utils.Constant.USER;
 import static com.example.myewaste.utils.Constant.USER_DATA;
+import static com.example.myewaste.utils.Utils.convertDateAndTime;
 import static com.example.myewaste.utils.Utils.getRegisterCode;
-import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -26,7 +28,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
 import com.example.myewaste.R;
 import com.example.myewaste.adapter.ListUserAdapater;
 import com.example.myewaste.databinding.ActivitySearchUserBinding;
@@ -41,17 +42,26 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.ss.util.CellRangeAddress;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Objects;
-
-import pub.devrel.easypermissions.EasyPermissions;
 
 public class DataUserActivity extends AppCompatActivity {
 
 
     private Mode modeUser;
     private ArrayList<UserData> listUserData;
-    private ArrayList<UserData> listUser;
     private DatabaseReference databaseReference;
 
     private ListUserAdapater adapter;
@@ -91,13 +101,9 @@ public class DataUserActivity extends AppCompatActivity {
                     break;
             }
         }
-
-        requestPermissions();
         databaseReference = FirebaseDatabase.getInstance().getReference();
         sessionManagement = new SessionManagement(this);
 
-        listUserData = new ArrayList<>();
-        listUser = new ArrayList<>();
         adapter = new ListUserAdapater();
         binding.rvUser.setHasFixedSize(true);
 
@@ -107,9 +113,7 @@ public class DataUserActivity extends AppCompatActivity {
 
         bindingToolbar.btnTrash.setImageResource(R.drawable.ic_download);
 
-        bindingToolbar.btnTrash.setOnClickListener(v -> {
-//            createExcelFileReportBarang();
-        });
+        bindingToolbar.btnTrash.setOnClickListener(v -> generateReportDataUser());
 
         binding.fbAddUser.setOnClickListener(v -> {
             Intent intent = new Intent(this, AddUserActivity.class);
@@ -125,12 +129,13 @@ public class DataUserActivity extends AppCompatActivity {
         binding.rvUser.setAdapter(adapter);
 
         adapter.setOnItemClickCallback(userData -> {
-            Intent intent = new Intent(this, AddUserActivity.class);
+            Intent intent = new Intent(DataUserActivity.this, AddUserActivity.class);
             intent.putExtra(EXTRAS_USER_DATA, userData);
             intent.putExtra(MODE, modeUser);
             intent.putExtra(EXTRAS_ACTION_MODE, MODE_UPDATE);
             startActivity(intent);
         });
+
         adapter.setOnItemAction(new ListUserAdapater.OnItemAction() {
             @Override
             public void setVisibilityUpdate(UserData userData, ImageButton ibActive, ImageButton ibDeactive) {
@@ -215,6 +220,7 @@ public class DataUserActivity extends AppCompatActivity {
         queryUserData.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                listUserData = new ArrayList<>();
                 for (DataSnapshot data : snapshot.getChildren()) {
                     UserData userData = data.getValue(UserData.class);
                     if (userData != null) {
@@ -231,7 +237,6 @@ public class DataUserActivity extends AppCompatActivity {
                 }
                 adapter.setAdapter(listUserData);
                 showPlaceholderOrRecyclerView(listUserData.size() > 0);
-                listUserData.clear();
             }
 
             @Override
@@ -242,7 +247,7 @@ public class DataUserActivity extends AppCompatActivity {
     }
 
     private void setDeactiveUser(String noRegis) {
-        if (!noRegis.equals(sessionManagement.getUserSession())){
+        if (!noRegis.equals(sessionManagement.getUserSession())) {
             databaseReference.child(USER).orderByChild(NO_REGIS).equalTo(noRegis).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -257,7 +262,7 @@ public class DataUserActivity extends AppCompatActivity {
                     Toast.makeText(DataUserActivity.this, getResources().getString(R.string.active_or_deactive_failure, "non-aktif"), Toast.LENGTH_SHORT).show();
                 }
             });
-        }else {
+        } else {
             Toast.makeText(this, getResources().getString(R.string.active_or_deactive_failure, "non-aktif"), Toast.LENGTH_SHORT).show();
         }
     }
@@ -278,7 +283,7 @@ public class DataUserActivity extends AppCompatActivity {
                     Toast.makeText(DataUserActivity.this, getResources().getString(R.string.active_or_deactive_failure, "active"), Toast.LENGTH_SHORT).show();
                 }
             });
-        }else {
+        } else {
             Toast.makeText(this, getResources().getString(R.string.active_or_deactive_failure, "active"), Toast.LENGTH_SHORT).show();
         }
     }
@@ -301,185 +306,149 @@ public class DataUserActivity extends AppCompatActivity {
         return result;
     }
 
-
-    private void requestPermissions() {
-        String[] perms = {Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        if (EasyPermissions.hasPermissions(getApplication(), perms)) {
-//            Toast.makeText(this, "success", Toast.LENGTH_SHORT).show();
-        } else {
-            EasyPermissions.requestPermissions(
-                    this,
-                    getResources().getString(R.string.message_permission),
-                    101,
-                    perms
-            );
+    private String dataModeUser(Mode modeUser) {
+        String result = "";
+        switch (modeUser) {
+            case MODE_NASABAH: {
+                result = getResources().getString(R.string.data_nasabah);
+                break;
+            }
+            case MODE_TELLER: {
+                result = getResources().getString(R.string.data_teller);
+                break;
+            }
+            case MODE_SUPER_ADMIN: {
+                result = getResources().getString(R.string.data_admin);
+            }
         }
+        return result;
     }
 
-////
-//    private void createExcelFileReportBarang(){
-//        File filePath = new File( Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + File.separator + "MyEwaste");
-//
-//        if(!filePath.exists()){
-//            if(filePath.mkdir()){
-//                filePath = new File(filePath.getAbsolutePath() + File.separator +"data_nasabah_"+System.currentTimeMillis()+".xls");
-//            }else{
-//                Toast.makeText(DataUserActivity.this, "Failed To make Directory",Toast.LENGTH_SHORT).show();
-//            }
-//        }else{
-//            filePath = new File(filePath.getAbsolutePath() + File.separator +"data_nasabah_"+System.currentTimeMillis()+".xls");
-//        }
-//        HSSFWorkbook hssfWorkbook = new HSSFWorkbook();
-//        HSSFSheet hssfSheet = hssfWorkbook.createSheet("Data Nasabah");
-//
-//        //cell tanggal
-//        HSSFRow rowTanggal =hssfSheet.createRow(0);
-//        HSSFCell cellTanggal = rowTanggal.createCell(0);
-//        cellTanggal.setCellValue("Data Nasabah My Ewaste");
-//        hssfSheet.addMergedRegion(new CellRangeAddress(0,0,0,5));
-//
-//        //todo cell style
-//        CellStyle cellStyle = hssfWorkbook.createCellStyle();
-//        cellStyle.setAlignment(HorizontalAlignment.CENTER);
-//        cellStyle.setBorderBottom(BorderStyle.THIN);
-//        cellStyle.setBorderTop(BorderStyle.THIN);
-//        cellStyle.setBorderLeft(BorderStyle.THIN);
-//        cellStyle.setBorderRight(BorderStyle.THIN);
-//        cellStyle.setWrapText(true);
-//
-//        HSSFRow rowTitle = hssfSheet.createRow(1);
-//        HSSFCell cellTitleNoRegis = rowTitle.createCell(0);
-//        cellTitleNoRegis.setCellStyle(cellStyle);
-//        cellTitleNoRegis.setCellValue("No Regis");
-//
-//        HSSFCell cellTitleNIK = rowTitle.createCell(1);
-//        cellTitleNIK.setCellStyle(cellStyle);
-//        cellTitleNIK.setCellValue("NIK");
-//
-//        HSSFCell cellTitleNama = rowTitle.createCell(2);
-//        cellTitleNama.setCellStyle(cellStyle);
-//        cellTitleNama.setCellValue("Nama Nasabah");
-//
-//        HSSFCell cellTitleJK = rowTitle.createCell(3);
-//        cellTitleJK.setCellStyle(cellStyle);
-//        cellTitleJK.setCellValue("Jenis Kelamin");
-//
-//        HSSFCell cellTitleAlamat = rowTitle.createCell(4);
-//        cellTitleAlamat.setCellStyle(cellStyle);
-//        cellTitleAlamat.setCellValue("Alamat");
-////
-////        HSSFCell cellTitleRT = rowTitle.createCell(5);
-////        cellTitleRT.setCellStyle(cellStyle);
-////        cellTitleRT.setCellValue("RT");
-////
-////        HSSFCell cellTitleRW = rowTitle.createCell(6);
-////        cellTitleRW.setCellStyle(cellStyle);
-////        cellTitleRW.setCellValue("RW");
-//
-//        HSSFCell cellTitleNoTelp = rowTitle.createCell(5);
-//        cellTitleNoTelp.setCellStyle(cellStyle);
-//        cellTitleNoTelp.setCellValue("No Telp");
-//
-//        HSSFCell cellTitleProfile = rowTitle.createCell(6);
-//        cellTitleProfile.setCellStyle(cellStyle);
-//        cellTitleProfile.setCellValue("Link Foto Profile");
-//
-//        for(int i = 2; i <= listUserData.size()+1; i++){
-//
-//            HSSFRow rowData = hssfSheet.createRow(i);
-//
-//            HSSFCell cellDataNoregis = rowData.createCell(0);
-//            cellDataNoregis.setCellStyle(cellStyle);
-//            cellDataNoregis.setCellValue(listUserData.get(i-2).getNo_regis());
-//
-//            HSSFCell cellDataNIK = rowData.createCell(1);
-//            cellDataNIK.setCellStyle(cellStyle);
-//            cellDataNIK.setCellValue(listUserData.get(i-2).getNik());
-//
-//            HSSFCell cellDataNama = rowData.createCell(2);
-//            cellDataNama.setCellStyle(cellStyle);
-//            cellDataNama.setCellValue(listUserData.get(i-2).getName());
-//
-//            HSSFCell cellDataJenisKelamin = rowData.createCell(3);
-//            cellDataJenisKelamin.setCellStyle(cellStyle);
-//            cellDataJenisKelamin.setCellValue(listUserData.get(i-2).getGender());
-//
-//            HSSFCell cellDataAlamat = rowData.createCell(4);
-//            cellDataAlamat.setCellStyle(cellStyle);
-//            cellDataAlamat.setCellValue(listUserData.get(i-2).getAddress());
-////
-////            HSSFCell cellDataRT = rowData.createCell(5);
-////            cellDataRT.setCellStyle(cellStyle);
-////            cellDataRT.setCellValue(listUserData.get(i-2).getRT());
-////
-////            HSSFCell cellDataRW = rowData.createCell(6);
-////            cellDataRW.setCellStyle(cellStyle);
-////            cellDataRW.setCellValue(listUserData.get(i-2).getRW());
-//
-//            HSSFCell cellDataNoTelp = rowData.createCell(5);
-//            cellDataNoTelp.setCellStyle(cellStyle);
-//            cellDataNoTelp.setCellValue(listUserData.get(i-2).getPhone());
-//
-//            HSSFCell cellDataFotoProfile = rowData.createCell(6);
-//            cellDataFotoProfile.setCellStyle(cellStyle);
-//            cellDataFotoProfile.setCellValue(listUserData.get(i-2).getAvatar());
-//        }
-//
-//
-//        hssfSheet.setColumnWidth(8, 12000);
-//
-//        try{
-//            if(!filePath.exists()){
-//                filePath.createNewFile();
-//            }
-//            FileOutputStream fileOutputStream= new FileOutputStream(filePath);
-//            hssfWorkbook.write(fileOutputStream);
-//
-//            if (fileOutputStream!=null){
-//                fileOutputStream.flush();
-//                fileOutputStream.close();
-////                showMessage(DataUserActivity.this, "Location : " +filePath.getAbsolutePath());
-//                finish();
-//            }
-//        }catch (Exception e){
-//            Log.d("TAG", "exportToExcel: " + e.getMessage());
-//        }
-//    }
-////
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        if (requestCode == 101) {
-//            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                createExcelFileReportBarang();
-//            } else {
-//                Toast.makeText(this, "Tidak Mendapatkan Hak Akses Storage",Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//    }
-//
-//    private void requestStoragePermission() {
-//        if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)){
-//            new AlertDialog.Builder(this)
-//                    .setTitle("Permission Needed")
-//                    .setMessage("We Need Permission to Access Your Galery to upload your File into Our Database")
-//                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialogInterface, int i) {
-////                            ActivityCompat.requestPermissions(DataUserActivity.this, PERMISSIONS_STORAGE,STORAGE_PERMISSION_CODE);
-//                        }
-//                    })
-//                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialogInterface, int i) {
-//                            dialogInterface.dismiss();
-//                        }
-//                    })
-//                    .create()
-//                    .show();
-//        }else{
-////            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
-//        }
-//    }
+    private void generateReportDataUser() {
+        if (listUserData.size() > 0){
+            File filePath = new File(getExternalFilesDir(null) + File.separator + EWASTE);
+            if (!filePath.exists()) {
+                if (filePath.mkdir()) {
+                    filePath = new File(filePath.getAbsolutePath() + File.separator + dataModeUser(modeUser) + convertDateAndTime(System.currentTimeMillis()) + FORMATE_EXCEL);
+                } else {
+                    Toast.makeText(this, getResources().getString(R.string.failure), Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                filePath = new File(filePath.getAbsolutePath() + File.separator + dataModeUser(modeUser) + convertDateAndTime(System.currentTimeMillis()) + FORMATE_EXCEL);
+            }
+
+            HSSFWorkbook hssfWorkbook = new HSSFWorkbook();
+            HSSFSheet hssfSheet = hssfWorkbook.createSheet(dataModeUser(modeUser));
+
+            HSSFCellStyle cellStyle = hssfWorkbook.createCellStyle();
+            cellStyle.setAlignment(HorizontalAlignment.CENTER);
+            cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+            cellStyle.setBorderBottom(BorderStyle.THIN);
+            cellStyle.setBorderTop(BorderStyle.THIN);
+            cellStyle.setBorderLeft(BorderStyle.THIN);
+            cellStyle.setBorderRight(BorderStyle.THIN);
+            cellStyle.setWrapText(true);
+
+            HSSFRow rowNameApp = hssfSheet.createRow(0);
+            HSSFCell cellNameApp = rowNameApp.createCell(0);
+            cellNameApp.setCellValue(dataModeUser(modeUser) + " " + getResources().getString(R.string.ewaste_pch));
+            cellNameApp.setCellStyle(cellStyle);
+            hssfSheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 7));
+
+            HSSFRow rowTitle = hssfSheet.createRow(1);
+
+            HSSFCell cellTitleNoRegis = rowTitle.createCell(0);
+            cellTitleNoRegis.setCellStyle(cellStyle);
+            hssfSheet.setColumnWidth(0, 5000);
+            cellTitleNoRegis.setCellValue(getResources().getString(R.string.no_register));
+
+            HSSFCell cellTitleNik = rowTitle.createCell(1);
+            cellTitleNik.setCellStyle(cellStyle);
+            hssfSheet.setColumnWidth(1, 8000);
+            cellTitleNik.setCellValue(getResources().getString(R.string.nik));
+
+            HSSFCell cellTitleName = rowTitle.createCell(2);
+            cellTitleName.setCellStyle(cellStyle);
+            hssfSheet.setColumnWidth(2, 9000);
+            cellTitleName.setCellValue(getResources().getString(R.string.name));
+
+            HSSFCell cellTitleGender = rowTitle.createCell(3);
+            cellTitleGender.setCellStyle(cellStyle);
+            hssfSheet.setColumnWidth(3, 8000);
+            cellTitleGender.setCellValue(getResources().getString(R.string.gender));
+
+            HSSFCell cellTitleNoPhone = rowTitle.createCell(4);
+            cellTitleNoPhone.setCellStyle(cellStyle);
+            hssfSheet.setColumnWidth(4, 7000);
+            cellTitleNoPhone.setCellValue(getResources().getString(R.string.phone));
+
+            HSSFCell cellTitleAddress = rowTitle.createCell(5);
+            cellTitleAddress.setCellStyle(cellStyle);
+            hssfSheet.setColumnWidth(5, 10000);
+            cellTitleAddress.setCellValue(getResources().getString(R.string.address));
+
+            HSSFCell cellTitleAvatar = rowTitle.createCell(6);
+            cellTitleAvatar.setCellStyle(cellStyle);
+            hssfSheet.setColumnWidth(6, 12000);
+            cellTitleAvatar.setCellValue(getResources().getString(R.string.photo_profil));
+
+            HSSFCell cellTitlePhotoNik = rowTitle.createCell(7);
+            cellTitlePhotoNik.setCellStyle(cellStyle);
+            hssfSheet.setColumnWidth(7, 12000);
+            cellTitlePhotoNik.setCellValue(getResources().getString(R.string.photo_profil));
+
+            for (int i = 0; i < listUserData.size(); i++) {
+                HSSFRow rowData = hssfSheet.createRow(i + 2);
+
+                HSSFCell cellDataNoRegis = rowData.createCell(0);
+                cellDataNoRegis.setCellStyle(cellStyle);
+                cellDataNoRegis.setCellValue(listUserData.get(i).getNo_regis());
+
+                HSSFCell cellDataNik = rowData.createCell(1);
+                cellDataNik.setCellStyle(cellStyle);
+                cellDataNik.setCellValue(listUserData.get(i).getNik());
+
+                HSSFCell cellDataName = rowData.createCell(2);
+                cellDataName.setCellStyle(cellStyle);
+                cellDataName.setCellValue(listUserData.get(i).getName());
+
+                HSSFCell cellDataGender = rowData.createCell(3);
+                cellDataGender.setCellStyle(cellStyle);
+                cellDataGender.setCellValue(listUserData.get(i).getGender());
+
+                HSSFCell cellDataNoPhone = rowData.createCell(4);
+                cellDataNoPhone.setCellStyle(cellStyle);
+                cellDataNoPhone.setCellValue(listUserData.get(i).getPhone());
+
+                HSSFCell cellDataAddress = rowData.createCell(5);
+                cellDataAddress.setCellStyle(cellStyle);
+                cellDataAddress.setCellValue(listUserData.get(i).getAddress());
+
+                HSSFCell cellDataAvatar = rowData.createCell(6);
+                cellDataAvatar.setCellStyle(cellStyle);
+                cellDataAvatar.setCellValue(listUserData.get(i).getAvatar());
+
+                HSSFCell cellDataPhotoNik = rowData.createCell(7);
+                cellDataPhotoNik.setCellStyle(cellStyle);
+                cellDataPhotoNik.setCellValue(listUserData.get(i).getPhoto_nik());
+            }
+
+            try {
+                if (!filePath.exists()) {
+                    filePath.createNewFile();
+                }
+                FileOutputStream fileOutputStream = new FileOutputStream(filePath);
+                hssfWorkbook.write(fileOutputStream);
+
+                fileOutputStream.flush();
+                fileOutputStream.close();
+                Toast.makeText(this, getResources().getString(R.string.success) + " download", Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(this, getResources().getString(R.string.failure) + " download", Toast.LENGTH_SHORT).show();
+            }
+        }else {
+            Toast.makeText(this, getResources().getString(R.string.data_not_found), Toast.LENGTH_SHORT).show();
+        }
+    }
 }

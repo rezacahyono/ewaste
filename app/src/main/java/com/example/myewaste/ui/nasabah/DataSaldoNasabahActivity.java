@@ -1,16 +1,18 @@
 package com.example.myewaste.ui.nasabah;
 
+import static com.example.myewaste.utils.Constant.EWASTE;
+import static com.example.myewaste.utils.Constant.FORMATE_EXCEL;
 import static com.example.myewaste.utils.Constant.NAME;
 import static com.example.myewaste.utils.Constant.NASABAH;
 import static com.example.myewaste.utils.Constant.NO_REGIS;
 import static com.example.myewaste.utils.Constant.SALDO_NASABAH;
 import static com.example.myewaste.utils.Constant.USER_DATA;
+import static com.example.myewaste.utils.Utils.convertDateAndTime;
 import static com.example.myewaste.utils.Utils.convertToRupiah;
 import static com.example.myewaste.utils.Utils.getRegisterCode;
-
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,13 +32,26 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.protobuf.Value;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.ss.util.CellRangeAddress;
+
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Objects;
 
 public class DataSaldoNasabahActivity extends AppCompatActivity {
+
     private ArrayList<UserData> listUserData;
+    private ArrayList<Saldo> listSaldo;
     private Saldo saldo;
     private DatabaseReference databaseReference;
 
@@ -59,13 +74,15 @@ public class DataSaldoNasabahActivity extends AppCompatActivity {
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
         saldo = new Saldo();
-        listUserData = new ArrayList<>();
         adapter = new ListSaldoNasabahAdapter();
         binding.rvUser.setHasFixedSize(true);
 
         fetchDataUserBySearch("");
-
+        actionSearchView();
         setRecylcerView();
+
+
+        bindingToolbar.btnTrash.setOnClickListener(v -> generateReportDataSaldoNasabah());
     }
 
     private void showPlaceholderOrRecyclerView(boolean isShow) {
@@ -83,30 +100,29 @@ public class DataSaldoNasabahActivity extends AppCompatActivity {
     }
 
 
-    private void setRecylcerView(){
+    private void setRecylcerView() {
         binding.rvUser.setLayoutManager(new LinearLayoutManager(this));
         binding.rvUser.setAdapter(adapter);
 
 
-        adapter.setOnItemAction((userData, tvSaldo) -> {
-            databaseReference.child(SALDO_NASABAH).orderByChild(NO_REGIS).equalTo(userData.getNo_regis()).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    for (DataSnapshot dataSnapshot: snapshot.getChildren()){
-                        Saldo saldoResult = dataSnapshot.getValue(Saldo.class);
-                        if (saldoResult != null){
-                            saldo = saldoResult;
-                        }
+        adapter.setOnItemAction((userData, tvSaldo) -> databaseReference.child(SALDO_NASABAH).orderByChild(NO_REGIS).equalTo(userData.getNo_regis()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Saldo saldoResult = dataSnapshot.getValue(Saldo.class);
+                    if (saldoResult != null) {
+                        saldo = saldoResult;
+                        listSaldo.add(saldo);
                     }
-                    tvSaldo.setText(convertToRupiah((int) saldo.getSaldo()));
                 }
+                tvSaldo.setText(convertToRupiah((int) saldo.getSaldo()));
+            }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-                }
-            });
-        });
+            }
+        }));
     }
 
     public void actionSearchView() {
@@ -140,6 +156,8 @@ public class DataSaldoNasabahActivity extends AppCompatActivity {
         queryUserData.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                listUserData = new ArrayList<>();
+                listSaldo = new ArrayList<>();
                 for (DataSnapshot data : snapshot.getChildren()) {
                     UserData userData = data.getValue(UserData.class);
                     if (userData != null) {
@@ -156,7 +174,6 @@ public class DataSaldoNasabahActivity extends AppCompatActivity {
                 }
                 adapter.setAdapter(listUserData);
                 showPlaceholderOrRecyclerView(listUserData.size() > 0);
-                listUserData.clear();
             }
 
             @Override
@@ -166,215 +183,88 @@ public class DataSaldoNasabahActivity extends AppCompatActivity {
         });
     }
 
+    private void generateReportDataSaldoNasabah(){
+        if (listUserData.size() > 0 && listSaldo.size() > 0){
+            File filePath = new File(getExternalFilesDir(null) + File.separator + EWASTE);
+            if (!filePath.exists()) {
+                if (filePath.mkdir()) {
+                    filePath = new File(filePath.getAbsolutePath() + File.separator + getResources().getString(R.string.data_saldo_nasabah) + convertDateAndTime(System.currentTimeMillis()) + FORMATE_EXCEL);
+                } else {
+                    Toast.makeText(this, getResources().getString(R.string.failure), Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                filePath = new File(filePath.getAbsolutePath() + File.separator + getResources().getString(R.string.data_saldo_nasabah) + convertDateAndTime(System.currentTimeMillis()) + FORMATE_EXCEL);
+            }
 
-//    private void loadDataNasabah(){
-//        userDataArrayList = new ArrayList<>();
-//        Query nasabahQuery = databaseReference.child("userdata").orderByChild("noregis");
-//        nasabahQuery.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                if(snapshot.exists()){
-//                    for(DataSnapshot data :snapshot.getChildren()){
-//                        UserData userData = data.getValue(UserData.class);
-//                        if(Utils.getRegisterCode(userData.getNo_regis()).toLowerCase().equals("n")){
-//                            userDataArrayList.add(userData);
-//                        }
-//                    }
-//                    prepareRecycleView(userDataArrayList);
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-//    }
-//
-//    private void prepareRecycleView(ArrayList<UserData> userDataArrayList){
-//        ListSaldoNasabahAdapter adapter = new ListSaldoNasabahAdapter(this, userDataArrayList, listener);
-//        LinearLayoutManager mManager = new LinearLayoutManager(this);
-//        rvDataSaldoNasabah.setLayoutManager(mManager);
-//        rvDataSaldoNasabah.setAdapter(adapter);
-//
-//    }
-//
-//    private void loadSaldoNasabah(String idNasabah, TextView attachTo){
-//        Query saldoNasabahQuery = databaseReference.child("saldonasabah").child(idNasabah).child("saldo");
-//        saldoNasabahQuery.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                int saldoNasabah = snapshot.getValue(int.class);
-//                attachTo.setText(Utils.convertToRupiah(saldoNasabah));
-//                listener.setTotalSaldoNasabah(saldoNasabah);
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-//    }
-//
-//    private void loadAllSaldoNasabah(){
-//        ArrayList<Saldo> saldoArrayList = new ArrayList<>();
-//        Query saldoNasabahQuery = databaseReference.child("saldonasabah").orderByChild("noregis");
-//        saldoNasabahQuery.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                for(DataSnapshot data : snapshot.getChildren()){
-//                    Saldo saldo = data.getValue(Saldo.class);
-//                    saldoArrayList.add(saldo);
-//                }
-//                createExcel(saldoArrayList);
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-//    }
-//
-//    private void createExcel(ArrayList<Saldo> saldoArrayList){
-//        File filePath = new File( Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + File.separator + "MyEwaste");
-//
-//        if(!filePath.exists()){
-//            if(filePath.mkdir()){
-//                filePath = new File(filePath.getAbsolutePath() + File.separator +"data_saldo_nasabah_"+System.currentTimeMillis()+".xls");
-//            }else{
-//                showMessage(DataSaldoNasabahActivity.this, "Failed To make Directory");
-//            }
-//        }else{
-//            filePath = new File(filePath.getAbsolutePath() + File.separator +"data_saldo_nasabah_"+System.currentTimeMillis()+".xls");
-//        }
-//        //todo create new workbook
-//        HSSFWorkbook hssfWorkbook = new HSSFWorkbook();
-//        //todo create new worksheet
-//        HSSFSheet hssfSheet = hssfWorkbook.createSheet("Data Saldo Nasabah");
-//
-//        //cell tanggal
-//        HSSFRow rowTanggal =hssfSheet.createRow(0);
-//        HSSFCell cellTanggal = rowTanggal.createCell(0);
-//        cellTanggal.setCellValue("Data Saldo Nasabah");
-//        hssfSheet.addMergedRegion(new CellRangeAddress(0,0,0,5));
-//
-//        //todo cell style
-//        CellStyle cellStyle = hssfWorkbook.createCellStyle();
-////        cellStyle.setAlignment(CellStyle.ALIGN_CENTER);
-////        cellStyle.setBorderBottom(CellStyle.BORDER_THIN);
-////        cellStyle.setBorderTop(CellStyle.BORDER_THIN);
-////        cellStyle.setBorderLeft(CellStyle.BORDER_THIN);
-////        cellStyle.setBorderRight(CellStyle.BORDER_THIN);
-//        cellStyle.setWrapText(true);
-//
-//        HSSFRow rowTitle = hssfSheet.createRow(1);
-//        HSSFCell cellTitleNoRegis = rowTitle.createCell(0);
-//        cellTitleNoRegis.setCellStyle(cellStyle);
-//        cellTitleNoRegis.setCellValue("ID Nasabah");
-//
-//        HSSFCell cellTitleNama = rowTitle.createCell(1);
-//        cellTitleNama.setCellStyle(cellStyle);
-//        cellTitleNama.setCellValue("Nama Nasabah");
-//
-//        HSSFCell cellTitleSaldo = rowTitle.createCell(2);
-//        cellTitleSaldo.setCellStyle(cellStyle);
-//        cellTitleSaldo.setCellValue("Saldo Nasabah");
-//
-//        int total = 0;
-//
-//        for(int i = 2; i <= userDataArrayList.size()+1; i++){
-//
-//            HSSFRow rowData = hssfSheet.createRow(i);
-//
-//            HSSFCell cellDataNoregis = rowData.createCell(0);
-//            cellDataNoregis.setCellStyle(cellStyle);
-//            cellDataNoregis.setCellValue(userDataArrayList.get(i-2).getNo_regis());
-//
-//            HSSFCell cellDataNama = rowData.createCell(1);
-//            cellDataNama.setCellStyle(cellStyle);
-//            cellDataNama.setCellValue(userDataArrayList.get(i-2).getName());
-//
-//            HSSFCell cellDataSaldo = rowData.createCell(2);
-//            cellDataSaldo.setCellStyle(cellStyle);
-//            cellDataSaldo.setCellValue(convertToRupiah(saldoArrayList.get(i-2).getSaldo()));
-//            total+= saldoArrayList.get(i-2).getSaldo();
-//        }
-//
-//        HSSFRow rowTotal = hssfSheet.createRow(userDataArrayList.size() + 2);
-//        HSSFCell cellTitleTotal = rowTotal.createCell(1);
-//        cellTitleTotal.setCellStyle(cellStyle);
-//        cellTitleTotal.setCellValue("TOTAL");
-//
-//        HSSFCell cellValueTotal = rowTotal.createCell(2);
-//        cellValueTotal.setCellStyle(cellStyle);
-//        cellValueTotal.setCellValue(convertToRupiah(total));
-//
-//        try{
-//            if(!filePath.exists()){
-//                filePath.createNewFile();
-//            }
-//
-//            FileOutputStream fileOutputStream= new FileOutputStream(filePath);
-//            hssfWorkbook.write(fileOutputStream);
-//
-//            if (fileOutputStream!=null){
-//                fileOutputStream.flush();
-//                fileOutputStream.close();
-//                showMessage(DataSaldoNasabahActivity.this, "Location : " +filePath.getAbsolutePath());
-//                finish();
-//            }
-//        }catch (Exception e){
-//            Log.d("TAG", "exportToExcel: " + e.getMessage());
-//        }
-//    }
-//
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        if (requestCode == STORAGE_PERMISSION_CODE) {
-//            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                loadAllSaldoNasabah();
-//            } else {
-//                Toast.makeText(this, "Tidak Mendapatkan Hak Akses Storage",Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//    }
-//
-//    private void requestStoragePermission() {
-//        if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)){
-//            new AlertDialog.Builder(this)
-//                    .setTitle("Permission Needed")
-//                    .setMessage("We Need Permission to Access Your Galery to upload your File into Our Database")
-//                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialogInterface, int i) {
-//                            ActivityCompat.requestPermissions(DataSaldoNasabahActivity.this, PERMISSIONS_STORAGE,STORAGE_PERMISSION_CODE);
-//                        }
-//                    })
-//                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialogInterface, int i) {
-//                            dialogInterface.dismiss();
-//                        }
-//                    })
-//                    .create()
-//                    .show();
-//        }else{
-//            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
-//        }
-//    }
-//
-//    @Override
-//    public boolean onSupportNavigateUp() {
-//        onBackPressed();
-//        return true;
-//    }
-//
-//    public interface DataSaldoNasabahListener{
-//        void setTotalSaldoNasabah(int addSaldo);
-//        void onLoadSaldoNasabah(String idNasabah, TextView attachTo);
-//    }
-//
+            HSSFWorkbook hssfWorkbook = new HSSFWorkbook();
+            HSSFSheet hssfSheet = hssfWorkbook.createSheet(SALDO_NASABAH);
+
+            HSSFCellStyle cellStyle = hssfWorkbook.createCellStyle();
+            cellStyle.setAlignment(HorizontalAlignment.CENTER);
+            cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+            cellStyle.setBorderBottom(BorderStyle.THIN);
+            cellStyle.setBorderTop(BorderStyle.THIN);
+            cellStyle.setBorderLeft(BorderStyle.THIN);
+            cellStyle.setBorderRight(BorderStyle.THIN);
+            cellStyle.setWrapText(true);
+
+            HSSFRow rowNameApp = hssfSheet.createRow(0);
+            HSSFCell cellNameApp = rowNameApp.createCell(0);
+            cellNameApp.setCellValue(getResources().getString(R.string.data_saldo_nasabah)+" "+getResources().getString(R.string.ewaste_pch));
+            cellNameApp.setCellStyle(cellStyle);
+            hssfSheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 2));
+
+            HSSFRow rowTitle = hssfSheet.createRow(1);
+
+            HSSFCell cellTitleNoRegis = rowTitle.createCell(0);
+            cellTitleNoRegis.setCellStyle(cellStyle);
+            hssfSheet.setColumnWidth(0,4000);
+            cellTitleNoRegis.setCellValue(getResources().getString(R.string.no_register));
+
+            HSSFCell cellTitleName = rowTitle.createCell(1);
+            cellTitleName.setCellStyle(cellStyle);
+            hssfSheet.setColumnWidth(1,9000);
+            cellTitleName.setCellValue(getResources().getString(R.string.name));
+
+            HSSFCell cellTitleSaldo = rowTitle.createCell(2);
+            cellTitleSaldo.setCellStyle(cellStyle);
+            hssfSheet.setColumnWidth(2,6000);
+            cellTitleSaldo.setCellValue(getResources().getString(R.string.ballance));
+
+
+            for (int i = 0; i < listUserData.size(); i++) {
+                HSSFRow rowData = hssfSheet.createRow(i+2);
+
+                HSSFCell cellDataNoRegis = rowData.createCell(0);
+                cellDataNoRegis.setCellStyle(cellStyle);
+                cellDataNoRegis.setCellValue(listSaldo.get(i).getNo_regis());
+
+                HSSFCell cellDataName = rowData.createCell(1);
+                cellDataName.setCellStyle(cellStyle);
+                cellDataName.setCellValue(listUserData.get(i).getName());
+
+                HSSFCell cellDataSaldo = rowData.createCell(2);
+                cellDataSaldo.setCellStyle(cellStyle);
+                cellDataSaldo.setCellValue(convertToRupiah((int)listSaldo.get(i).getSaldo()));
+            }
+
+            try {
+                if (!filePath.exists()) {
+                    filePath.createNewFile();
+                }
+                FileOutputStream fileOutputStream = new FileOutputStream(filePath);
+                hssfWorkbook.write(fileOutputStream);
+
+                fileOutputStream.flush();
+                fileOutputStream.close();
+                Toast.makeText(this, getResources().getString(R.string.success) + " download", Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(this, getResources().getString(R.string.failure) + " download", Toast.LENGTH_SHORT).show();
+            }
+        }else {
+            Toast.makeText(this, getResources().getString(R.string.data_not_found), Toast.LENGTH_SHORT).show();
+        }
+    }
 
 }

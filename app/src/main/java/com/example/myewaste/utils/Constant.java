@@ -66,7 +66,6 @@ public class Constant {
     public static final String EXTRAS_FROM = "extras_from";
 
 
-
     public static final String FROM_DETAIL = "from_detail";
     public static final String FROM_INPUT = "from_input";
     public static final String MODE_ADD = "mode_add";
@@ -74,6 +73,9 @@ public class Constant {
     public static final String FROM_LOGIN = "from_login";
 
     public static final String FORMATE_DATE = "dd-MM-yyyy";
+    public static final String FORMATE_DATE_AND_TIME = "dd-MM-yyyy h:mm a";
+    public static final String EWASTE = "ewaste";
+    public static final String FORMATE_EXCEL = ".xls";
 
 
     public static final String PREF_NAME = "shared_pref";

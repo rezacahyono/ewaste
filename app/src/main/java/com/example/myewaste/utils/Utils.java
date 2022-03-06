@@ -1,19 +1,11 @@
 package com.example.myewaste.utils;
 
 import static com.example.myewaste.utils.Constant.FORMATE_DATE;
+import static com.example.myewaste.utils.Constant.FORMATE_DATE_AND_TIME;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
-import android.widget.ImageView;
 import android.widget.Toast;
-
-import com.example.myewaste.R;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -84,29 +76,6 @@ public class Utils {
     }
 
 
-    public static void loadImage(String imageSource, ImageView bindOn, Context context) {
-        Target target = new Target() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                Drawable drawableBitmap = new BitmapDrawable(context.getResources(), bitmap);
-                bindOn.setImageDrawable(drawableBitmap);
-            }
-
-            @Override
-            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-                bindOn.setImageResource(R.drawable.ic_placeholder);
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
-                bindOn.setImageResource(R.drawable.ic_placeholder);
-            }
-        };
-        bindOn.setTag(target);
-        Picasso.get().load(imageSource).into(target);
-        Picasso.get().setLoggingEnabled(true);
-    }
-
     public static void showMessage(Context context, String message) {
         Toast.makeText(context, message, Toast.LENGTH_LONG).show();
     }
@@ -130,6 +99,12 @@ public class Utils {
     public static String convertDate(long dateLong) {
         Date date = new Date(dateLong);
         Format format = new SimpleDateFormat(FORMATE_DATE, Locale.US);
+        return format.format(date);
+    }
+
+    public static String convertDateAndTime(long dateLong){
+        Date date = new Date(dateLong);
+        Format format = new SimpleDateFormat(FORMATE_DATE_AND_TIME, Locale.US);
         return format.format(date);
     }
 

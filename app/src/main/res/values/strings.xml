@@ -26,7 +26,6 @@
     <string name="register_underline"><u>Daftar</u></string>
     <string name="dont_have_account">Belum punya akun?</string>
     <string name="btn_send_upload">btn send upload</string>
-    <string name="btn_upload_cancel">btn upload cancel</string>
     <string name="login">Masuk</string>
     <string name="forgot_password_click">Lupa Password?</string>
     <string name="logo_login">logo login</string>
@@ -104,12 +103,10 @@
     <string name="update">Ubah</string>
     <string name="profile">Profil</string>
     <string name="nik_is_registerd">Nik sudah terdaftar</string>
-    <string name="username_is_registerd">Username sudah terdaftar</string>
     <string name="submit_success">%s berhasil ditambah</string>
     <string name="submit_failure">%s gagal ditambah</string>
     <string name="update_success">%s berhasil diubah</string>
     <string name="update_failure">%s gagal diubah</string>
-    <string name="register_failure">Register gagal</string>
     <string name="message_delete_item_master">Apakah anda yakin untuk menghapus barang %s!</string>
     <string name="message_delete_item">Apakah anda yakin untuk menghapus item?</string>
     <string name="message_delete_transaction">Apakah anda yakin untuk menghapus transaksi</string>
@@ -156,6 +153,14 @@
     <string name="accepted_transaction">Setujui transaksi</string>
     <string name="accepted">Diterima</string>
 
+
+    <string name="ewaste_pch">BANK SAMPAH PCH</string>
+    <string name="no_register">No Registered</string>
+    <string name="data_item_transaction">Data Transaksi Barang</string>
+    <string name="data_saldo_transaction">Data Transaksi Saldo</string>
+    <string name="name_nasabah">Nama Nasabah</string>
+    <string name="name_teller">Nama Teller</string>
+    <string name="total_price">Total Harga</string>
 
     <string-array name="list_gender">
         <item>Laki-Laki</item>

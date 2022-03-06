@@ -70,7 +70,7 @@ public class SearchUserActivity extends AppCompatActivity {
         binding.rvUser.setAdapter(adapter);
 
         adapter.setOnItemClickCallback(userData -> {
-            Intent intent = new Intent(this, AddUpdateTransactionItemActivity.class);
+            Intent intent = new Intent(SearchUserActivity.this, AddUpdateTransactionItemActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             intent.putExtra(EXTRAS_FROM, FROM_INPUT);
             intent.putExtra(EXTRAS_USER_DATA, userData);

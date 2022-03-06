@@ -134,7 +134,7 @@ public class DetailTransactionItemActivity extends AppCompatActivity {
         builder.setCancelable(false);
         builder.setPositiveButton(getResources().getString(R.string.yes), (dialogInterface, i) -> {
 //            actionDelete(itemMaster);
-            Log.d("TAG", "alertDelete: " + itemTransaction.getNo_item_transaction());
+//            Log.d("TAG", "alertDelete: " + itemTransaction.getNo_item_transaction());
         });
         builder.setNegativeButton(getResources().getString(R.string.no), (dialogInterface, i) -> dialogInterface.cancel());
         AlertDialog dialog = builder.create();
@@ -147,7 +147,6 @@ public class DetailTransactionItemActivity extends AppCompatActivity {
             databaseReference.child(ITEM_TRANSACTION).child(itemTransaction.getNo_item_transaction()).removeValue()
                     .addOnSuccessListener(unused -> {
                         Toast.makeText(this, getResources().getString(R.string.message_success_delete_transaction), Toast.LENGTH_SHORT).show();
-                        navigateToTransactionItem();
                     })
                     .addOnFailureListener(e -> Toast.makeText(this, getResources().getString(R.string.message_failure_delete_transaction), Toast.LENGTH_SHORT).show());
         }
@@ -284,12 +283,5 @@ public class DetailTransactionItemActivity extends AppCompatActivity {
                 }
             });
         }
-    }
-
-
-    private void navigateToTransactionItem() {
-        Intent intent = new Intent(this, TransactionItemActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivity(intent);
     }
 }
