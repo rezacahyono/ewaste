@@ -6,9 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".ui.teller.TellerActivity">
 
-    <RelativeLayout
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp">
 
         <FrameLayout
             android:id="@+id/fl_bg_avatar"
@@ -17,7 +19,9 @@
             android:layout_alignParentEnd="true"
             android:layout_marginTop="-35dp"
             android:layout_marginEnd="-40dp"
-            android:background="@drawable/ic_bg_avatar">
+            android:background="@drawable/ic_bg_avatar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/iv_avatar"
@@ -28,133 +32,133 @@
                 android:src="@color/green" />
         </FrameLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/nunito_sans_semibold"
+            android:maxLines="1"
+            android:text="@string/greet"
+            android:textColor="@color/dark_grey"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@id/fl_bg_avatar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/tv_no_regis"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/nunito"
+            android:maxLines="1"
+            android:text="n-001"
+            android:textColor="@color/dark_grey"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_name" />
+
+        <TextView
+            android:id="@+id/tv_welcome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/nunito_sans_bold"
+            android:text="@string/welcome_greet"
+            android:textColor="@color/dark_grey"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_no_regis" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cv_input_ballance"
+            android:layout_width="0dp"
+            android:layout_height="240dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="18dp"
+            app:cardBackgroundColor="@color/green"
+            app:cardCornerRadius="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_welcome">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/iv_placeholder_teller"
+                    android:layout_width="128dp"
+                    android:layout_height="128dp"
+                    android:layout_marginTop="16dp"
+                    android:contentDescription="@string/placeholder"
+                    android:src="@drawable/ic_placeholder_teller"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <FrameLayout
+                    android:id="@+id/fl_input_ballance"
+                    android:layout_width="0dp"
+                    android:layout_height="62dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/bg_button_input_ballance_layout"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/iv_placeholder_teller" />
+
+                <TextView
+                    android:id="@+id/tv_title_input_ballance"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:fontFamily="@font/nunito_sans_semibold"
+                    android:text="@string/input_ballance"
+                    android:textColor="@color/dark_grey"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toBottomOf="@id/fl_input_ballance"
+                    app:layout_constraintEnd_toStartOf="@id/ib_withdraw"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="@id/fl_input_ballance"
+                    app:layout_constraintTop_toTopOf="@id/fl_input_ballance" />
+
+                <ImageButton
+                    android:id="@+id/ib_withdraw"
+                    android:layout_width="47dp"
+                    android:layout_height="47dp"
+                    android:layout_marginEnd="12dp"
+                    android:background="@drawable/bg_button_see_all"
+                    android:contentDescription="@string/btn_withdraw"
+                    android:src="@drawable/ic_arrow_btn_large"
+                    app:layout_constraintBottom_toBottomOf="@id/fl_input_ballance"
+                    app:layout_constraintEnd_toEndOf="@id/fl_input_ballance"
+                    app:layout_constraintTop_toTopOf="@id/fl_input_ballance" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_task"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp">
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cv_input_ballance"
+            tools:listitem="@layout/item_list_task" />
 
-            <TextView
-                android:id="@+id/tv_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="16dp"
-                android:fontFamily="@font/nunito_sans_semibold"
-                android:text="@string/greet"
-                android:textColor="@color/dark_grey"
-                android:textSize="18sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-
-            <TextView
-                android:id="@+id/tv_no_regis"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:fontFamily="@font/nunito"
-                android:text="n-001"
-                android:textColor="@color/dark_grey"
-                android:textSize="12sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_name" />
-
-            <TextView
-                android:id="@+id/tv_welcome"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="8dp"
-                android:fontFamily="@font/nunito_sans_bold"
-                android:text="@string/welcome_greet"
-                android:textColor="@color/dark_grey"
-                android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_no_regis" />
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cv_input_ballance"
-                android:layout_width="0dp"
-                android:layout_height="240dp"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="18dp"
-                app:cardBackgroundColor="@color/green"
-                app:cardCornerRadius="20dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_welcome">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <ImageView
-                        android:id="@+id/iv_placeholder_teller"
-                        android:layout_width="128dp"
-                        android:layout_height="128dp"
-                        android:layout_marginTop="16dp"
-                        android:contentDescription="@string/placeholder"
-                        android:src="@drawable/ic_placeholder_teller"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <FrameLayout
-                        android:id="@+id/fl_input_ballance"
-                        android:layout_width="0dp"
-                        android:layout_height="62dp"
-                        android:layout_marginHorizontal="16dp"
-                        android:layout_marginTop="16dp"
-                        android:background="@drawable/bg_button_input_ballance_layout"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/iv_placeholder_teller" />
-
-                    <TextView
-                        android:id="@+id/tv_title_input_ballance"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="8dp"
-                        android:fontFamily="@font/nunito_sans_semibold"
-                        android:text="@string/input_ballance"
-                        android:textColor="@color/dark_grey"
-                        android:textSize="18sp"
-                        app:layout_constraintBottom_toBottomOf="@id/fl_input_ballance"
-                        app:layout_constraintEnd_toStartOf="@id/ib_withdraw"
-                        app:layout_constraintHorizontal_bias="0.0"
-                        app:layout_constraintStart_toStartOf="@id/fl_input_ballance"
-                        app:layout_constraintTop_toTopOf="@id/fl_input_ballance" />
-
-                    <ImageButton
-                        android:id="@+id/ib_withdraw"
-                        android:layout_width="47dp"
-                        android:layout_height="47dp"
-                        android:layout_marginEnd="12dp"
-                        android:background="@drawable/bg_button_see_all"
-                        android:contentDescription="@string/btn_withdraw"
-                        android:src="@drawable/ic_arrow_btn_large"
-                        app:layout_constraintBottom_toBottomOf="@id/fl_input_ballance"
-                        app:layout_constraintEnd_toEndOf="@id/fl_input_ballance"
-                        app:layout_constraintTop_toTopOf="@id/fl_input_ballance" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_task"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="8dp"
-                android:layout_marginTop="8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cv_input_ballance"
-                tools:listitem="@layout/item_list_task" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>

@@ -8,6 +8,7 @@ import static com.example.myewaste.utils.Utils.convertToRupiah;
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -32,9 +33,14 @@ public class ListSaldoTransactionAdapter extends RecyclerView.Adapter<ListSaldoT
     }
 
     private OnItemClickCallbackSaldoTransaction onItemClickCallback;
+    private OnItemAddUser onItemAddUser;
 
     public void setOnItemClickCallback(OnItemClickCallbackSaldoTransaction onItemClickCallback) {
         this.onItemClickCallback = onItemClickCallback;
+    }
+
+    public void setOnItemAddUser(OnItemAddUser onItemAddUser) {
+        this.onItemAddUser = onItemAddUser;
     }
 
     @NonNull
@@ -48,6 +54,9 @@ public class ListSaldoTransactionAdapter extends RecyclerView.Adapter<ListSaldoT
     public void onBindViewHolder(@NonNull ListSaldoTransactionAdapter.ListSaldoTransactionViewHolder holder, int position) {
         holder.bind(listSaldoTransaction.get(position));
         holder.itemView.setOnClickListener(v -> onItemClickCallback.onClicked(listSaldoTransaction.get(holder.getAdapterPosition())));
+
+        onItemAddUser.onAddDataNasabah(listSaldoTransaction.get(position).getNo_nasabah(), holder.binding.tvNoNasabah, holder.binding.tvNameNasabah);
+        onItemAddUser.onAddDataTeller(listSaldoTransaction.get(position).getNo_teller(), holder.binding.tvNameTeller);
     }
 
     @Override
@@ -71,13 +80,13 @@ public class ListSaldoTransactionAdapter extends RecyclerView.Adapter<ListSaldoT
             int income = (int) (saldoTransaction.getTotal_income() - saldoTransaction.getCuts_transaction());
             binding.tvTotalIncome.setText(convertToRupiah(income));
 
-            if (saldoTransaction.getStatus().equalsIgnoreCase(PENDING)){
+            if (saldoTransaction.getStatus().equalsIgnoreCase(PENDING)) {
                 binding.flNoTransaction.setBackground(ContextCompat.getDrawable(itemView.getContext(), R.drawable.bg_pending));
                 binding.tvNoTransaction.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.yellow));
-            }else if (saldoTransaction.getStatus().equalsIgnoreCase(REJECTED)){
+            } else if (saldoTransaction.getStatus().equalsIgnoreCase(REJECTED)) {
                 binding.flNoTransaction.setBackground(ContextCompat.getDrawable(itemView.getContext(), R.drawable.bg_rejected));
                 binding.tvNoTransaction.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.red));
-            }else {
+            } else {
                 binding.flNoTransaction.setBackground(ContextCompat.getDrawable(itemView.getContext(), R.drawable.bg_accepted));
                 binding.tvNoTransaction.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.green));
             }
@@ -86,5 +95,18 @@ public class ListSaldoTransactionAdapter extends RecyclerView.Adapter<ListSaldoT
 
     public interface OnItemClickCallbackSaldoTransaction {
         void onClicked(SaldoTransaction saldoTransaction);
+    }
+
+    public interface OnItemAddUser {
+        void onAddDataNasabah(
+                String noNasabah,
+                TextView tvNoNasabah,
+                TextView tvNameNasabah
+        );
+
+        void onAddDataTeller(
+                String noTeller,
+                TextView tvNameTeller
+        );
     }
 }

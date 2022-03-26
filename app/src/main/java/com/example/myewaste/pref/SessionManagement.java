@@ -2,6 +2,7 @@ package com.example.myewaste.pref;
 
 import static com.example.myewaste.utils.Constant.NONE;
 import static com.example.myewaste.utils.Constant.PREF_NAME;
+import static com.example.myewaste.utils.Constant.PREF_URI_DIR;
 import static com.example.myewaste.utils.Constant.PREF_USER_KEY;
 
 import android.content.Context;
@@ -26,6 +27,14 @@ public class SessionManagement {
 
     public String getUserSession(){
         return sharedPreferences.getString(PREF_USER_KEY, NONE);
+    }
+
+    public String getUriString(){
+        return sharedPreferences.getString(PREF_URI_DIR, NONE);
+    }
+
+    public void setUriString(String uriString){
+        editor.putString(PREF_URI_DIR, uriString).commit();
     }
 
 

@@ -14,7 +14,6 @@ import static com.example.myewaste.utils.Constant.MODE_ADD;
 import static com.example.myewaste.utils.Constant.MODE_UPDATE;
 import static com.example.myewaste.utils.Constant.NASABAH;
 import static com.example.myewaste.utils.Constant.NONE;
-import static com.example.myewaste.utils.Constant.NO_REGIS;
 import static com.example.myewaste.utils.Constant.SALDO_NASABAH;
 import static com.example.myewaste.utils.Constant.SUPER_ADMIN;
 import static com.example.myewaste.utils.Constant.TELLER;
@@ -24,7 +23,6 @@ import static com.example.myewaste.utils.Mode.MODE_NASABAH;
 import static com.example.myewaste.utils.Utils.convertMd5;
 import static com.example.myewaste.utils.Utils.getRegisterCode;
 import static com.example.myewaste.utils.Utils.increseNumber;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -69,6 +67,8 @@ public class AddUserActivity extends AppCompatActivity {
     private ActivityAddUserBinding binding;
     private UserData userData;
     private User user;
+    private String NO_REGIS;
+
     private boolean hasSimiliarUsernameAndNik = false;
 
     @Override
@@ -98,7 +98,7 @@ public class AddUserActivity extends AppCompatActivity {
         }
         if (mode.equals(MODE_ADD)) {
             binding.edtLayoutPassword.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             binding.btnRegister.setText(R.string.update);
         }
 
@@ -115,20 +115,22 @@ public class AddUserActivity extends AppCompatActivity {
             switch (modeUser) {
                 case MODE_SUPER_ADMIN:
                     bindingToolbar.tvTitleBar.setText(R.string.data_admin);
-                    binding.tvRegister.setText(getResources().getString(R.string.register_by, "Super Admin"));
+                    binding.tvModeRegister.setText(getResources().getString(R.string.register_by, "Super Admin"));
                     break;
                 case MODE_TELLER:
                     bindingToolbar.tvTitleBar.setText(R.string.data_teller);
-                    binding.tvRegister.setText(getResources().getString(R.string.register_by, "Teller"));
+                    binding.tvModeRegister.setText(getResources().getString(R.string.register_by, "Teller"));
                     break;
                 case MODE_NASABAH:
                     bindingToolbar.tvTitleBar.setText(R.string.data_nasabah);
-                    binding.tvRegister.setText(getResources().getString(R.string.register));
+                    binding.tvModeRegister.setText(getResources().getString(R.string.register));
                     break;
                 default:
                     break;
             }
         }
+
+        fetchDataUserData();
 
         binding.flUploadKtp.setOnClickListener(v -> selectImage());
 
@@ -212,6 +214,12 @@ public class AddUserActivity extends AppCompatActivity {
         });
 
         binding.btnCancel.setOnClickListener(v -> onBackPressed());
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     private void setUserDataExtras(UserData userData, User user) {
@@ -333,10 +341,9 @@ public class AddUserActivity extends AppCompatActivity {
                 });
             }
             navigateToBack();
-
         }
-
     }
+
 
     private void fetchDataUserDataAndUser(final onFetchDataListener listener) {
         loading = ProgressDialog.show(this,
@@ -446,6 +453,42 @@ public class AddUserActivity extends AppCompatActivity {
             }
         }
         loading.dismiss();
+    }
+
+    private void fetchDataUserData() {
+        if (modeUser.equals(Mode.MODE_SUPER_ADMIN)) {
+            NO_REGIS = DEFAULT_NO_REGIST_SUPER_ADMIN;
+        } else if (modeUser.equals(Mode.MODE_TELLER)) {
+            NO_REGIS = DEFAULT_NO_REGIST_TELLER;
+        } else {
+            NO_REGIS = DEFAULT_NO_REGIST_NASABAH;
+        }
+        databaseReference.child(USER_DATA).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    UserData userDataResult = dataSnapshot.getValue(UserData.class);
+                    boolean isValid = false;
+                    if (userDataResult != null) {
+                        String extractRegisterCode = getRegisterCode(userDataResult.getNo_regis().toLowerCase());
+                        if ((extractRegisterCode.equals(NASABAH) && (modeUser.equals(MODE_NASABAH)))
+                                || (extractRegisterCode.equals(TELLER) && modeUser.equals(Mode.MODE_TELLER))
+                                || (extractRegisterCode.equals(SUPER_ADMIN) && modeUser.equals(Mode.MODE_SUPER_ADMIN))) {
+                            isValid = true;
+                        }
+                        if (isValid) {
+                            NO_REGIS = increseNumber(userDataResult.getNo_regis());
+                        }
+                    }
+                }
+                binding.tvNoRegister.setText(NO_REGIS);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void navigateToBack() {

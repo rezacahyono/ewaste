@@ -80,4 +80,10 @@ public class Constant {
 
     public static final String PREF_NAME = "shared_pref";
     public static final String PREF_USER_KEY = "user_shared_pref";
+    public static final String PREF_URI_DIR = "pref_uri_dir";
+
+    public static final int NOTIFICATION_ID = 1;
+    public final static int REQUEST_CODE = 10;
+    public static final String CHANNEL_ID = "channel_id";
+    public static final String CHANNEL_NAME = "ewaste channel";
 }

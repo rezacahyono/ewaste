@@ -12,7 +12,7 @@
 
         <include
             android:id="@+id/main_toolbar"
-            layout="@layout/main_toolbar"/>
+            layout="@layout/main_toolbar" />
 
         <ImageView
             android:id="@+id/iv_logo_register"
@@ -26,7 +26,7 @@
             app:layout_constraintTop_toBottomOf="@id/main_toolbar" />
 
         <TextView
-            android:id="@+id/tv_register"
+            android:id="@+id/tv_mode_register"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16sp"
@@ -51,7 +51,20 @@
             android:textColor="@color/light_grey"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_register" />
+            app:layout_constraintTop_toBottomOf="@id/tv_mode_register" />
+
+        <TextView
+            android:id="@+id/tv_no_register"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/nunito"
+            android:text="-"
+            android:textColor="@color/dark_grey"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_slogan_login" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/edt_layout_nik"
@@ -59,7 +72,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="16dp"
             app:boxCornerRadiusBottomEnd="10dp"
             app:boxCornerRadiusBottomStart="10dp"
             app:boxCornerRadiusTopEnd="10dp"
@@ -69,7 +81,7 @@
             app:endIconTint="@color/green_50"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_slogan_login"
+            app:layout_constraintTop_toBottomOf="@id/tv_no_register"
             app:startIconTint="@color/green">
 
             <com.google.android.material.textfield.TextInputEditText

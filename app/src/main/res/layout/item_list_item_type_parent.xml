@@ -44,43 +44,5 @@
         app:layout_constraintTop_toBottomOf="@id/fl_name_item_master"
         tools:listitem="@layout/item_list_item_type_child" />
 
-    <!--    <RelativeLayout-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content">-->
-
-    <!--        <TextView-->
-    <!--            android:id="@+id/tv_nama_parent_barang"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_margin="5dp"-->
-    <!--            android:text="Parent Master Barang"-->
-    <!--            android:textSize="23sp"-->
-    <!--            android:textStyle="bold" />-->
-
-    <!--        <ImageButton-->
-    <!--            android:id="@+id/btnShow"-->
-    <!--            android:layout_width="40dp"-->
-    <!--            android:layout_height="40dp"-->
-    <!--            android:layout_alignParentEnd="true"-->
-    <!--            android:layout_gravity="center"-->
-    <!--            android:layout_marginHorizontal="10dp"-->
-    <!--            android:background="@drawable/ic_baseline_add_circle_24" />-->
-
-    <!--        <ImageButton-->
-    <!--            android:id="@+id/btnHide"-->
-    <!--            android:layout_width="40dp"-->
-    <!--            android:layout_height="40dp"-->
-    <!--            android:layout_alignParentEnd="true"-->
-    <!--            android:layout_gravity="center"-->
-    <!--            android:layout_marginHorizontal="10dp"-->
-    <!--            android:background="@drawable/ic_baseline_remove_circle_24"-->
-    <!--            android:visibility="gone" />-->
-    <!--    </RelativeLayout>-->
-
-    <!--    <androidx.recyclerview.widget.RecyclerView-->
-    <!--        android:id="@+id/rv_nama_parent_barang"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        tools:listitem="@layout/item_list_item_type_child" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

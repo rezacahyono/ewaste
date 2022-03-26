@@ -8,6 +8,48 @@
     android:padding="16dp">
 
     <TextView
+        android:id="@+id/tv_title_item_master"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/nunito_sans_semibold"
+        android:text="@string/cat_item"
+        android:textColor="@color/dark_grey"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/dd_layout_item_master"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/dd_layout_item_master" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/dd_layout_item_master"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:boxStrokeWidth="0dp"
+        app:boxStrokeWidthFocused="0dp"
+        android:layout_marginStart="16dp"
+        android:background="@color/green_20"
+        app:boxStrokeColor="@color/green"
+        app:endIconTint="@color/dark_grey"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tv_title_item_master"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <AutoCompleteTextView
+            android:id="@+id/tv_dd_item_master"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:fontFamily="@font/nunito_sans_semibold"
+            android:inputType="none"
+            android:text="@string/none"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            tools:ignore="LabelFor" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
         android:id="@+id/tv_title_item_type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -25,6 +67,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:boxStrokeWidth="0dp"
+        android:layout_marginTop="16dp"
         app:boxStrokeWidthFocused="0dp"
         android:layout_marginStart="16dp"
         android:background="@color/green_20"
@@ -32,7 +75,7 @@
         app:endIconTint="@color/dark_grey"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tv_title_item_type"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/dd_layout_item_master">
 
         <AutoCompleteTextView
             android:id="@+id/tv_dd_type_item"
@@ -47,34 +90,6 @@
             android:textStyle="bold"
             tools:ignore="LabelFor" />
     </com.google.android.material.textfield.TextInputLayout>
-
-
-    <TextView
-        android:id="@+id/tv_title_item_master"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/nunito_sans_semibold"
-        android:text="@string/cat_item"
-        android:textColor="@color/dark_grey"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@id/tv_item_master"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_item_master" />
-
-    <TextView
-        android:id="@+id/tv_item_master"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:fontFamily="@font/nunito_sans_semibold"
-        android:text="@string/none"
-        android:textAlignment="textEnd"
-        android:textColor="@color/light_grey"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/tv_title_item_master"
-        app:layout_constraintTop_toBottomOf="@id/dd_layout_type_item" />
 
     <TextView
         android:id="@+id/tv_title_price"
@@ -101,7 +116,7 @@
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tv_title_price"
-        app:layout_constraintTop_toBottomOf="@id/tv_item_master" />
+        app:layout_constraintTop_toBottomOf="@id/dd_layout_type_item" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/edt_layout_total"

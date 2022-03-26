@@ -160,7 +160,6 @@ public class DetailTransactionItemActivity extends AppCompatActivity {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     SaldoTransaction saldoTransactionResult = dataSnapshot.getValue(SaldoTransaction.class);
                     if (saldoTransactionResult != null) {
-                        binding.tvTotalCutsTransaction.setText(convertToRupiah((int) saldoTransactionResult.getCuts_transaction()));
                         binding.tvTotalIncome.setText(convertToRupiah((int) saldoTransactionResult.getTotal_income()));
                     }
                 }

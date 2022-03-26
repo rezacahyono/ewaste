@@ -2,7 +2,6 @@ package com.example.myewaste.ui.component.task;
 
 import static com.example.myewaste.utils.Constant.AKTIF;
 import static com.example.myewaste.utils.Constant.DEACTIVE;
-import static com.example.myewaste.utils.Constant.EWASTE;
 import static com.example.myewaste.utils.Constant.EXTRAS_ACTION_MODE;
 import static com.example.myewaste.utils.Constant.EXTRAS_USER_DATA;
 import static com.example.myewaste.utils.Constant.FORMATE_EXCEL;
@@ -11,7 +10,9 @@ import static com.example.myewaste.utils.Constant.MODE_ADD;
 import static com.example.myewaste.utils.Constant.MODE_UPDATE;
 import static com.example.myewaste.utils.Constant.NAME;
 import static com.example.myewaste.utils.Constant.NASABAH;
+import static com.example.myewaste.utils.Constant.NONE;
 import static com.example.myewaste.utils.Constant.NO_REGIS;
+import static com.example.myewaste.utils.Constant.REQUEST_CODE;
 import static com.example.myewaste.utils.Constant.STATUS;
 import static com.example.myewaste.utils.Constant.SUPER_ADMIN;
 import static com.example.myewaste.utils.Constant.TELLER;
@@ -19,15 +20,22 @@ import static com.example.myewaste.utils.Constant.USER;
 import static com.example.myewaste.utils.Constant.USER_DATA;
 import static com.example.myewaste.utils.Utils.convertDateAndTime;
 import static com.example.myewaste.utils.Utils.getRegisterCode;
+
 import android.content.Intent;
+import android.content.UriPermission;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.documentfile.provider.DocumentFile;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.example.myewaste.R;
 import com.example.myewaste.adapter.ListUserAdapater;
 import com.example.myewaste.databinding.ActivitySearchUserBinding;
@@ -36,6 +44,7 @@ import com.example.myewaste.model.user.User;
 import com.example.myewaste.model.user.UserData;
 import com.example.myewaste.pref.SessionManagement;
 import com.example.myewaste.utils.Mode;
+import com.example.myewaste.utils.NotificationUtils;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -52,9 +61,12 @@ import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
-import java.io.File;
+
+import java.io.FileDescriptor;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class DataUserActivity extends AppCompatActivity {
@@ -68,6 +80,7 @@ public class DataUserActivity extends AppCompatActivity {
     private ActivitySearchUserBinding binding;
     private MainToolbarBinding bindingToolbar;
     private SessionManagement sessionManagement;
+    private NotificationUtils notificationUtils;
 
 
     @Override
@@ -104,6 +117,8 @@ public class DataUserActivity extends AppCompatActivity {
         databaseReference = FirebaseDatabase.getInstance().getReference();
         sessionManagement = new SessionManagement(this);
 
+        notificationUtils = new NotificationUtils(this);
+
         adapter = new ListUserAdapater();
         binding.rvUser.setHasFixedSize(true);
 
@@ -113,7 +128,7 @@ public class DataUserActivity extends AppCompatActivity {
 
         bindingToolbar.btnTrash.setImageResource(R.drawable.ic_download);
 
-        bindingToolbar.btnTrash.setOnClickListener(v -> generateReportDataUser());
+        bindingToolbar.btnTrash.setOnClickListener(v -> openDocumentTree());
 
         binding.fbAddUser.setOnClickListener(v -> {
             Intent intent = new Intent(this, AddUserActivity.class);
@@ -324,131 +339,189 @@ public class DataUserActivity extends AppCompatActivity {
         return result;
     }
 
-    private void generateReportDataUser() {
-        if (listUserData.size() > 0){
-            File filePath = new File(getExternalFilesDir(null) + File.separator + EWASTE);
-            if (!filePath.exists()) {
-                if (filePath.mkdir()) {
-                    filePath = new File(filePath.getAbsolutePath() + File.separator + dataModeUser(modeUser) + convertDateAndTime(System.currentTimeMillis()) + FORMATE_EXCEL);
-                } else {
-                    Toast.makeText(this, getResources().getString(R.string.failure), Toast.LENGTH_SHORT).show();
+    private void openDocumentTree() {
+        String uriString = sessionManagement.getUriString();
+        if (uriString.equalsIgnoreCase(NONE)) {
+            askPermission();
+        } else if (arePermissionGranted(uriString)) {
+            makeDoc(Uri.parse(uriString));
+        } else {
+            askPermission();
+        }
+    }
+
+    private void askPermission() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+        startActivityForResult(intent, REQUEST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
+            if (data != null) {
+                Uri uriTree = data.getData();
+                if (uriTree != null) {
+                    if (Uri.decode(uriTree.toString()).endsWith(":")) {
+                        Toast.makeText(this, "Cannot use root folder", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    int takeFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION ^ Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
+                    getContentResolver().takePersistableUriPermission(uriTree, takeFlags);
+                    sessionManagement.setUriString(uriTree.toString());
+
+                    makeDoc(uriTree);
                 }
+            }
+        }
+    }
+
+    private void makeDoc(Uri uriTree) {
+        DocumentFile dir = DocumentFile.fromTreeUri(this, uriTree);
+        if (dir == null || !dir.exists()) {
+            releasePermissions(uriTree);
+            Toast.makeText(this, "Folder deleted, please choose another!", Toast.LENGTH_SHORT).show();
+            openDocumentTree();
+        } else {
+            DocumentFile file = dir.createFile("application/vnd.ms-excel", dataModeUser(modeUser) + convertDateAndTime(System.currentTimeMillis()) + FORMATE_EXCEL);
+            if (file != null && file.canWrite()) {
+                writeReport(file.getUri());
             } else {
-                filePath = new File(filePath.getAbsolutePath() + File.separator + dataModeUser(modeUser) + convertDateAndTime(System.currentTimeMillis()) + FORMATE_EXCEL);
+                Toast.makeText(this, "error write", Toast.LENGTH_SHORT).show();
             }
+        }
+    }
 
-            HSSFWorkbook hssfWorkbook = new HSSFWorkbook();
-            HSSFSheet hssfSheet = hssfWorkbook.createSheet(dataModeUser(modeUser));
 
-            HSSFCellStyle cellStyle = hssfWorkbook.createCellStyle();
-            cellStyle.setAlignment(HorizontalAlignment.CENTER);
-            cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-            cellStyle.setBorderBottom(BorderStyle.THIN);
-            cellStyle.setBorderTop(BorderStyle.THIN);
-            cellStyle.setBorderLeft(BorderStyle.THIN);
-            cellStyle.setBorderRight(BorderStyle.THIN);
-            cellStyle.setWrapText(true);
-
-            HSSFRow rowNameApp = hssfSheet.createRow(0);
-            HSSFCell cellNameApp = rowNameApp.createCell(0);
-            cellNameApp.setCellValue(dataModeUser(modeUser) + " " + getResources().getString(R.string.ewaste_pch));
-            cellNameApp.setCellStyle(cellStyle);
-            hssfSheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 7));
-
-            HSSFRow rowTitle = hssfSheet.createRow(1);
-
-            HSSFCell cellTitleNoRegis = rowTitle.createCell(0);
-            cellTitleNoRegis.setCellStyle(cellStyle);
-            hssfSheet.setColumnWidth(0, 5000);
-            cellTitleNoRegis.setCellValue(getResources().getString(R.string.no_register));
-
-            HSSFCell cellTitleNik = rowTitle.createCell(1);
-            cellTitleNik.setCellStyle(cellStyle);
-            hssfSheet.setColumnWidth(1, 8000);
-            cellTitleNik.setCellValue(getResources().getString(R.string.nik));
-
-            HSSFCell cellTitleName = rowTitle.createCell(2);
-            cellTitleName.setCellStyle(cellStyle);
-            hssfSheet.setColumnWidth(2, 9000);
-            cellTitleName.setCellValue(getResources().getString(R.string.name));
-
-            HSSFCell cellTitleGender = rowTitle.createCell(3);
-            cellTitleGender.setCellStyle(cellStyle);
-            hssfSheet.setColumnWidth(3, 8000);
-            cellTitleGender.setCellValue(getResources().getString(R.string.gender));
-
-            HSSFCell cellTitleNoPhone = rowTitle.createCell(4);
-            cellTitleNoPhone.setCellStyle(cellStyle);
-            hssfSheet.setColumnWidth(4, 7000);
-            cellTitleNoPhone.setCellValue(getResources().getString(R.string.phone));
-
-            HSSFCell cellTitleAddress = rowTitle.createCell(5);
-            cellTitleAddress.setCellStyle(cellStyle);
-            hssfSheet.setColumnWidth(5, 10000);
-            cellTitleAddress.setCellValue(getResources().getString(R.string.address));
-
-            HSSFCell cellTitleAvatar = rowTitle.createCell(6);
-            cellTitleAvatar.setCellStyle(cellStyle);
-            hssfSheet.setColumnWidth(6, 12000);
-            cellTitleAvatar.setCellValue(getResources().getString(R.string.photo_profil));
-
-            HSSFCell cellTitlePhotoNik = rowTitle.createCell(7);
-            cellTitlePhotoNik.setCellStyle(cellStyle);
-            hssfSheet.setColumnWidth(7, 12000);
-            cellTitlePhotoNik.setCellValue(getResources().getString(R.string.photo_profil));
-
-            for (int i = 0; i < listUserData.size(); i++) {
-                HSSFRow rowData = hssfSheet.createRow(i + 2);
-
-                HSSFCell cellDataNoRegis = rowData.createCell(0);
-                cellDataNoRegis.setCellStyle(cellStyle);
-                cellDataNoRegis.setCellValue(listUserData.get(i).getNo_regis());
-
-                HSSFCell cellDataNik = rowData.createCell(1);
-                cellDataNik.setCellStyle(cellStyle);
-                cellDataNik.setCellValue(listUserData.get(i).getNik());
-
-                HSSFCell cellDataName = rowData.createCell(2);
-                cellDataName.setCellStyle(cellStyle);
-                cellDataName.setCellValue(listUserData.get(i).getName());
-
-                HSSFCell cellDataGender = rowData.createCell(3);
-                cellDataGender.setCellStyle(cellStyle);
-                cellDataGender.setCellValue(listUserData.get(i).getGender());
-
-                HSSFCell cellDataNoPhone = rowData.createCell(4);
-                cellDataNoPhone.setCellStyle(cellStyle);
-                cellDataNoPhone.setCellValue(listUserData.get(i).getPhone());
-
-                HSSFCell cellDataAddress = rowData.createCell(5);
-                cellDataAddress.setCellStyle(cellStyle);
-                cellDataAddress.setCellValue(listUserData.get(i).getAddress());
-
-                HSSFCell cellDataAvatar = rowData.createCell(6);
-                cellDataAvatar.setCellStyle(cellStyle);
-                cellDataAvatar.setCellValue(listUserData.get(i).getAvatar());
-
-                HSSFCell cellDataPhotoNik = rowData.createCell(7);
-                cellDataPhotoNik.setCellStyle(cellStyle);
-                cellDataPhotoNik.setCellValue(listUserData.get(i).getPhoto_nik());
-            }
-
+    private void writeReport(Uri uri) {
+        if (uri != null) {
             try {
-                if (!filePath.exists()) {
-                    filePath.createNewFile();
-                }
-                FileOutputStream fileOutputStream = new FileOutputStream(filePath);
-                hssfWorkbook.write(fileOutputStream);
+                HSSFWorkbook hssfWorkbook = new HSSFWorkbook();
+                HSSFSheet hssfSheet = hssfWorkbook.createSheet(dataModeUser(modeUser));
 
-                fileOutputStream.flush();
-                fileOutputStream.close();
+                HSSFCellStyle cellStyle = hssfWorkbook.createCellStyle();
+                cellStyle.setAlignment(HorizontalAlignment.CENTER);
+                cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+                cellStyle.setBorderBottom(BorderStyle.THIN);
+                cellStyle.setBorderTop(BorderStyle.THIN);
+                cellStyle.setBorderLeft(BorderStyle.THIN);
+                cellStyle.setBorderRight(BorderStyle.THIN);
+                cellStyle.setWrapText(true);
+
+                HSSFRow rowNameApp = hssfSheet.createRow(0);
+                HSSFCell cellNameApp = rowNameApp.createCell(0);
+                cellNameApp.setCellValue(dataModeUser(modeUser) + " " + getResources().getString(R.string.ewaste_pch));
+                cellNameApp.setCellStyle(cellStyle);
+                hssfSheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 7));
+
+                HSSFRow rowTitle = hssfSheet.createRow(1);
+
+                HSSFCell cellTitleNoRegis = rowTitle.createCell(0);
+                cellTitleNoRegis.setCellStyle(cellStyle);
+                hssfSheet.setColumnWidth(0, 5000);
+                cellTitleNoRegis.setCellValue(getResources().getString(R.string.no_register));
+
+                HSSFCell cellTitleNik = rowTitle.createCell(1);
+                cellTitleNik.setCellStyle(cellStyle);
+                hssfSheet.setColumnWidth(1, 8000);
+                cellTitleNik.setCellValue(getResources().getString(R.string.nik));
+
+                HSSFCell cellTitleName = rowTitle.createCell(2);
+                cellTitleName.setCellStyle(cellStyle);
+                hssfSheet.setColumnWidth(2, 9000);
+                cellTitleName.setCellValue(getResources().getString(R.string.name));
+
+                HSSFCell cellTitleGender = rowTitle.createCell(3);
+                cellTitleGender.setCellStyle(cellStyle);
+                hssfSheet.setColumnWidth(3, 8000);
+                cellTitleGender.setCellValue(getResources().getString(R.string.gender));
+
+                HSSFCell cellTitleNoPhone = rowTitle.createCell(4);
+                cellTitleNoPhone.setCellStyle(cellStyle);
+                hssfSheet.setColumnWidth(4, 7000);
+                cellTitleNoPhone.setCellValue(getResources().getString(R.string.phone));
+
+                HSSFCell cellTitleAddress = rowTitle.createCell(5);
+                cellTitleAddress.setCellStyle(cellStyle);
+                hssfSheet.setColumnWidth(5, 10000);
+                cellTitleAddress.setCellValue(getResources().getString(R.string.address));
+
+                HSSFCell cellTitleAvatar = rowTitle.createCell(6);
+                cellTitleAvatar.setCellStyle(cellStyle);
+                hssfSheet.setColumnWidth(6, 12000);
+                cellTitleAvatar.setCellValue(getResources().getString(R.string.photo_profil));
+
+                HSSFCell cellTitlePhotoNik = rowTitle.createCell(7);
+                cellTitlePhotoNik.setCellStyle(cellStyle);
+                hssfSheet.setColumnWidth(7, 12000);
+                cellTitlePhotoNik.setCellValue(getResources().getString(R.string.photo_profil));
+
+                for (int i = 0; i < listUserData.size(); i++) {
+                    HSSFRow rowData = hssfSheet.createRow(i + 2);
+
+                    HSSFCell cellDataNoRegis = rowData.createCell(0);
+                    cellDataNoRegis.setCellStyle(cellStyle);
+                    cellDataNoRegis.setCellValue(listUserData.get(i).getNo_regis());
+
+                    HSSFCell cellDataNik = rowData.createCell(1);
+                    cellDataNik.setCellStyle(cellStyle);
+                    cellDataNik.setCellValue(listUserData.get(i).getNik());
+
+                    HSSFCell cellDataName = rowData.createCell(2);
+                    cellDataName.setCellStyle(cellStyle);
+                    cellDataName.setCellValue(listUserData.get(i).getName());
+
+                    HSSFCell cellDataGender = rowData.createCell(3);
+                    cellDataGender.setCellStyle(cellStyle);
+                    cellDataGender.setCellValue(listUserData.get(i).getGender());
+
+                    HSSFCell cellDataNoPhone = rowData.createCell(4);
+                    cellDataNoPhone.setCellStyle(cellStyle);
+                    cellDataNoPhone.setCellValue(listUserData.get(i).getPhone());
+
+                    HSSFCell cellDataAddress = rowData.createCell(5);
+                    cellDataAddress.setCellStyle(cellStyle);
+                    cellDataAddress.setCellValue(listUserData.get(i).getAddress());
+
+                    HSSFCell cellDataAvatar = rowData.createCell(6);
+                    cellDataAvatar.setCellStyle(cellStyle);
+                    cellDataAvatar.setCellValue(listUserData.get(i).getAvatar());
+
+                    HSSFCell cellDataPhotoNik = rowData.createCell(7);
+                    cellDataPhotoNik.setCellStyle(cellStyle);
+                    cellDataPhotoNik.setCellValue(listUserData.get(i).getPhoto_nik());
+                }
+
+                FileDescriptor fileDescriptor = getContentResolver().openFileDescriptor(uri, "w").getFileDescriptor();
+                FileOutputStream fos = new FileOutputStream(fileDescriptor);
+
+                hssfWorkbook.write(fos);
+                fos.flush();
+                fos.close();
                 Toast.makeText(this, getResources().getString(R.string.success) + " download", Toast.LENGTH_SHORT).show();
+                notificationUtils.sendNotificationBuilder(sessionManagement.getUriString());
+
             } catch (Exception e) {
                 e.printStackTrace();
                 Toast.makeText(this, getResources().getString(R.string.failure) + " download", Toast.LENGTH_SHORT).show();
             }
-        }else {
-            Toast.makeText(this, getResources().getString(R.string.data_not_found), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void releasePermissions(Uri uriTree) {
+        int flags = Intent.FLAG_GRANT_READ_URI_PERMISSION ^ Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
+        getContentResolver().releasePersistableUriPermission(uriTree, flags);
+        sessionManagement.setUriString(NONE);
+    }
+
+    private boolean arePermissionGranted(String uriString) {
+        List<UriPermission> list = getContentResolver().getPersistedUriPermissions();
+        for (int i = 0; i < list.size(); i++) {
+            String persistedUriString = list.get(i).getUri().toString();
+            if (persistedUriString.equalsIgnoreCase(uriString) && list.get(i).isWritePermission() && list.get(i).isReadPermission()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

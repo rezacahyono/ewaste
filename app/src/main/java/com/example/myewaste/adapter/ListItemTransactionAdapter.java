@@ -29,9 +29,14 @@ public class ListItemTransactionAdapter extends RecyclerView.Adapter<ListItemTra
     }
 
     private OnItemClickCallbackItemTransaction onItemClickCallback;
+    private ListSaldoTransactionAdapter.OnItemAddUser onItemAddUser;
 
     public void setOnItemClickCallback(OnItemClickCallbackItemTransaction onItemClickCallback) {
         this.onItemClickCallback = onItemClickCallback;
+    }
+
+    public void setOnItemAddUser(ListSaldoTransactionAdapter.OnItemAddUser onItemAddUser){
+        this.onItemAddUser = onItemAddUser;
     }
 
     @NonNull
@@ -45,6 +50,8 @@ public class ListItemTransactionAdapter extends RecyclerView.Adapter<ListItemTra
     public void onBindViewHolder(@NonNull ListItemTransactionAdapter.ListItemTransactionViewHolder holder, int position) {
         holder.bind(listItemTransaction.get(position));
         holder.itemView.setOnClickListener(v -> onItemClickCallback.onClicked(listItemTransaction.get(holder.getAdapterPosition())));
+        onItemAddUser.onAddDataNasabah(listItemTransaction.get(position).getNo_nasabah(),holder.binding.tvNoNasabah, holder.binding.tvNameNasabah);
+        onItemAddUser.onAddDataTeller(listItemTransaction.get(position).getNo_teller(),holder.binding.tvNameTeller);
     }
 
     @Override
@@ -70,4 +77,5 @@ public class ListItemTransactionAdapter extends RecyclerView.Adapter<ListItemTra
     public interface OnItemClickCallbackItemTransaction {
         void onClicked(ItemTransaction itemTransaction);
     }
+
 }

@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".ui.nasabah.NasabahActivity">
 
-    <RelativeLayout
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -17,7 +18,9 @@
             android:layout_alignParentEnd="true"
             android:layout_marginTop="-35dp"
             android:layout_marginEnd="-40dp"
-            android:background="@drawable/ic_bg_avatar">
+            android:background="@drawable/ic_bg_avatar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/iv_avatar"
@@ -28,630 +31,422 @@
                 android:src="@color/green" />
         </FrameLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/tv_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="16dp"
-                android:fontFamily="@font/nunito_sans_semibold"
-                android:text="@string/greet"
-                android:textColor="@color/dark_grey"
-                android:textSize="18sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-
-            <TextView
-                android:id="@+id/tv_no_regis"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:fontFamily="@font/nunito"
-                android:text="n-001"
-                android:textColor="@color/dark_grey"
-                android:textSize="12sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_name" />
-
-            <TextView
-                android:id="@+id/tv_welcome"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="8dp"
-                android:fontFamily="@font/nunito_sans_bold"
-                android:text="@string/welcome_greet"
-                android:textColor="@color/dark_grey"
-                android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_no_regis" />
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cv_saldo"
-                android:layout_width="0dp"
-                android:layout_height="181dp"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="18dp"
-                app:cardBackgroundColor="@color/green"
-                app:cardCornerRadius="20dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_welcome">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <TextView
-                        android:id="@+id/tv_my_saldo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:fontFamily="@font/nunito"
-                        android:text="@string/my_saldo"
-                        android:textColor="@color/white"
-                        android:textSize="16sp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/tv_saldo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:fontFamily="@font/nunito_sans_bold"
-                        android:text="Rp 100.000"
-                        android:textColor="@color/white"
-                        android:textSize="20sp"
-                        app:layout_constraintEnd_toEndOf="@id/tv_my_saldo"
-                        app:layout_constraintStart_toStartOf="@id/tv_my_saldo"
-                        app:layout_constraintTop_toBottomOf="@id/tv_my_saldo" />
-
-                    <FrameLayout
-                        android:id="@+id/fl_info_total"
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_margin="16dp"
-                        android:background="@drawable/bg_button_bordered"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/tv_saldo">
-
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-
-                            <TextView
-                                android:id="@+id/tv_total_item_transaction"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/nunito_sans_bold"
-                                android:text="12"
-                                android:maxLength="4"
-                                android:maxLines="1"
-                                android:textColor="@color/dark_grey"
-                                android:textSize="16sp"
-                                app:layout_constraintBottom_toTopOf="@+id/tv_title_deposit"
-                                app:layout_constraintEnd_toEndOf="@+id/tv_title_deposit"
-                                app:layout_constraintStart_toStartOf="@+id/tv_title_deposit" />
-
-                            <TextView
-                                android:id="@+id/tv_total_withdraw"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/nunito_sans_bold"
-                                android:text="5"
-                                android:maxLength="4"
-                                android:maxLines="1"
-                                android:textColor="@color/dark_grey"
-                                android:textSize="16sp"
-                                app:layout_constraintBottom_toTopOf="@+id/tv_title_income"
-                                app:layout_constraintEnd_toEndOf="@+id/tv_title_income"
-                                app:layout_constraintStart_toStartOf="@+id/tv_title_income" />
-
-                            <TextView
-                                android:id="@+id/tv_total_accepted"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/nunito_sans_bold"
-                                android:text="1"
-                                android:maxLength="4"
-                                android:maxLines="1"
-                                android:textColor="@color/dark_grey"
-                                android:textSize="16sp"
-                                app:layout_constraintBottom_toTopOf="@+id/tv_title_accepted"
-                                app:layout_constraintEnd_toEndOf="@+id/tv_title_accepted"
-                                app:layout_constraintStart_toStartOf="@+id/tv_title_accepted" />
-
-                            <TextView
-                                android:id="@+id/tv_total_pending"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/nunito_sans_bold"
-                                android:text="1"
-                                android:maxLength="4"
-                                android:maxLines="1"
-                                android:textColor="@color/dark_grey"
-                                android:textSize="16sp"
-                                app:layout_constraintBottom_toTopOf="@+id/tv_title_pending"
-                                app:layout_constraintEnd_toEndOf="@+id/tv_title_pending"
-                                app:layout_constraintStart_toStartOf="@+id/tv_title_pending" />
-
-                            <TextView
-                                android:id="@+id/tv_total_rejected"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/nunito_sans_bold"
-                                android:text="1"
-                                android:maxLength="4"
-                                android:maxLines="1"
-                                android:textColor="@color/dark_grey"
-                                android:textSize="16sp"
-                                app:layout_constraintBottom_toTopOf="@+id/tv_title_rejected"
-                                app:layout_constraintEnd_toEndOf="@+id/tv_title_rejected"
-                                app:layout_constraintStart_toStartOf="@+id/tv_title_rejected" />
-
-
-                            <TextView
-                                android:id="@+id/tv_title_deposit"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/nunito"
-                                android:text="@string/deposit"
-                                android:textColor="@color/light_grey"
-                                android:textSize="12sp"
-                                app:layout_constraintBottom_toBottomOf="@+id/tv_title_income"
-                                app:layout_constraintEnd_toStartOf="@+id/tv_title_income"
-                                app:layout_constraintHorizontal_bias="0.5"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="@+id/tv_title_income" />
-
-                            <TextView
-                                android:id="@+id/tv_title_income"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/nunito"
-                                android:text="@string/withdraw_title"
-                                android:textColor="@color/light_grey"
-                                android:textSize="12sp"
-                                app:layout_constraintBottom_toBottomOf="@+id/tv_title_accepted"
-                                app:layout_constraintEnd_toStartOf="@+id/tv_title_accepted"
-                                app:layout_constraintHorizontal_bias="0.5"
-                                app:layout_constraintStart_toEndOf="@+id/tv_title_deposit"
-                                app:layout_constraintTop_toTopOf="@+id/tv_title_accepted" />
-
-                            <TextView
-                                android:id="@+id/tv_title_accepted"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/nunito"
-                                android:text="@string/accepted"
-                                android:textColor="@color/light_grey"
-                                android:textSize="12sp"
-                                app:layout_constraintBottom_toBottomOf="@+id/tv_title_pending"
-                                app:layout_constraintEnd_toStartOf="@+id/tv_title_pending"
-                                app:layout_constraintHorizontal_bias="0.5"
-                                app:layout_constraintStart_toEndOf="@+id/tv_title_income"
-                                app:layout_constraintTop_toTopOf="@+id/tv_title_pending" />
-
-                            <TextView
-                                android:id="@+id/tv_title_pending"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/nunito"
-                                android:text="@string/pending"
-                                android:textColor="@color/light_grey"
-                                android:textSize="12sp"
-                                app:layout_constraintBottom_toBottomOf="@+id/tv_title_rejected"
-                                app:layout_constraintEnd_toStartOf="@+id/tv_title_rejected"
-                                app:layout_constraintHorizontal_bias="0.5"
-                                app:layout_constraintStart_toEndOf="@+id/tv_title_accepted"
-                                app:layout_constraintTop_toTopOf="@+id/tv_title_rejected" />
-
-                            <TextView
-                                android:id="@+id/tv_title_rejected"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/nunito"
-                                android:text="Ditolak"
-                                android:textColor="@color/light_grey"
-                                android:textSize="12sp"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintHorizontal_bias="0.5"
-                                app:layout_constraintStart_toEndOf="@+id/tv_title_pending"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintVertical_bias="0.68" />
-
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-                    </FrameLayout>
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <FrameLayout
-                android:id="@+id/fl_withdraw"
-                android:layout_width="0dp"
-                android:layout_height="62dp"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="24dp"
-                android:background="@drawable/bg_button_withdraw_layout"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cv_saldo" />
-
-            <TextView
-                android:id="@+id/tv_title_withdraw"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:fontFamily="@font/nunito_sans_semibold"
-                android:text="@string/withdraw"
-                android:textColor="@color/white"
-                android:textSize="20sp"
-                app:layout_constraintBottom_toBottomOf="@id/fl_withdraw"
-                app:layout_constraintStart_toStartOf="@id/fl_withdraw"
-                app:layout_constraintTop_toTopOf="@id/fl_withdraw" />
-
-            <ImageButton
-                android:id="@+id/ib_withdraw"
-                android:layout_width="47dp"
-                android:layout_height="47dp"
-                android:layout_marginEnd="12dp"
-                android:background="@drawable/bg_button_withdraw"
-                android:contentDescription="@string/btn_withdraw"
-                android:src="@drawable/ic_arrow_btn_large"
-                app:layout_constraintBottom_toBottomOf="@id/fl_withdraw"
-                app:layout_constraintEnd_toEndOf="@id/fl_withdraw"
-                app:layout_constraintTop_toTopOf="@id/fl_withdraw" />
-
-            <TextView
-                android:id="@+id/tv_deposit_balance"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="16dp"
-                android:fontFamily="@font/nunito_sans_bold"
-                android:text="@string/deposit_balance"
-                android:textColor="@color/dark_grey"
-                android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/fl_withdraw" />
-
-            <TextView
-                android:id="@+id/tv_see_all_item_transaction"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:fontFamily="@font/nunito"
-                android:text="@string/see_all"
-                android:textColor="@color/dark_grey"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="@id/tv_deposit_balance"
-                app:layout_constraintEnd_toStartOf="@id/ib_see_all_item_transaction"
-                app:layout_constraintTop_toTopOf="@id/tv_deposit_balance" />
-
-            <ImageButton
-                android:id="@+id/ib_see_all_item_transaction"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:background="@drawable/bg_button_see_all"
-                android:contentDescription="@string/button_see_all"
-                android:src="@drawable/ic_arrow_btn_small"
-                app:layout_constraintBottom_toBottomOf="@id/tv_see_all_item_transaction"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/tv_see_all_item_transaction"
-                app:tint="@color/green" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_transaction_item"
-                android:layout_width="0dp"
-                android:layout_height="120dp"
-                android:layout_marginTop="16dp"
-                android:visibility="visible"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_deposit_balance"
-                app:layout_constraintBottom_toTopOf="@id/tv_history_withdraw"/>
-
-            <ImageView
-                android:id="@+id/iv_placeholder_empty_item"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginTop="16dp"
-                android:contentDescription="@string/placeholder"
-                android:src="@drawable/ic_placeholder_empty_deposit_balance"
-                android:visibility="invisible"
-                app:layout_constraintBottom_toTopOf="@id/tv_history_withdraw"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_deposit_balance" />
-
-
-            <TextView
-                android:id="@+id/tv_history_withdraw"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="16dp"
-                android:fontFamily="@font/nunito_sans_bold"
-                android:text="@string/history_withdraw"
-                android:textColor="@color/dark_grey"
-                android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/rv_transaction_item" />
-
-            <TextView
-                android:id="@+id/tv_see_all_withdraw"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:fontFamily="@font/nunito"
-                android:text="@string/see_all"
-                android:textColor="@color/dark_grey"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="@id/tv_history_withdraw"
-                app:layout_constraintEnd_toStartOf="@id/ib_see_all_withdraw"
-                app:layout_constraintTop_toTopOf="@id/tv_history_withdraw" />
-
-            <ImageButton
-                android:id="@+id/ib_see_all_withdraw"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:background="@drawable/bg_button_see_all"
-                android:contentDescription="@string/button_see_all"
-                android:src="@drawable/ic_arrow_btn_small"
-                app:layout_constraintBottom_toBottomOf="@id/tv_history_withdraw"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/tv_history_withdraw"
-                app:tint="@color/green" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_transaction_saldo"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_history_withdraw"
-                tools:listitem="@layout/item_list_saldo_transaction" />
-
-            <ImageView
-                android:id="@+id/iv_placeholder_empty_saldo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:visibility="visible"
-                android:contentDescription="@string/placeholder"
-                android:src="@drawable/ic_placeholder_empty_deposit_balance"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_history_withdraw" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </RelativeLayout>
-
-
-    <!--    <LinearLayout-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="match_parent"-->
-    <!--        android:orientation="vertical"-->
-    <!--        app:layout_constraintTop_toTopOf="parent">-->
-
-    <!--        <androidx.constraintlayout.widget.ConstraintLayout-->
-    <!--            android:layout_width="match_parent"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_margin="10dp">-->
-
-    <!--            <de.hdodenhof.circleimageview.CircleImageView-->
-    <!--                android:id="@+id/iv_fotonasabah"-->
-    <!--                android:layout_width="80dp"-->
-    <!--                android:layout_height="80dp"-->
-    <!--                android:layout_marginBottom="16dp"-->
-    <!--                android:src="@drawable/profile"-->
-    <!--                app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--                app:layout_constraintStart_toStartOf="parent"-->
-    <!--                app:layout_constraintTop_toTopOf="parent" />-->
-
-    <!--            <TextView-->
-    <!--                android:id="@+id/textView"-->
-    <!--                android:layout_width="wrap_content"-->
-    <!--                android:layout_height="wrap_content"-->
-    <!--                android:fontFamily="sans-serif"-->
-    <!--                android:text="Nama : "-->
-    <!--                android:textSize="18sp"-->
-    <!--                android:textStyle="bold"-->
-    <!--                app:layout_constraintBottom_toBottomOf="@+id/iv_fotonasabah"-->
-    <!--                app:layout_constraintStart_toEndOf="@+id/iv_fotonasabah"-->
-    <!--                app:layout_constraintTop_toTopOf="parent"-->
-    <!--                app:layout_constraintVertical_bias="0.285" />-->
-
-    <!--            <TextView-->
-    <!--                android:id="@+id/et_nama"-->
-    <!--                android:layout_width="wrap_content"-->
-    <!--                android:layout_height="wrap_content"-->
-    <!--                android:fontFamily="sans-serif"-->
-    <!--                android:text="Nama User Login"-->
-    <!--                android:textSize="18sp"-->
-    <!--                android:textStyle="bold"-->
-    <!--                app:layout_constraintBottom_toBottomOf="@+id/textView"-->
-    <!--                app:layout_constraintStart_toEndOf="@+id/textView"-->
-    <!--                app:layout_constraintTop_toTopOf="@+id/textView" />-->
-
-    <!--            <TextView-->
-    <!--                android:textStyle="bold"-->
-    <!--                android:layout_width="wrap_content"-->
-    <!--                android:layout_height="wrap_content"-->
-    <!--                android:text="ID            : "-->
-    <!--                android:textSize="14sp"-->
-    <!--                app:layout_constraintStart_toEndOf="@+id/iv_fotonasabah"-->
-    <!--                app:layout_constraintTop_toBottomOf="@+id/textView" />-->
-
-    <!--            <TextView-->
-    <!--                android:textStyle="bold"-->
-    <!--                android:id="@+id/et_noregis"-->
-    <!--                android:layout_width="wrap_content"-->
-    <!--                android:layout_height="wrap_content"-->
-    <!--                android:text="No Regis"-->
-    <!--                android:textSize="14sp"-->
-    <!--                app:layout_constraintStart_toStartOf="@+id/et_nama"-->
-    <!--                app:layout_constraintTop_toBottomOf="@+id/et_nama" />-->
-
-
-    <!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
-
-    <!--        <LinearLayout-->
-    <!--            android:background="@color/white"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_width="match_parent"-->
-    <!--            android:layout_marginVertical="5dp"-->
-    <!--            android:orientation="horizontal">-->
-    <!--            <LinearLayout-->
-    <!--                android:layout_width="wrap_content"-->
-    <!--                android:layout_height="wrap_content"-->
-    <!--                android:orientation="vertical">-->
-    <!--                <TextView-->
-    <!--                    android:textColor="@color/purple_500"-->
-    <!--                    android:layout_gravity="center_vertical"-->
-    <!--                    android:layout_marginHorizontal="5dp"-->
-    <!--                    android:layout_width="wrap_content"-->
-    <!--                    android:layout_height="wrap_content"-->
-    <!--                    android:text="Saldo Saya :"-->
-    <!--                    android:textSize="20sp"-->
-    <!--                    android:textStyle="bold"/>-->
-    <!--                <TextView-->
-    <!--                    android:textColor="@color/purple_500"-->
-    <!--                    android:layout_gravity="center_vertical"-->
-    <!--                    android:layout_marginHorizontal="5dp"-->
-    <!--                    android:id="@+id/totalsaldo"-->
-    <!--                    android:layout_width="wrap_content"-->
-    <!--                    android:layout_height="wrap_content"-->
-    <!--                    android:text="Saldo Nasabah"-->
-    <!--                    android:textSize="24sp"-->
-    <!--                    android:textStyle="bold"/>-->
-    <!--            </LinearLayout>-->
-
-    <!--            <View-->
-    <!--                android:layout_width="0dp"-->
-    <!--                android:layout_height="0dp"-->
-    <!--                android:layout_weight="1"-->
-    <!--                />-->
-
-    <!--            <Button-->
-    <!--                android:id="@+id/btnPenarikan"-->
-    <!--                android:layout_width="wrap_content"-->
-    <!--                android:layout_height="wrap_content"-->
-    <!--                android:layout_gravity="end|center"-->
-    <!--                android:layout_marginHorizontal="5dp"-->
-    <!--                android:text="Lakukan Penarikan"-->
-    <!--                android:textColor="@color/white" />-->
-    <!--        </LinearLayout>-->
-    <!--        <View-->
-    <!--            android:layout_width="match_parent"-->
-    <!--            android:layout_height="0.5dp"-->
-    <!--            android:background="@color/black"-->
-    <!--            />-->
-    <!--        <GridLayout-->
-    <!--            android:layout_width="match_parent"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:alignmentMode="alignMargins"-->
-    <!--            android:columnCount="2"-->
-    <!--            android:columnOrderPreserved="false"-->
-    <!--            android:rowCount="3">-->
-
-    <!--            <androidx.cardview.widget.CardView-->
-    <!--                android:id="@+id/cv_history_transaksi"-->
-    <!--                android:layout_width="wrap_content"-->
-    <!--                android:layout_height="wrap_content"-->
-    <!--                android:layout_rowWeight="1"-->
-    <!--                android:layout_columnWeight="1"-->
-    <!--                android:layout_margin="12dp"-->
-    <!--                app:cardCornerRadius="12dp"-->
-    <!--                app:cardElevation="6dp">-->
-
-    <!--                <LinearLayout-->
-    <!--                    android:textAlignment="center"-->
-    <!--                    android:layout_width="match_parent"-->
-    <!--                    android:layout_height="wrap_content"-->
-    <!--                    android:gravity="center"-->
-    <!--                    android:orientation="vertical"-->
-    <!--                    android:padding="16dp">-->
-
-    <!--                    <ImageView-->
-    <!--                        android:layout_width="80dp"-->
-    <!--                        android:layout_height="80dp"-->
-    <!--                        android:src="@drawable/laporan" />-->
-
-    <!--                    <TextView-->
-    <!--                        android:textAlignment="center"-->
-    <!--                        android:layout_width="match_parent"-->
-    <!--                        android:layout_height="wrap_content"-->
-    <!--                        android:layout_marginTop="12dp"-->
-    <!--                        android:text="History Penimbangan"-->
-    <!--                        android:textColor="#6f6f6f"-->
-    <!--                        android:textSize="18sp" />-->
-    <!--                </LinearLayout>-->
-    <!--            </androidx.cardview.widget.CardView>-->
-
-    <!--            <androidx.cardview.widget.CardView-->
-    <!--                android:id="@+id/cv_laporan_saldo_nasabah"-->
-    <!--                android:layout_width="wrap_content"-->
-    <!--                android:layout_height="wrap_content"-->
-    <!--                android:layout_rowWeight="1"-->
-    <!--                android:layout_columnWeight="1"-->
-    <!--                android:layout_margin="12dp"-->
-    <!--                app:cardCornerRadius="12dp"-->
-    <!--                app:cardElevation="6dp">-->
-
-    <!--                <LinearLayout-->
-    <!--                    android:layout_width="match_parent"-->
-    <!--                    android:layout_height="wrap_content"-->
-    <!--                    android:gravity="center"-->
-    <!--                    android:orientation="vertical"-->
-    <!--                    android:padding="16dp">-->
-
-    <!--                    <ImageView-->
-    <!--                        android:layout_width="80dp"-->
-    <!--                        android:layout_height="80dp"-->
-    <!--                        android:src="@drawable/saldo" />-->
-
-    <!--                    <TextView-->
-    <!--                        android:textAlignment="center"-->
-    <!--                        android:layout_width="match_parent"-->
-    <!--                        android:layout_height="wrap_content"-->
-    <!--                        android:layout_marginTop="12dp"-->
-    <!--                        android:text="History Penarikan "-->
-    <!--                        android:textColor="#6f6f6f"-->
-    <!--                        android:textSize="18sp" />-->
-    <!--                </LinearLayout>-->
-    <!--            </androidx.cardview.widget.CardView>-->
-
-    <!--        </GridLayout>-->
-
-    <!--        <LinearLayout-->
-    <!--            android:layout_width="match_parent"-->
-    <!--            android:layout_height="wrap_content">-->
-
-    <!--            <Button-->
-    <!--                android:id="@+id/btnlogoutn"-->
-    <!--                android:layout_width="match_parent"-->
-    <!--                android:layout_height="match_parent"-->
-    <!--                android:text="Logout"></Button>-->
-    <!--        </LinearLayout>-->
-    <!--    </LinearLayout>-->
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/nunito_sans_semibold"
+            android:text="@string/greet"
+            android:maxLines="1"
+            app:layout_constraintEnd_toStartOf="@id/fl_bg_avatar"
+            android:textColor="@color/dark_grey"
+            android:textSize="18sp"
+            android:ellipsize="end"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/tv_no_regis"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:fontFamily="@font/nunito"
+            android:text="n-001"
+            android:maxLines="1"
+            android:textColor="@color/dark_grey"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_name" />
+
+        <TextView
+            android:id="@+id/tv_welcome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/nunito_sans_bold"
+            android:text="@string/welcome_greet"
+            android:textColor="@color/dark_grey"
+            android:textSize="20sp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_no_regis" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cv_saldo"
+            android:layout_width="0dp"
+            android:layout_height="181dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="18dp"
+            app:cardBackgroundColor="@color/green"
+            app:cardCornerRadius="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_welcome">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/tv_my_saldo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/nunito"
+                    android:text="@string/my_saldo"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_saldo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="@font/nunito_sans_bold"
+                    android:text="Rp 100.000"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    app:layout_constraintEnd_toEndOf="@id/tv_my_saldo"
+                    app:layout_constraintStart_toStartOf="@id/tv_my_saldo"
+                    app:layout_constraintTop_toBottomOf="@id/tv_my_saldo" />
+
+                <FrameLayout
+                    android:id="@+id/fl_info_total"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_margin="16dp"
+                    android:background="@drawable/bg_button_bordered"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_saldo">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/tv_total_item_transaction"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/nunito_sans_bold"
+                            android:maxLength="4"
+                            android:maxLines="1"
+                            android:text="12"
+                            android:textColor="@color/dark_grey"
+                            android:textSize="16sp"
+                            app:layout_constraintBottom_toTopOf="@+id/tv_title_deposit"
+                            app:layout_constraintEnd_toEndOf="@+id/tv_title_deposit"
+                            app:layout_constraintStart_toStartOf="@+id/tv_title_deposit" />
+
+                        <TextView
+                            android:id="@+id/tv_total_withdraw"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/nunito_sans_bold"
+                            android:maxLength="4"
+                            android:maxLines="1"
+                            android:text="5"
+                            android:textColor="@color/dark_grey"
+                            android:textSize="16sp"
+                            app:layout_constraintBottom_toTopOf="@+id/tv_title_income"
+                            app:layout_constraintEnd_toEndOf="@+id/tv_title_income"
+                            app:layout_constraintStart_toStartOf="@+id/tv_title_income" />
+
+                        <TextView
+                            android:id="@+id/tv_total_accepted"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/nunito_sans_bold"
+                            android:maxLength="4"
+                            android:maxLines="1"
+                            android:text="1"
+                            android:textColor="@color/dark_grey"
+                            android:textSize="16sp"
+                            app:layout_constraintBottom_toTopOf="@+id/tv_title_accepted"
+                            app:layout_constraintEnd_toEndOf="@+id/tv_title_accepted"
+                            app:layout_constraintStart_toStartOf="@+id/tv_title_accepted" />
+
+                        <TextView
+                            android:id="@+id/tv_total_pending"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/nunito_sans_bold"
+                            android:maxLength="4"
+                            android:maxLines="1"
+                            android:text="1"
+                            android:textColor="@color/dark_grey"
+                            android:textSize="16sp"
+                            app:layout_constraintBottom_toTopOf="@+id/tv_title_pending"
+                            app:layout_constraintEnd_toEndOf="@+id/tv_title_pending"
+                            app:layout_constraintStart_toStartOf="@+id/tv_title_pending" />
+
+                        <TextView
+                            android:id="@+id/tv_total_rejected"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/nunito_sans_bold"
+                            android:maxLength="4"
+                            android:maxLines="1"
+                            android:text="1"
+                            android:textColor="@color/dark_grey"
+                            android:textSize="16sp"
+                            app:layout_constraintBottom_toTopOf="@+id/tv_title_rejected"
+                            app:layout_constraintEnd_toEndOf="@+id/tv_title_rejected"
+                            app:layout_constraintStart_toStartOf="@+id/tv_title_rejected" />
+
+
+                        <TextView
+                            android:id="@+id/tv_title_deposit"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/nunito"
+                            android:text="@string/deposit"
+                            android:textColor="@color/light_grey"
+                            android:textSize="12sp"
+                            app:layout_constraintBottom_toBottomOf="@+id/tv_title_income"
+                            app:layout_constraintEnd_toStartOf="@+id/tv_title_income"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/tv_title_income" />
+
+                        <TextView
+                            android:id="@+id/tv_title_income"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/nunito"
+                            android:text="@string/withdraw_title"
+                            android:textColor="@color/light_grey"
+                            android:textSize="12sp"
+                            app:layout_constraintBottom_toBottomOf="@+id/tv_title_accepted"
+                            app:layout_constraintEnd_toStartOf="@+id/tv_title_accepted"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toEndOf="@+id/tv_title_deposit"
+                            app:layout_constraintTop_toTopOf="@+id/tv_title_accepted" />
+
+                        <TextView
+                            android:id="@+id/tv_title_accepted"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/nunito"
+                            android:text="@string/accepted"
+                            android:textColor="@color/light_grey"
+                            android:textSize="12sp"
+                            app:layout_constraintBottom_toBottomOf="@+id/tv_title_pending"
+                            app:layout_constraintEnd_toStartOf="@+id/tv_title_pending"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toEndOf="@+id/tv_title_income"
+                            app:layout_constraintTop_toTopOf="@+id/tv_title_pending" />
+
+                        <TextView
+                            android:id="@+id/tv_title_pending"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/nunito"
+                            android:text="@string/pending"
+                            android:textColor="@color/light_grey"
+                            android:textSize="12sp"
+                            app:layout_constraintBottom_toBottomOf="@+id/tv_title_rejected"
+                            app:layout_constraintEnd_toStartOf="@+id/tv_title_rejected"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toEndOf="@+id/tv_title_accepted"
+                            app:layout_constraintTop_toTopOf="@+id/tv_title_rejected" />
+
+                        <TextView
+                            android:id="@+id/tv_title_rejected"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/nunito"
+                            android:text="Ditolak"
+                            android:textColor="@color/light_grey"
+                            android:textSize="12sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toEndOf="@+id/tv_title_pending"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_bias="0.68" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </FrameLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <FrameLayout
+            android:id="@+id/fl_withdraw"
+            android:layout_width="0dp"
+            android:layout_height="62dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/bg_button_withdraw_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cv_saldo" />
+
+        <TextView
+            android:id="@+id/tv_title_withdraw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:fontFamily="@font/nunito_sans_semibold"
+            android:text="@string/withdraw"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="@id/fl_withdraw"
+            app:layout_constraintStart_toStartOf="@id/fl_withdraw"
+            app:layout_constraintTop_toTopOf="@id/fl_withdraw" />
+
+        <ImageButton
+            android:id="@+id/ib_withdraw"
+            android:layout_width="47dp"
+            android:layout_height="47dp"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/bg_button_withdraw"
+            android:contentDescription="@string/btn_withdraw"
+            android:src="@drawable/ic_arrow_btn_large"
+            app:layout_constraintBottom_toBottomOf="@id/fl_withdraw"
+            app:layout_constraintEnd_toEndOf="@id/fl_withdraw"
+            app:layout_constraintTop_toTopOf="@id/fl_withdraw" />
+
+        <TextView
+            android:id="@+id/tv_deposit_balance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/nunito_sans_bold"
+            android:text="@string/deposit_balance"
+            android:textColor="@color/dark_grey"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/fl_withdraw" />
+
+        <TextView
+            android:id="@+id/tv_see_all_item_transaction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:fontFamily="@font/nunito"
+            android:text="@string/see_all"
+            android:textColor="@color/dark_grey"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_deposit_balance"
+            app:layout_constraintEnd_toStartOf="@id/ib_see_all_item_transaction"
+            app:layout_constraintTop_toTopOf="@id/tv_deposit_balance" />
+
+        <ImageButton
+            android:id="@+id/ib_see_all_item_transaction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/bg_button_see_all"
+            android:contentDescription="@string/button_see_all"
+            android:src="@drawable/ic_arrow_btn_small"
+            app:layout_constraintBottom_toBottomOf="@id/tv_see_all_item_transaction"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_see_all_item_transaction"
+            app:tint="@color/green" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_transaction_item"
+            android:layout_width="0dp"
+            android:layout_height="120dp"
+            android:layout_marginTop="16dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@id/tv_history_withdraw"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_deposit_balance" />
+
+        <ImageView
+            android:id="@+id/iv_placeholder_empty_item"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="16dp"
+            android:contentDescription="@string/placeholder"
+            android:src="@drawable/ic_placeholder_empty_deposit_balance"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@id/tv_history_withdraw"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_deposit_balance" />
+
+
+        <TextView
+            android:id="@+id/tv_history_withdraw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/nunito_sans_bold"
+            android:text="@string/history_withdraw"
+            android:textColor="@color/dark_grey"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rv_transaction_item" />
+
+        <TextView
+            android:id="@+id/tv_see_all_withdraw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:fontFamily="@font/nunito"
+            android:text="@string/see_all"
+            android:textColor="@color/dark_grey"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_history_withdraw"
+            app:layout_constraintEnd_toStartOf="@id/ib_see_all_withdraw"
+            app:layout_constraintTop_toTopOf="@id/tv_history_withdraw" />
+
+        <ImageButton
+            android:id="@+id/ib_see_all_withdraw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/bg_button_see_all"
+            android:contentDescription="@string/button_see_all"
+            android:src="@drawable/ic_arrow_btn_small"
+            app:layout_constraintBottom_toBottomOf="@id/tv_history_withdraw"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_history_withdraw"
+            app:tint="@color/green" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_transaction_saldo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_history_withdraw"
+            tools:listitem="@layout/item_list_saldo_transaction" />
+
+        <ImageView
+            android:id="@+id/iv_placeholder_empty_saldo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:contentDescription="@string/placeholder"
+            android:src="@drawable/ic_placeholder_empty_deposit_balance"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_history_withdraw" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </ScrollView>

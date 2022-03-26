@@ -152,6 +152,8 @@
     <string name="reject_transcation">Tolak transaksi</string>
     <string name="accepted_transaction">Setujui transaksi</string>
     <string name="accepted">Diterima</string>
+    <string name="field_name_nasabah">Nasabah : %s</string>
+    <string name="field_name_teller">Teller : %s</string>
 
 
     <string name="ewaste_pch">BANK SAMPAH PCH</string>
@@ -161,6 +163,10 @@
     <string name="name_nasabah">Nama Nasabah</string>
     <string name="name_teller">Nama Teller</string>
     <string name="total_price">Total Harga</string>
+    <string name="formate_date">12–21–2102</string>
+
+    <string name="notification">Notification</string>
+    <string name="notification_message">Download report berhasil</string>
 
     <string-array name="list_gender">
         <item>Laki-Laki</item>

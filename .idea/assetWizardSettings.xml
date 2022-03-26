@@ -328,7 +328,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialicons/add/baseline_add_24.xml" />
+                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialicons/notifications/baseline_notifications_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -338,9 +338,8 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="assetSourceType" value="FILE" />
                             <entry key="color" value="ffffff" />
-                            <entry key="outputName" value="ic_chip" />
+                            <entry key="outputName" value="ic_baseline_notifications_24" />
                             <entry key="sourceFile" value="C:\Users\reza\Pictures\ic_chip.svg" />
                           </map>
                         </option>

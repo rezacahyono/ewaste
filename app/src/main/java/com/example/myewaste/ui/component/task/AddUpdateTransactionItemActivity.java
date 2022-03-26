@@ -26,6 +26,7 @@ import static com.example.myewaste.utils.Constant.UNIT_ITEM;
 import static com.example.myewaste.utils.Constant.USER_DATA;
 import static com.example.myewaste.utils.Utils.convertToRupiah;
 import static com.example.myewaste.utils.Utils.increseNumber;
+
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.Editable;
@@ -33,10 +34,12 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.bumptech.glide.Glide;
 import com.example.myewaste.R;
 import com.example.myewaste.adapter.ListItemAdapter;
@@ -79,7 +82,8 @@ public class AddUpdateTransactionItemActivity extends AppCompatActivity {
     private ListItem listItemSheet = new ListItem();
     private ArrayList<Item> listItem = new ArrayList<>();
     private ArrayList<ListItem> listItemsForAdapter = new ArrayList<>();
-    private final ArrayList<ItemType> listItemType = new ArrayList<>();
+    private ArrayList<ItemType> listItemType;
+    private final ArrayList<ItemMaster> listItemMaster = new ArrayList<>();
 
     private int lastPriceTransactionItem = 0;
     private int pricePerItem;
@@ -162,13 +166,13 @@ public class AddUpdateTransactionItemActivity extends AppCompatActivity {
             saldoTransaction.setStatus(ACCEPTED);
             saldoTransaction.setTotal_income(priceTotal);
             saldoTransaction.setCuts_transaction(0.0);
-            if (!from.equals(FROM_DETAIL)){
+            if (!from.equals(FROM_DETAIL)) {
                 Date date = new Date();
                 itemTransaction.setDate(date.getTime());
                 saldoTransaction.setDate(date.getTime());
             }
-            saldo.setSaldo(saldo.getSaldo()-lastPriceTransactionItem);
-            saldo.setSaldo(priceTotal+saldo.getSaldo());
+            saldo.setSaldo(saldo.getSaldo() - lastPriceTransactionItem);
+            saldo.setSaldo(priceTotal + saldo.getSaldo());
             onSumbitTransactionItem(itemTransaction, saldoTransaction, saldo);
             lastPriceTransactionItem = (int) itemTransaction.getTotal_price();
             binding.btnSave.setVisibility(View.GONE);
@@ -330,7 +334,7 @@ public class AddUpdateTransactionItemActivity extends AppCompatActivity {
         totalItem = 0.0;
         if (mode.equals(MODE_UPDATE)) {
             bindingBottomSheet.tvDdTypeItem.setText(listItemSheet.getNameItemType());
-            bindingBottomSheet.tvItemMaster.setText(listItemSheet.getNameItem());
+            bindingBottomSheet.tvDdItemMaster.setText(listItemSheet.getNameItem());
             bindingBottomSheet.tvTotalPrice.setText(convertToRupiah(listItemSheet.getPrice()));
             pricePerItem = (int) (listItemSheet.getPrice() / listItemSheet.getTotal());
             bindingBottomSheet.tvPrice.setText(getResources().getString(R.string.placeholder_price_per_unit, convertToRupiah(pricePerItem), listItemSheet.getNameUnit()));
@@ -344,13 +348,17 @@ public class AddUpdateTransactionItemActivity extends AppCompatActivity {
             bindingBottomSheet.btnAdd.setText(R.string.update);
         }
 
-        fetchDataItemTypeForSpinner();
+        fetchDataItemMasterForSpinner();
+
+        bindingBottomSheet.tvDdItemMaster.setOnItemClickListener((adapterView, view, i, l) -> {
+            itemMaster = listItemMaster.get(i);
+            fetchDataItemTypeForSpinner(itemMaster.getNo_item_master());
+        });
 
         bindingBottomSheet.edtTotal.setEnabled(!bindingBottomSheet.tvDdTypeItem.getText().toString().equalsIgnoreCase(NONE));
 
         bindingBottomSheet.tvDdTypeItem.setOnItemClickListener(((adapterView, view, i, l) -> {
             fetchDataUnitItemByNoUnitItem(listItemType.get(i).getNo_unit_item(), i);
-            fetchDataItemMasterByNoItemMaster(listItemType.get(i).getNo_item_master());
             itemType = listItemType.get(i);
             bindingBottomSheet.edtTotal.setEnabled(!bindingBottomSheet.tvDdTypeItem.getText().toString().equalsIgnoreCase(NONE));
             pricePerItem = (int) (itemType.getPrice() * totalItem);
@@ -367,7 +375,7 @@ public class AddUpdateTransactionItemActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (charSequence.length() > 0) {
                     totalItem = Double.parseDouble(charSequence.toString());
-                    pricePerItem = (int) (Math.round((itemType.getPrice()*totalItem)*100)/100);
+                    pricePerItem = (int) (Math.round((itemType.getPrice() * totalItem) * 100) / 100);
                 } else {
                     pricePerItem = 0;
                 }
@@ -422,28 +430,51 @@ public class AddUpdateTransactionItemActivity extends AppCompatActivity {
     }
 
 
-    private void fetchDataItemTypeForSpinner() {
-        databaseReference.child(ITEM_TYPE)
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        ArrayList<String> listNameItemType = new ArrayList<>();
-                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                            ItemType itemTypeResult = dataSnapshot.getValue(ItemType.class);
-                            if (itemTypeResult != null) {
-                                listItemType.add(itemTypeResult);
-                                listNameItemType.add(itemTypeResult.getName());
-                            }
-                        }
-                        ArrayAdapter<String> arrayAdapterItemType = new ArrayAdapter<>(AddUpdateTransactionItemActivity.this, R.layout.dropdown_item, listNameItemType);
-                        bindingBottomSheet.tvDdTypeItem.setAdapter(arrayAdapterItemType);
+    private void fetchDataItemTypeForSpinner(String noItemMaster) {
+        databaseReference.child(ITEM_TYPE).orderByChild(NO_ITEM_MASTER).equalTo(noItemMaster).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                ArrayList<String> listNameItemType = new ArrayList<>();
+                listItemType = new ArrayList<>();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    ItemType itemTypeResult = dataSnapshot.getValue(ItemType.class);
+                    if (itemTypeResult != null) {
+                        listItemType.add(itemTypeResult);
+                        listNameItemType.add(itemTypeResult.getName());
                     }
+                }
+                ArrayAdapter<String> arrayAdapterItemType = new ArrayAdapter<>(AddUpdateTransactionItemActivity.this, R.layout.dropdown_item, listNameItemType);
+                bindingBottomSheet.tvDdTypeItem.setAdapter(arrayAdapterItemType);
+            }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
+            }
+        });
+    }
+
+    private void fetchDataItemMasterForSpinner(){
+        databaseReference.child(ITEM_MASTER).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                ArrayList<String> listNameItemMaster = new ArrayList<>();
+                for (DataSnapshot dataSnapshot: snapshot.getChildren()){
+                    ItemMaster itemMasterResult = dataSnapshot.getValue(ItemMaster.class);
+                    if (itemMasterResult != null){
+                        listNameItemMaster.add(itemMasterResult.getName());
+                        listItemMaster.add(itemMasterResult);
                     }
-                });
+                }
+                ArrayAdapter<String> arrayAdapterItemMaster = new ArrayAdapter<>(AddUpdateTransactionItemActivity.this, R.layout.dropdown_item, listNameItemMaster);
+                bindingBottomSheet.tvDdItemMaster.setAdapter(arrayAdapterItemMaster);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
 
@@ -506,27 +537,6 @@ public class AddUpdateTransactionItemActivity extends AppCompatActivity {
         });
     }
 
-
-    private void fetchDataItemMasterByNoItemMaster(String noItemMaster) {
-        databaseReference.child(ITEM_MASTER).orderByChild(NO_ITEM_MASTER).equalTo(noItemMaster).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    ItemMaster itemMasterResult = dataSnapshot.getValue(ItemMaster.class);
-                    if (itemMasterResult != null) {
-                        itemMaster = itemMasterResult;
-                        bindingBottomSheet.tvItemMaster.setText(itemMaster.getName());
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
     private void fetchDataItemMasterByNameItemMaster(String nameItemMaster) {
         databaseReference.child(ITEM_MASTER).orderByChild(NAME).equalTo(nameItemMaster).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -537,6 +547,7 @@ public class AddUpdateTransactionItemActivity extends AppCompatActivity {
                         itemMaster = itemMasterResult;
                     }
                 }
+                fetchDataItemTypeForSpinner(itemMaster.getNo_item_master());
             }
 
             @Override
