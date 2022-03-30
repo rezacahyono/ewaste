@@ -24,6 +24,7 @@ import android.icu.util.Calendar;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -49,7 +50,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -67,7 +67,6 @@ public class NasabahActivity extends AppCompatActivity {
     private ArrayList<SaldoTransaction> listSaldoTransaction;
 
     private ActivityNasabahBinding binding;
-    private long time = 0L;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -97,7 +96,7 @@ public class NasabahActivity extends AppCompatActivity {
         binding.ibWithdraw.setOnClickListener(v -> {
             Intent intent = new Intent(this, AddUpdateTransactionSaldoActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            intent.putExtra(MODE, MODE_ADD);;
+            intent.putExtra(MODE, MODE_ADD);
             intent.putExtra(EXTRAS_USER_DATA, userData);
             intent.putExtra(EXTRAS_SALDO, saldo);
             startActivity(intent);
@@ -127,18 +126,14 @@ public class NasabahActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        fetchDataUserData(userData.getNo_regis());
+
         fetchDataTotalItemTransaction();
         fetchDataTotalWitdhrawAccepted();
         fetchDataSaldoTransactionAndItemTransaction();
         setRecyclerView();
 
 
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        fetchDataUserData();
     }
 
 
@@ -161,7 +156,102 @@ public class NasabahActivity extends AppCompatActivity {
             intent.putExtra(EXTRAS_SALDO_TRANSACTION, saldoTransaction);
             startActivity(intent);
         });
+
+        adapterItem.setOnItemAddUser(new ListSaldoTransactionAdapter.OnItemAddUser() {
+            @Override
+            public void onAddDataNasabah(String noNasabah, TextView tvNoNasabah, TextView tvNameNasabah) {
+                databaseReference.child(USER_DATA).orderByChild(NO_REGIS).equalTo(noNasabah).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                            UserData userDataResult = dataSnapshot.getValue(UserData.class);
+                            if (userDataResult != null) {
+                                tvNoNasabah.setText(userDataResult.getNo_regis());
+                                tvNameNasabah.setText(getResources().getString(R.string.field_name_nasabah, userDataResult.getName()));
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onAddDataTeller(String noTeller, TextView tvNameTeller) {
+                if (!noTeller.equals("-")) {
+                    databaseReference.child(USER_DATA).orderByChild(NO_REGIS).equalTo(noTeller).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                UserData userDataResult = dataSnapshot.getValue(UserData.class);
+                                if (userDataResult != null) {
+                                    tvNameTeller.setText(getResources().getString(R.string.field_name_teller, userDataResult.getName()));
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                } else {
+                    tvNameTeller.setText(getResources().getString(R.string.field_name_teller, "-"));
+                }
+            }
+        });
+
+        adapterSaldo.setOnItemAddUser(new ListSaldoTransactionAdapter.OnItemAddUser() {
+            @Override
+            public void onAddDataNasabah(String noNasabah, TextView tvNoNasabah, TextView tvNameNasabah) {
+                databaseReference.child(USER_DATA).orderByChild(NO_REGIS).equalTo(noNasabah).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                            UserData userDataResult = dataSnapshot.getValue(UserData.class);
+                            if (userDataResult != null) {
+                                tvNoNasabah.setText(userDataResult.getNo_regis());
+                                tvNameNasabah.setText(getResources().getString(R.string.field_name_nasabah, userDataResult.getName()));
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onAddDataTeller(String noTeller, TextView tvNameTeller) {
+                if (!noTeller.equals("-")) {
+                    databaseReference.child(USER_DATA).orderByChild(NO_REGIS).equalTo(noTeller).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                UserData userDataResult = dataSnapshot.getValue(UserData.class);
+                                if (userDataResult != null) {
+                                    tvNameTeller.setText(getResources().getString(R.string.field_name_teller, userDataResult.getName()));
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                } else {
+                    tvNameTeller.setText(getResources().getString(R.string.field_name_teller, "-"));
+                }
+            }
+        });
     }
+
 
     private void showPlaceholderOrRecyclerViewSaldo(boolean isShowSaldo) {
         if (isShowSaldo) {
@@ -216,22 +306,26 @@ public class NasabahActivity extends AppCompatActivity {
         });
     }
 
-    private void fetchDataUserData() {
-        if (userData.getNo_regis() != null) {
-            Query queryUserData = databaseReference.child(USER_DATA).orderByChild(NO_REGIS).equalTo(userData.getNo_regis());
-            queryUserData.get()
-                    .addOnCompleteListener(task -> {
-                        DataSnapshot result = task.getResult();
-                        if (result != null) {
-                            for (DataSnapshot dataSnapshot : result.getChildren()) {
-                                UserData userDataResult = dataSnapshot.getValue(UserData.class);
-                                if (userDataResult != null) {
-                                    userData = userDataResult;
-                                    loadDataUser(userData);
-                                }
-                            }
+    private void fetchDataUserData(String noRegis) {
+        if (!noRegis.isEmpty()) {
+            databaseReference.child(USER_DATA).orderByChild(NO_REGIS).equalTo(noRegis).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        UserData userDataResult = dataSnapshot.getValue(UserData.class);
+                        if (userDataResult != null) {
+                            userData = userDataResult;
+                            loadDataUser(userData);
                         }
-                    });
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
         }
     }
 
@@ -243,7 +337,7 @@ public class NasabahActivity extends AppCompatActivity {
             calendar.set(Calendar.SECOND, 0);
             calendar.set(Calendar.MINUTE, 0);
             calendar.set(Calendar.HOUR_OF_DAY, 0);
-            time = calendar.getTime().getTime();
+            long time = calendar.getTime().getTime();
 
             databaseReference.child(SALDO_TRANSACTION).orderByChild(DATE).startAt(time).limitToLast(5).addValueEventListener(new ValueEventListener() {
                 @Override
@@ -305,7 +399,7 @@ public class NasabahActivity extends AppCompatActivity {
                     Collections.reverse(listItemTransaction);
                     adapterItem.setAdapter(listItemTransaction);
                     showPlaceholderOrRecyclerViewItem(listItemTransaction.size() > 0);
-                    if (listItemTransaction.size() == 0){
+                    if (listItemTransaction.size() == 0) {
                         databaseReference.child(ITEM_TRANSACTION).orderByChild(NO_NASABAH).equalTo(userData.getNo_regis()).limitToLast(3).addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {

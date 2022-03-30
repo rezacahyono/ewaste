@@ -5,6 +5,7 @@ import static com.example.myewaste.utils.Utils.convertToRupiah;
 
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -35,7 +36,7 @@ public class ListItemTransactionAdapter extends RecyclerView.Adapter<ListItemTra
         this.onItemClickCallback = onItemClickCallback;
     }
 
-    public void setOnItemAddUser(ListSaldoTransactionAdapter.OnItemAddUser onItemAddUser){
+    public void setOnItemAddUser(ListSaldoTransactionAdapter.OnItemAddUser onItemAddUser) {
         this.onItemAddUser = onItemAddUser;
     }
 
@@ -50,8 +51,10 @@ public class ListItemTransactionAdapter extends RecyclerView.Adapter<ListItemTra
     public void onBindViewHolder(@NonNull ListItemTransactionAdapter.ListItemTransactionViewHolder holder, int position) {
         holder.bind(listItemTransaction.get(position));
         holder.itemView.setOnClickListener(v -> onItemClickCallback.onClicked(listItemTransaction.get(holder.getAdapterPosition())));
-        onItemAddUser.onAddDataNasabah(listItemTransaction.get(position).getNo_nasabah(),holder.binding.tvNoNasabah, holder.binding.tvNameNasabah);
-        onItemAddUser.onAddDataTeller(listItemTransaction.get(position).getNo_teller(),holder.binding.tvNameTeller);
+        if (onItemAddUser != null) {
+            onItemAddUser.onAddDataNasabah(listItemTransaction.get(position).getNo_nasabah(), holder.binding.tvNoNasabah, holder.binding.tvNameNasabah);
+            onItemAddUser.onAddDataTeller(listItemTransaction.get(position).getNo_teller(), holder.binding.tvNameTeller);
+        }
     }
 
     @Override
